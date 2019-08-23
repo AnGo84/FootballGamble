@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+<f:view>
+	<h:head>
+		<title>.:: Football Gambling ::.</title>
+
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<!-- <meta name="viewport" content="width=device-width, initial-scale=1" /> -->
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+		<!-- <title>Product</title>
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" /> -->
+		<link href="#{resource['images/iconfinder_Football_Field_16_10.ico']}"
+			rel="shortcut icon" />
+		<h:outputStylesheet library="css" name="starter.css" />
+		<h:outputScript library="js" name="starter.js" />
+
+	</h:head>
+
+	<h:body>
+
+		<i class="icon-spinner icon-spin icon-4x wait-icon" id="wait-icon" />
+
+		<p:ajaxStatus
+			onstart="document.getElementsByClassName('wait-icon')[0].style.display='block';"
+			onsuccess="document.getElementsByClassName('wait-icon')[0].style.display='none';" />
+
+		<div class="ui-g">
+			<div class="p-grid p-justify-center">
+				<div class="p-col-10">
+					<h:form id="form_main_menu">
+						<p:menubar>
+							<p:submenu label="File" icon="pi pi-file">
+								<p:submenu label="New" icon="pi pi-briefcase">
+									<p:menuitem value="Project" url="#" />
+									<p:menuitem value="Other" url="#" />
+								</p:submenu>
+								<p:menuitem value="Open" url="#" />
+								<p:separator />
+								<p:menuitem value="Quit" url="#" />
+							</p:submenu>
+
+							<p:submenu label="Edit" icon="pi pi-pencil">
+								<p:menuitem value="Undo" url="#" icon="pi pi-angle-double-left" />
+								<p:menuitem value="Redo" url="#" icon="pi pi-angle-double-right" />
+							</p:submenu>
+
+							<p:submenu label="Help" icon="pi pi-question">
+								<p:menuitem value="Contents" url="#" />
+								<p:submenu label="Search" icon="pi pi-search">
+									<p:submenu label="Text">
+										<p:menuitem value="Workspace" url="#" />
+									</p:submenu>
+									<p:menuitem value="File" url="#" />
+								</p:submenu>
+							</p:submenu>
+
+							<p:submenu label="Actions" icon="pi pi-cog">
+								<p:submenu label="Ajax" icon="pi pi-refresh">
+									<p:menuitem value="Save" action="#{menuView.save}"
+										icon="pi pi-save" update="@this" />
+									<p:menuitem value="Update" action="#{menuView.update}"
+										icon="pi pi-refresh" update="@this" />
+								</p:submenu>
+								<p:submenu label="Non-Ajax" icon="pi pi-clone">
+									<p:menuitem value="Delete" action="#{menuView.delete}"
+										icon="pi pi-times" update="@this" ajax="false" />
+								</p:submenu>
+							</p:submenu>
+
+							<p:menuitem value="Quit" url="http://www.primefaces.org"
+								icon="pi pi-times" />
+
+							<f:facet name="options">
+								<!-- <sec:authorize access="hasRole('ROLE_USER')">
+      						<p:outputLabel value="You have the USER role" />
+    					</sec:authorize>
+    					<sec:authorize access="hasRole('ROLE_ADMIN')">
+    	  					<p:outputLabel value="You have the ADMIN role" />
+    					</sec:authorize> -->
+
+								<sec:authorize access="isAnonymous()">
+									<p:commandButton type="button" value="Sign in"
+										icon="pi pi-user" />
+								</sec:authorize>
+								<sec:authorize access="isAuthenticated()">
+									<p:commandButton type="button" value="Logout"
+										icon="ui-icon-home" action="/logout" oncomplete="/logout" />
+								</sec:authorize>
+
+
+							</f:facet>
+						</p:menubar>
+					</h:form>
+
+					<!-- <p:toolbar>
+						<f:facet name="left">
+							<p:button href="/" value="List of Products" />
+							<p:button href="/product" value="New Product" />
+						</f:facet>
+					</p:toolbar> -->
+				</div>
+			</div>
+			<!-- <div class="ui-g-12"> -->
+			<div class="p-grid p-justify-center">
+				<div class="p-col-10">
+					<ui:insert name="content" />
+				</div>
+			</div>
+		</div>
+	</h:body>
+</f:view>
+</html>

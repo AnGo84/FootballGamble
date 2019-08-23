@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+<ui:composition template="template.xhtml">
+	<ui:define name="content">
+		<h:form id="form_user">
+			<p:growl id="growl_message" showDetail="true" sticky="true" /> 
+			
+			<p:outputPanel id="outp_userDetail" layout="block">
+				<!-- style="text-align:center;" -->
+				<p:outputLabel value="User's data for #{userController.eventType}" />
+
+				<!-- <p:messages id="messages" showDetail="true">
+					<p:autoUpdate/>
+				</p:messages> -->
+
+				<p:panelGrid class="ui-noborder">
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Id:" />
+						</p:column>
+						<p:column>
+							<p:inputText id="it_user_id" readonly="true"
+								value="#{userController.selectedUser.id}" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Login:" />
+						</p:column>
+
+						<p:column>
+							<p:inputText id="it_user_login" required="true"
+								readonly="#{userController.eventType == 'VIEW'}"
+								value="#{userController.selectedUser.login}">
+								<!-- <f:validator validatorId="uniqueUserLoginValidator" /> -->
+								<f:validator binding="#{uniqueUserLoginValidator}" />
+								<!-- <f:attribute name="currentLogin"
+									value="#{userController.selectedUser.login}" /> -->
+								<f:attribute name="currentUser"
+									value="#{userController.selectedUser}" />
+
+							</p:inputText>
+						</p:column>
+						<p:column>
+							<p:message for="it_user_login" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Full name:" />
+						</p:column>
+						<p:column>
+							<p:inputText id="it_user_full_name"
+								readonly="#{userController.eventType == 'VIEW'}" required="true"
+								requiredMessage="Value is required."
+								value="#{userController.selectedUser.fullName}" />
+						</p:column>
+						<p:column>
+							<p:message for="it_user_full_name" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Email:" />
+						</p:column>
+						<p:column>
+							<p:inputText id="it_user_email" required="true"
+								requiredMessage="Please enter correct email address."
+								validatorMessage="Invalid email format"
+								value="#{userController.selectedUser.email}"
+								readonly="#{userController.eventType == 'VIEW'}">
+								<!-- label="email" size="40" -->
+								<f:validateRegex
+									pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+								<!-- <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" /> -->
+							</p:inputText>
+							<p:column>
+								<p:message for="it_user_email" />
+							</p:column>
+
+							<!-- <p:inputText id="it_user_email" required="true"
+								rendered="#{userController.eventType == 'VIEW'}"
+								value="#{userController.selectedUser.email}" /> -->
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Phone:" />
+						</p:column>
+						<p:column>
+							<p:inputText id="it_user_phone"
+								readonly="#{userController.eventType == 'VIEW'}"
+								value="#{userController.selectedUser.phone}">
+								<!-- 
+								requiredMessage="Please enter correct phone number."
+								<f:validateRegex
+									pattern="^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$"></f:validateRegex> -->
+							</p:inputText>
+						</p:column>
+						<!-- <p:column>
+							<p:message for="it_user_phone" />
+						</p:column> -->
+					</p:row>
+
+					<sec:authorize access="hasRole('ROLE_ADMIN')">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Active:" />
+							</p:column>
+							<!-- <p:column colspan="2"> -->
+							<p:column>
+								<p:selectBooleanCheckbox id="sbcb_user_active"
+									value="#{userController.selectedUser.active}" />
+							</p:column>
+						</p:row>
+					</sec:authorize>
+
+					<p:row>
+						<p:column>
+							<p:outputLabel value="Roles:" />
+						</p:column>
+						<p:column>
+							<p:selectCheckboxMenu id="scbm_user_roles"
+								value="#{userController.selectedUser.roles}" label="User roles"
+								multiple="true" filter="true" filterMatchMode="contains"
+								required="true" requiredMessage="Value is required."
+								disabled="#{userController.eventType == 'VIEW'}">
+								<!-- panelStyle="width:250px" -->
+								<f:selectItems value="#{userController.userRoles}"
+									var="userRole" itemLabel="#{userRole.name}"
+									itemValue="#{userRole}" />
+							</p:selectCheckboxMenu>
+						</p:column>
+						<p:column>
+							<p:message for="scbm_user_roles" />
+						</p:column>
+					</p:row>
+
+				</p:panelGrid>
+
+				<!-- <p:outputPanel id="outp_show_pass_panel"> -->
+				<h:panelGroup rendered="#{!(userController.eventType == 'VIEW')}"
+					layout="block">
+					<p:panelGrid id="pgr_user_show_change_pass" class="ui-noborder">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="Change Password" />
+							</p:column>
+							<p:column>
+								<p:selectBooleanCheckbox id="sbcb_user_show_pass_panel"
+									label="Change Password" value="#{userController.showPassPanel}">
+									<p:ajax event="change" process="@this"
+										update="@this pg_user_change_pass" />
+									<!-- listener="#{selectBooleanView.addMessage}" -->
+								</p:selectBooleanCheckbox>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+					<h:panelGroup id="pg_user_change_pass" layout="block">
+						<p:panelGrid id="pgr_user_change_pass"
+							rendered="#{userController.showPassPanel}">
+							<!--form_user:pgr_user_change_pass class="ui-noborder" rendered="#{userController.showPassPanel}"-->
+							<f:facet name="header">
+								<p:column colspan="2">Change password:</p:column>
+							</f:facet>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Password:" />
+								</p:column>
+								<p:column>
+									<p:password id="pwd1" value="#{userController.pass}"
+										match="pwd2" label="Password 1" required="true"
+										requiredMessage="Value is required." />
+								</p:column>
+
+								<p:column>
+									<p:message for="pwd1" />
+								</p:column>
+								<!-- <p:column rowspan="2">
+									style="font-weight: bold;"
+									<p:message for="pwd1" />
+									<p:message for="pwd2" />
+								</p:column> -->
+
+
+							</p:row>
+
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Repeat:" />
+								</p:column>
+								<p:column>
+									<p:password id="pwd2" value="#{userController.passRepeat}"
+										label="Password 2" required="true"
+										requiredMessage="Value is required."
+										validatorMessage="password 1 should match password 2" />
+								</p:column>
+								<p:column>
+									<p:message for="pwd2" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</h:panelGroup>
+				</h:panelGroup>
+				<!-- <p:panelGrid columns="2"
+					rendered="#{not empty userController.selectedUser}"
+					columnClasses="label,value">
+
+					<p:outputLabel value="Id:" />
+					<p:outputLabel value="#{userController.selectedUser.id}" />
+
+					<p:outputLabel value="Login:" />
+					<p:outputLabel value="#{userController.selectedUser.login}" />
+
+					<p:outputLabel value="Full Name:" />
+					<p:outputLabel value="#{userController.selectedUser.fullName}" />
+
+					<p:outputLabel value="Email:" />
+					<p:outputLabel value="#{userController.selectedUser.email}" />
+
+					<p:outputLabel value="Phone:" />
+					<p:outputLabel value="#{userController.selectedUser.phone}" />
+
+					<p:outputLabel value="Active" />
+					<p:selectBooleanCheckbox
+						value="#{userController.selectedUser.active}" disabled="true" />
+
+					<p:outputLabel value="Roles:" />
+					<p:outputLabel value="#{userController.selectedUser.rolesForView}" />
+				</p:panelGrid> -->
+			</p:outputPanel>
+			<hr />
+			<h:panelGroup id="pg_user_edit_buttons" layout="block">
+				<!-- <p:panelGrid columns="2" layout="grid" styleClass="text-center"> -->
+				<p:panelGrid styleClass="text-center">
+					<p:row>
+						<p:column>
+							<p:commandButton value="Cancel" style="width:100px;"
+								icon="fa fa-fw fa-close"
+								action="#{userController.onUserEditCancel}" process="@this"
+								immediate="true" />
+
+							<!-- ajax="false" value="#{msg['LABEL.Cancel']}" -->
+						</p:column>
+						<p:column>
+							<p:commandButton id="cb_submit_user_edit"
+								widgetVar="cb_submit_user_edit" value="Ok" style="width:100px;"
+								icon="fa fa-fw fa-check"
+								action="#{userController.onUserEditSubmit}"
+								process="@this outp_userDetail" update="outp_userDetail growl_message" />
+							<!-- :form_user:outp_userDetail -->
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</h:panelGroup>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

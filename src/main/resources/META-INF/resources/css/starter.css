@@ -1,0 +1,29 @@
+/* body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+} */
+
+.ui-widget {
+ /*  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; */
+ font-size: 1em !important;
+}
+
+#starterDiv {
+	padding-top: 0%;
+}
+
+#formdiv_center {
+	margin: 0 auto;
+}
+
+.CodeMirror {
+	text-align: left;
+	height: auto !important;
+}
+
+.text_color_red {
+	color: #F44336;
+}
+.ui-layout-unit {
+	border: 0 !important;
+}

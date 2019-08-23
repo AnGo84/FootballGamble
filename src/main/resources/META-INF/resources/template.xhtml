@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+<h:head>
+	<title>.:: Football Gambling ::.</title>
+	<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+	<link href="#{resource['images/iconfinder_Football_Field_16_10.ico']}"
+		rel="shortcut icon" />
+
+
+	<link rel="stylesheet" href="#{resource['css/bootstrap.min.css']}" />
+	<script src="#{resource['js/bootstrap.min.js']}"></script>
+
+	<h:outputStylesheet library="css" name="starter.css" />
+	<!-- <h:outputScript library="js" name="starter.js" /> -->
+</h:head>
+
+<h:body>
+	<!-- <pe:layout fullPage="true"> -->
+	<!-- 	<p:layout fullPage="true">
+
+		<p:layoutUnit position="west" size="500">
+			<h:outputText value="Left content" />
+		</p:layoutUnit>
+		<p:layoutUnit position="east" size="500">
+			<h:outputText value="Right Content" />
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center"> -->
+
+	<!-- <br class="container-fluid bg-1"> -->
+	<div class="container bg-0">
+
+		<!-- Wait dialog -->
+		<p:ajaxStatus onstart="PF('statusDialog').show();"
+			onsuccess="PF('statusDialog').hide();" />
+		<p:dialog widgetVar="statusDialog" position="center center"
+			draggable="false" resizable="false" closable="false"
+			showHeader="false" modal="false">
+			<!-- position="right top" -->
+			<center>
+				<p:graphicImage value="#{resource['images/ajaxloading.gif']}" />
+			</center>
+		</p:dialog>
+		<!-- !Wait dialog -->
+		<!-- Exception dialog -->
+		<p:ajaxExceptionHandler
+			type="javax.faces.application.ViewExpiredException"
+			update="exceptionDialog" onexception="PF('exceptionDialog').show();" />
+		<p:ajaxExceptionHandler type="java.lang.NullPointerException"
+			update="exceptionDialog" onexception="PF('exceptionDialog').show();" />
+		<p:ajaxExceptionHandler type="java.lang.Exception"
+			update="exceptionDialog" onexception="PF('exceptionDialog').show();" />
+
+		<p:dialog id="exceptionDialog"
+			header="Exception '#{pfExceptionHandler.type}' occured!"
+			widgetVar="exceptionDialog" height="500px">
+        Message: #{pfExceptionHandler.message} <br />
+        StackTrace: <h:outputText
+				value="#{pfExceptionHandler.formattedStackTrace}" escape="false" />
+			<br />
+
+			<p:button onclick="document.location.href = document.location.href;"
+				value="Reload!"
+				rendered="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}" />
+		</p:dialog>
+		<!-- !Exception dialog -->
+
+
+		<p:confirmDialog id="d_confirmation_dialog" global="true"
+			appendTo="@(body)" widgetVar="d_confirmation_dialog"
+			showEffect="fade" hideEffect="fade">
+			<!-- appendTo="@(body)" -->
+			<p:panelGrid columns="2" styleClass="text-center" layout="grid">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				<!-- <p:commandButton title="#{msg['LABEL.Yes']}"
+							value="#{msg['LABEL.Yes']}" styleClass="ui-confirmdialog-yes"
+							icon="ui-icon-check" />
+						<p:commandButton title="#{msg['LABEL.No']}"
+							value="#{msg['LABEL.No']}" styleClass="ui-confirmdialog-no"
+							icon="ui-icon-close" /> -->
+			</p:panelGrid>
+		</p:confirmDialog>
+
+
+		<!-- <pe:layoutPane position="center"> -->
+		<h:form id="contentForm" prependId="false"
+			enctype="multipart/form-data">
+			<!-- enctype="multipart/form-data" -->
+
+			<div id="starterDiv" class="ui-fluid">
+				<center>
+					<p:menubar>
+						<p:menuitem value="Home" url="index.xhtml"
+							style="margin-right:10px" icon="fa fa-fw fa-home" />
+
+						<p:submenu label="Competitions" icon="fa fa-fw fa-trophy">
+							<p:menuitem value="Competitions list" url="competitions.xhtml"
+								icon="fa fa-fw fa-trophy" />
+							<!-- <p:menuitem value="Redo" url="#" icon="pi pi-angle-double-right" /> -->
+						</p:submenu>
+
+						<!-- if Admin -->
+						<sec:authorize access="hasRole('ROLE_ADMIN')">
+							<p:submenu label="Users" icon="fa fa-fw fa-users">
+								<p:menuitem value="Users list" url="users.xhtml"
+									icon="fa fa-fw fa-users" />
+								<!-- <p:menuitem value="Redo" url="#" icon="pi pi-angle-double-right" /> -->
+							</p:submenu>
+						</sec:authorize>
+
+						<p:menuitem value="Original data"
+							url="https://www.football-data.org" target="_blank"
+							icon="fa fa-fw fa-soccer-ball-o" />
+
+						<f:facet name="options">
+							<!-- <sec:authorize access="hasRole('ROLE_USER')">
+      								<p:outputLabel value="You have the USER role" />
+    								</sec:authorize>
+    								<sec:authorize access="hasRole('ROLE_ADMIN')">
+    	  							<p:outputLabel value="You have the ADMIN role" />
+    								</sec:authorize> -->
+
+							<sec:authorize access="isAnonymous()">
+								<!-- <h:outputLink value="/login"
+    									styleClass="ui-button ui-widget ui-state-default">
+									</h:outputLink> -->
+
+								<!-- <p:button href="/login" value="Sign in" icon="ui-icon-person" /> -->
+								<p:button href="/logout" value="Sign in" icon="ui-icon-person" />
+								<!--href="login.xhtml" outcome="login.xhtml"  <p:commandLink action="login.xhtml" value="Sign in"
+										icon="ui-icon-person" /> -->
+
+								<!-- <p:commandButton type="button" value="Sign in"
+										action="login.xhtml" icon="ui-icon-person" ajax="false" /> -->
+
+							</sec:authorize>
+							<sec:authorize access="isAuthenticated()">
+								<p:menuButton value="User" icon="ui-icon-person">
+									<!-- <p:submenu label="User" icon="ui-icon-person"> -->
+									<p:menuitem value="User Data"
+										action="#{usersController.onViewLoginedUserData}"
+										icon="ui-icon-person" />
+									<!-- url="/test_product_form.xhtml" -->
+									<p:separator />
+									<p:menuitem value="Logout" url="/logout"
+										icon="fa fa-fw fa-unlock" />
+									<!-- </p:submenu> -->
+								</p:menuButton>
+
+
+								<!-- <p:menuitem value="User" action="#{menuView.delete}"
+										icon="ui-icon-person" />
+									<p:commandButton type="button" value="Logout"
+										icon="ui-icon-home" action="logout.jsf" oncomplete="/logout" ajax="false" /> -->
+							</sec:authorize>
+
+						</f:facet>
+
+					</p:menubar>
+
+					<p:spacer height="10" />
+
+					<!-- <ui:insert name="content" /> -->
+				</center>
+			</div>
+
+		</h:form>
+
+		<div class="p-grid p-justify-center">
+
+			<ui:insert name="content" />
+
+		</div>
+
+		<!-- </pe:layoutPane> -->
+		<!-- </p:layoutUnit> -->
+		<!-- </pe:layout> -->
+		<!-- </p:layout> -->
+	</div>
+</h:body>
+</html>

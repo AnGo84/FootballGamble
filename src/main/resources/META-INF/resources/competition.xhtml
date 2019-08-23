@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+<ui:composition template="template.xhtml">
+	<ui:define name="content">
+		<h:form id="form_competition">
+			<p:growl id="growl_message" showDetail="true" sticky="true" />
+
+			<p:outputPanel id="outp_competitionDetail" layout="block">
+
+				<!-- <p:outputLabel value="User's data for #{userController.eventType}" /> -->
+
+				<p:panelGrid columns="4">
+					<!-- class="ui-noborder" -->
+					<f:facet name="header">
+						<p:graphicImage
+							url="#{competitionController.selectedCompetition.emblemUrl}"
+							alt="Emblem for #{competitionController.selectedCompetition.name}"
+							title="#{competitionController.selectedCompetition.name}"
+							rendered="#{not empty competitionController.selectedCompetition.emblemUrl}" />
+					</f:facet>
+
+					<p:outputLabel style="font-weight: bold;" value="Id:" />
+					<p:outputLabel
+						value="#{competitionController.selectedCompetition.id}" />
+					<p:outputLabel style="font-weight: bold;" value="Name:" />
+					<p:outputLabel
+						value="#{competitionController.selectedCompetition.name}" />
+
+					<p:outputLabel style="font-weight: bold;" value="Code:" />
+					<p:outputLabel
+						value="#{competitionController.selectedCompetition.code}" />
+					<p:outputLabel style="font-weight: bold;" value="Current season:" />
+					<p:outputLabel
+						value="#{competitionController.selectedCompetition.currentSeason.seasonName}" />
+
+					<p:outputLabel style="font-weight: bold;" value="Area:" />
+					<p:outputLabel
+						value="#{competitionController.selectedCompetition.area.name}" />
+					<p:outputLabel style="font-weight: bold;" value="Last update:" />
+					<p:outputLabel
+						value="#{competitionController.selectedCompetition.lastUpdated}" />
+
+					<p:commandButton id="cb_object_update_from_API"
+						icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
+						action="#{competitionController.onUpdateCompetitionFromAPI}"
+						title="Update data from API" process="@this"
+						update="@this outp_competitionDetail p_selected_season dt_matches_list">
+					</p:commandButton>
+
+				</p:panelGrid>
+
+			</p:outputPanel>
+			<hr />
+
+			<p:panel id="p_selected_season">
+				<h:panelGroup styleClass="row" layout="block">
+					<h:panelGroup styleClass="col-xs-9 text-left" layout="block">
+						<p:panelGrid class="ui-noborder" columns="3">
+							<!-- styleClass="text-center" -->						
+							<p:outputLabel for="s_menu_seasons" value="Season: " />
+							<p:selectOneMenu id="s_menu_seasons"
+								style="width: 200px !important" editable="false"
+								value="#{competitionController.selectedSeason}">
+								<!-- #{msg['LABEL.Not_Choosed']}  filter="true"
+								filterMatchMode="contains" -->
+								<f:selectItem itemLabel="Not choosed" noSelectionOption="true" />
+								<f:selectItems
+									value="#{competitionController.selectedCompetition.seasons}"
+									var="season" itemLabel="#{season.seasonName}"
+									itemValue="#{season}" />
+								<!-- <p:ajax process="@this" update="@this" /> -->
+
+								<p:ajax event="change" listener="#{competitionController.onChangeSeason}"
+									process="@this" update="@this dt_matches_list" />
+								<!-- event="change" -->
+							</p:selectOneMenu>
+
+							<p:message for="s_menu_seasons" />
+
+						</p:panelGrid>
+					</h:panelGroup>
+
+					<h:panelGroup styleClass="col-xs-3 text-right" layout="block">
+						<!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
+							<p:commandButton id="cb_object_update_from_API"
+								icon="fa fa-fw fa-refresh" value="Update"
+								action="#{competitionsController.onUpdateFromAPI}"
+								title="Update data from API" process="@this"
+								update="@this dt_competitions_list">
+							</p:commandButton>
+							-->
+					</h:panelGroup>
+				</h:panelGroup>
+			</p:panel>
+
+			<p:dataTable id="dt_matches_list" widgetVar="dt_matches_list"
+				var="match" value="#{competitionController.matches}" reflow="true"
+				emptyMessage="No matches found" selectionMode="single"
+				selection="#{competitionController.selectedMatch}"
+				rowKey="#{match.id}" sortBy="#{match.stage}"
+				expandableRowGroups="true" scrollable="true" scrollHeight="400">
+				<!-- style="box-sizing: content-box " sortMode="multiple" -->
+				<!-- scrollable="true" scrollHeight="400px;" scrollWidth="100%" -->
+
+				<!--  rows="10" paginator="true"
+					paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15"  -->
+
+				<!-- <f:facet name="header"> Season's manches </f:facet> -->
+
+				<f:facet name="header">
+					<!-- <p:outputPanel> Season's manches </p:outputPanel> -->
+					<p:outputPanel>
+						<p:outputLabel value="Search all fields:" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('dt_matches_list').filter()" style="width:150px"
+							placeholder="Enter keyword" />
+					</p:outputPanel>
+				</f:facet>
+
+				<p:headerRow>
+					<!-- <p:outputLabel value="#{match.stage}" /> -->
+					<!-- <p:column colspan="1">
+					</p:column> -->
+					<p:column colspan="10">
+						<p:outputLabel value="#{match.stage}" />
+					</p:column>
+				</p:headerRow>
+
+				<p:column width="100" style="text-align: center;"
+					filterBy="#{match.utcDate}" filterMatchMode="contains">
+					<!-- sortBy="#{match.utcDate}" -->
+					<f:facet name="header">Date</f:facet>
+					<h:outputText value="#{match.displayUtcDate}" />
+					<!-- <p:calendar id="cal_match_utcDate" value="#{match.utcDateDate}" pattern="dd/MM/yyyy HH:mm:ss" /> -->
+					<!-- <p:calendar id="cal_match_utcDate" value="#{match.utcDateAsDate}"
+							pattern="dd.MM.yyyy HH:mm" readonly="true" disabled="true"/> -->
+				</p:column>
+				<!-- Home team -->
+				<p:column width="50" headerText="#" style="text-align: center;">
+					<!-- <f:facet name="header">#</f:facet> -->
+					<!-- Home team Crest -->
+					<p:graphicImage url="#{match.homeTeam.crestUrl}" height="30"
+						width="30" alt="Emblem for #{match.homeTeam.name}"
+						title="#{match.homeTeam.crestUrl}"
+						rendered="#{not empty match.homeTeam.crestUrl}" />
+				</p:column>
+
+				<p:column headerText="Home team" filterBy="#{match.homeTeam.name}"
+					filterMatchMode="contains">
+					<!-- sortBy="#{match.homeTeam.name}" -->
+					<!-- <f:facet name="header">Home Team</f:facet> -->
+					<h:outputText value="#{match.homeTeam.name}" />
+				</p:column>
+
+				<!-- <p:column width="120" headerText="Total"
+						style="text-align: center;">
+						<f:facet name="header">Total</f:facet>
+						<h:outputText value="#{match.scoreTotalHomeTeam}" />
+					</p:column> -->
+
+				<p:column width="50" headerText=" # " style="text-align: center;">
+					<!-- <f:facet name="header"> # </f:facet> -->
+					<h:outputText value="#{match.scoreFullTimeHomeTeam}" />
+				</p:column>
+				<!--  -->
+				<p:column width="120" headerText="Winner"
+					style="text-align: center;">
+					<!-- <f:facet name="header">Winner</f:facet> -->
+					<h:outputText value="#{match.winner}" />
+				</p:column>
+				<!-- Away team -->
+				<p:column width="50" headerText=" # " style="text-align: center;">
+					<!-- <f:facet name="header"> # </f:facet> -->
+					<h:outputText value="#{match.scoreFullTimeAwayTeam}" />
+				</p:column>
+				<!-- <p:column width="120" headerText="Total"
+						style="text-align: center;">
+						<f:facet name="header">Total</f:facet>
+						<h:outputText value="#{match.scoreTotalAwayTeam}" />
+					</p:column>
+ -->
+				<p:column width="50" headerText="#" style="text-align: center;">
+					<!-- <f:facet name="header">#</f:facet> -->
+					<!-- Away team Crest -->
+					<p:graphicImage url="#{match.awayTeam.crestUrl}" height="30"
+						width="30" alt="Emblem for #{match.awayTeam.name}"
+						title="#{match.awayTeam.crestUrl}"
+						rendered="#{not empty match.awayTeam.crestUrl}" />
+				</p:column>
+
+				<p:column headerText="Away team" filterBy="#{match.awayTeam.name}"
+					filterMatchMode="contains">
+					<!-- sortBy="#{match.awayTeam.name}" -->
+					<!-- <f:facet name="header">Away Team</f:facet> -->
+					<h:outputText value="#{match.awayTeam.name}" />
+				</p:column>
+				<!--  -->
+				<p:column width="120" headerText="Status" filterBy="#{match.status}"
+					filterMatchMode="contains">
+					<!-- sortBy="#{match.status}" -->
+					<!-- <f:facet name="header">Status</f:facet> -->
+					<h:outputText value="#{match.status}" />
+				</p:column>
+
+				<!-- <p:column width="210" headerText="Stage"
+						style="text-align: center;">
+						<f:facet name="header">Stage</f:facet>
+						<h:outputText value="#{match.stage}" />
+					</p:column>
+					<p:column width="200" headerText="Group"
+						style="text-align: center;">
+						<f:facet name="header">Group</f:facet>
+						<h:outputText value="#{match.group}" />
+					</p:column>
+					<p:column width="100" headerText="Duration"
+						style="text-align: center;">
+						<f:facet name="header">Duration</f:facet>
+						<h:outputText value="#{match.duration}" />
+					</p:column>
+
+					<p:column headerText="Id" width="100" style="text-align: center;"
+						filterBy="#{match.id}" filterMatchMode="contains"
+						sortBy="#{match.id}">
+						<f:facet name="header">ID</f:facet>
+						<h:outputText value="#{match.id}" />
+					</p:column> -->
+
+				<p:column width="60" style="text-align: center;">
+					<!-- value="View" -->
+					<p:commandButton id="cb_match_view" title="View"
+						icon="fa fa-fw fa-search" process="dt_matches_list"
+						update="@this :form_competition:matchInfoDialog"
+						oncomplete="PF('matchInfoDialog').show()">
+						<f:setPropertyActionListener value="#{match}"
+							target="#{competitionController.selectedMatch}" />
+					</p:commandButton>
+				</p:column>
+
+				<!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
+						<p:column>
+							<p:commandButton id="cb_competition_view" value="View"
+								title="View" icon="fa fa-fw fa-search"
+								action="#{competitionsController.onView(competition)}"
+								process="dt_competitions_list" update="@this">
+							</p:commandButton>
+
+							<p:commandButton id="cb_object_update_from_API"
+								icon="fa fa-fw fa-refresh" value="Update"
+								action="#{competitionsController.onUpdateFromAPI(competition)}"
+								title="Update data from API" process="@this"
+								update="@this dt_competitions_list">
+							</p:commandButton>
+
+						</p:column>
+					</sec:authorize> -->
+
+				<!-- <f:facet name="footer">
+						<p:commandButton process="dt_users_list"
+							update=":form_users_list:userInfoDialog"
+							icon="fa fa-fw fa-search" value="View"
+							oncomplete="PF('userInfoDialog').show()" />
+					</f:facet> -->
+
+			</p:dataTable>
+
+			<hr />
+			<h:panelGroup id="pg_competiton_buttons" layout="block">
+				<!-- <p:panelGrid class="ui-noborder" columns="2" layout="grid" styleClass="text-center"> -->
+
+				<p:panelGrid styleClass="ui-noborder text-center">
+					<p:row>
+						<p:column>
+							<p:commandButton value="Back" style="width:100px;"
+								icon="fa fa-fw fa-arrow-left"
+								action="#{competitionController.onBackToCompetitions}"
+								process="@this" immediate="true" />
+						</p:column>
+						<p:column>
+							<!-- <p:commandButton id="cb_submit_user_edit"
+								widgetVar="cb_submit_user_edit" value="Ok" style="width:100px;"
+								icon="fa fa-fw fa-check"
+								action="#{userController.onUserEditSubmit}"
+								process="@this outp_userDetail" update="outp_userDetail growl_message" /> -->
+							<!-- :form_user:outp_userDetail -->
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</h:panelGroup>
+
+			<!-- Dialog for Selected Match-->
+			<p:dialog id="matchInfoDialog" widgetVar="matchInfoDialog"
+				dynamic="true" closable="true" resizable="false"
+				position="center center" fitViewport="true" header="Match Info">
+				<!-- style="z-index: 1007;" modal="true"  -->
+				<!-- <p:ajax event="open"
+			update="pg_contragent_viewPanel pg_contragent_dialog_buttons" /> -->
+				<!--position="center top"(h v) heigth="90vh" width="90vw" header="#{msg['LABEL.Contragent']}"  -->
+
+				<p:outputPanel id="matchDetail" style="text-align:center;">
+					<!-- <p:panelGrid columns="2"
+						rendered="#{not empty competitionController.selectedMatch}"
+						columnClasses="label,value"> -->
+					<p:panelGrid
+						rendered="#{not empty competitionController.selectedMatch}">
+						<!-- <f:facet name="header">
+						<p:graphicImage
+							name="demo/images/car/#{dtSelectionView.selectedCar.brand}-big.gif" />
+					</f:facet> -->
+
+						<p:row>
+							<p:column>
+								<p:outputLabel style="font-weight: bold;" value="Id:" />
+
+							</p:column>
+							<p:column>
+								<p:outputLabel value="#{competitionController.selectedMatch.id}" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel style="font-weight: bold;" value="Season:" />
+
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.season.seasonName}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel style="font-weight: bold;" value="Date:" />
+
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.displayUtcDate}" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel style="font-weight: bold;" value="Status:" />
+
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.status}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel style="font-weight: bold;" value="Stage:" />
+
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.stage}" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel style="font-weight: bold;" value="Group:" />
+
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.group}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column colspan="2"></p:column>
+							<p:column colspan="1">Full time</p:column>
+							<p:column colspan="1">Total</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:graphicImage
+									url="#{competitionController.selectedMatch.homeTeam.crestUrl}"
+									height="30" width="30"
+									alt="Emblem for #{competitionController.selectedMatch.homeTeam.name}"
+									title="#{competitionController.selectedMatch.homeTeam.crestUrl}"
+									rendered="#{not empty competitionController.selectedMatch.homeTeam.crestUrl}" />
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.homeTeam.name}" />
+							</p:column>
+
+							<p:column style="text-align: center;">
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.scoreFullTimeHomeTeam}" />
+							</p:column>
+							<p:column style="text-align: center;">
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.scoreTotalHomeTeam}" />
+							</p:column>
+
+							<!-- <p:column rowspan="2" style="font-weight: bold;">Seattle</p:column>
+							<p:column rowspan="2" style="font-weight: bold;">4</p:column> -->
+
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:graphicImage
+									url="#{competitionController.selectedMatch.awayTeam.crestUrl}"
+									height="30" width="30"
+									alt="Emblem for #{competitionController.selectedMatch.awayTeam.name}"
+									title="#{competitionController.selectedMatch.awayTeam.crestUrl}"
+									rendered="#{not empty competitionController.selectedMatch.awayTeam.crestUrl}" />
+							</p:column>
+							<p:column>
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.awayTeam.name}" />
+							</p:column>
+
+							<p:column style="text-align: center;">
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.scoreFullTimeAwayTeam}" />
+							</p:column>
+							<p:column style="text-align: center;">
+								<p:outputLabel
+									value="#{competitionController.selectedMatch.scoreTotalAwayTeam}" />
+							</p:column>
+						</p:row>
+
+
+						<!-- <p:outputLabel style="font-weight: bold;" value="Id:" />
+						<p:outputLabel value="#{competitionController.selectedMatch.id}" />
+
+						<p:outputLabel value="Login:" />
+						<p:outputLabel value="#{usersController.selectedUser.login}" />
+
+						<p:outputLabel value="Full Name:" />
+						<p:outputLabel value="#{usersController.selectedUser.fullName}" />
+
+						<p:outputLabel value="Email:" />
+						<p:outputLabel value="#{usersController.selectedUser.email}" />
+
+						<p:outputLabel value="Phone:" />
+						<p:outputLabel value="#{usersController.selectedUser.phone}" />
+
+						<p:outputLabel value="Active" />
+						<p:selectBooleanCheckbox
+							value="#{usersController.selectedUser.active}" disabled="true" />
+
+						<p:outputLabel value="Roles:" />
+						<p:outputLabel
+							value="#{usersController.selectedUser.rolesForView}" /> -->
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+			<!--  -->
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
