@@ -18,15 +18,15 @@ import ua.com.footballgamble.exception.AuthorisationException;
 import ua.com.footballgamble.exception.DataConflictException;
 import ua.com.footballgamble.exception.NotFoundException;
 import ua.com.footballgamble.exception.RestAPIServerException;
-import ua.com.footballgamble.model.entity.SeasonEntity;
+import ua.com.footballgamble.model.entity.TeamEntity;
 
-@Service("seasonsService")
+@Service("competitionsService")
 //@PropertySource(ignoreResourceNotFound = true, value = "classpath:footballgamble.properties")
-public class SeasonServiceImpl implements CommonService<SeasonEntity> {
+public class TeamServiceImpl implements CommonService<TeamEntity> {
 
-	private static final String ENTITY_PATH = "/seasons";
+	private static final String ENTITY_PATH = "/teams";
 
-	public static final Logger logger = LoggerFactory.getLogger(SeasonServiceImpl.class);
+	public static final Logger logger = LoggerFactory.getLogger(TeamServiceImpl.class);
 	@Value("${football.api.path}")
 	private String apiPath;
 
@@ -34,36 +34,36 @@ public class SeasonServiceImpl implements CommonService<SeasonEntity> {
 	private HttpHeadersImpl httpHeaders;
 
 	@Override
-	public List<SeasonEntity> findAll()
+	public List<TeamEntity> findAll()
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
-		logger.info("Get All Seasons List");
-		List<SeasonEntity> seasonsList = new ArrayList<>();
+		logger.info("Get All Teams List");
+		List<TeamEntity> teamsList = new ArrayList<>();
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
 		// Example: https://www.baeldung.com/spring-rest-template-list
-		ResponseEntity<List<SeasonEntity>> response = restTemplate.exchange(apiPath + ENTITY_PATH, HttpMethod.GET,
-				httpHeaders.getHttpAuthEntity(), new ParameterizedTypeReference<List<SeasonEntity>>() {
+		ResponseEntity<List<TeamEntity>> response = restTemplate.exchange(apiPath + ENTITY_PATH, HttpMethod.GET,
+				httpHeaders.getHttpAuthEntity(), new ParameterizedTypeReference<List<TeamEntity>>() {
 				});
-		seasonsList = response.getBody();
-		return seasonsList;
+		teamsList = response.getBody();
+		return teamsList;
 	}
 
 	@Override
-	public SeasonEntity findById(long id)
+	public TeamEntity findById(long id)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
-		logger.info("Get Season by id: " + id);
+		logger.info("Get Team by id: " + id);
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
-		ResponseEntity<SeasonEntity> response = restTemplate.exchange(apiPath + ENTITY_PATH + "/" + id, HttpMethod.GET,
-				httpHeaders.getHttpAuthEntity(), SeasonEntity.class);
-		SeasonEntity season = response.getBody();
-		logger.info("Getted SeasonEntity from API: " + season);
-		return season;
+		ResponseEntity<TeamEntity> response = restTemplate.exchange(apiPath + ENTITY_PATH + "/" + id, HttpMethod.GET,
+				httpHeaders.getHttpAuthEntity(), TeamEntity.class);
+		TeamEntity competition = response.getBody();
+		logger.info("Getted TeamEntity from API: " + competition);
+		return competition;
 	}
 
 	@Override
-	public SeasonEntity findByName(String name) {
+	public TeamEntity findByName(String name) {
 		/*
 		 * logger.info("Get User by LOGIN: " + login); User user = null; RestTemplate
 		 * restTemplate = new RestTemplate(); restTemplate.setErrorHandler(new
@@ -81,7 +81,7 @@ public class SeasonServiceImpl implements CommonService<SeasonEntity> {
 	}
 
 	@Override
-	public void save(SeasonEntity object)
+	public void save(TeamEntity object)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 		/*
 		 * logger.info("Create User : " + user);
@@ -98,7 +98,7 @@ public class SeasonServiceImpl implements CommonService<SeasonEntity> {
 	}
 
 	@Override
-	public void update(SeasonEntity object)
+	public void update(TeamEntity object)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 		/*
 		 * logger.info("Update User API: " + user); RestTemplate restTemplate = new
@@ -114,17 +114,17 @@ public class SeasonServiceImpl implements CommonService<SeasonEntity> {
 
 	}
 
-	/*
-	 * public void updateFromAPI(SeasonEntity object) throws AuthorisationException,
-	 * NotFoundException, DataConflictException, RestAPIServerException {
-	 * logger.info("Update Competition from API: " + object); RestTemplate
-	 * restTemplate = new RestTemplate(); restTemplate.setErrorHandler(new
-	 * RestTemplateResponseErrorHandler()); ResponseEntity<CompetitionEntity>
-	 * response = restTemplate.exchange( apiPath + ENTITY_PATH + "/updatefromapi/" +
-	 * object.getId(), HttpMethod.GET, httpHeaders.getHttpAuthEntity(),
-	 * CompetitionEntity.class); CompetitionEntity competition = response.getBody();
-	 * logger.info("Updated CompetitionEntity from API: " + competition); }
-	 */
+	public void updateFromAPI(TeamEntity object)
+			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
+		logger.info("Update Team from API: " + object);
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+		ResponseEntity<TeamEntity> response = restTemplate.exchange(
+				apiPath + ENTITY_PATH + "/updatefromapi/" + object.getId(), HttpMethod.GET,
+				httpHeaders.getHttpAuthEntity(), TeamEntity.class);
+		TeamEntity competition = response.getBody();
+		logger.info("Updated CompetitionEntity from API: " + competition);
+	}
 
 	@Override
 	public void deleteById(long id) {
@@ -145,10 +145,17 @@ public class SeasonServiceImpl implements CommonService<SeasonEntity> {
 	}
 
 	@Override
-	public boolean isExist(SeasonEntity season)
+	public boolean isExist(TeamEntity competition)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
-		logger.info("is season Exist: " + season);
-		return (findById(season.getId()) != null);
+		logger.info("is competition Exist: " + competition);
+		return (findByName(competition.getName()) != null) || (findById(competition.getId()) != null);
 	}
+
+	/*
+	 * public boolean isLoginExist(String login) throws AuthorisationException,
+	 * NotFoundException, DataConflictException, RestAPIServerException {
+	 * logger.info("is Login Exist: " + login); return (findByLogin(login) != null);
+	 * }
+	 */
 
 }

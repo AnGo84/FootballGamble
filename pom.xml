@@ -149,9 +149,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Java 8 for Travis-->
-				<!--<configuration>
+				<configuration>
 					<release>8</release>
-				</configuration>-->
+				</configuration>
 				<!--  -->
 			</plugin>
 		</plugins>

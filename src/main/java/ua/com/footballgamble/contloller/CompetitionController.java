@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.FacesException;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -21,22 +22,26 @@ import ua.com.footballgamble.primefaces.FacesContextUtils;
 import ua.com.footballgamble.primefaces.PrimeFacesMessageUtils;
 import ua.com.footballgamble.service.CompetitionServiceImpl;
 import ua.com.footballgamble.service.SeasonServiceImpl;
+import ua.com.footballgamble.utils.SelectItemUtils;
 
 @Named(value = "competitionController")
 @ViewScoped
 public class CompetitionController implements Serializable {
+	public static final Logger logger = LoggerFactory.getLogger(CompetitionController.class);
 	private static final long serialVersionUID = -1;
 
-	public static final Logger logger = LoggerFactory.getLogger(CompetitionController.class);
 	@Autowired
 	private CompetitionServiceImpl competitionService;
 	@Autowired
 	private SeasonServiceImpl seasonService;
 
+	private List<SelectItem> seasons;
+	private String selectedSeasonItem;
+
 	private List<MatchEntity> matches;
 
 	private CompetitionEntity selectedCompetition;
-	private SeasonEntity selectedSeason;
+	// private SeasonEntity selectedSeason;
 	private MatchEntity selectedMatch;
 
 	private EventType eventType;
@@ -54,15 +59,21 @@ public class CompetitionController implements Serializable {
 		logger.info("Get from params Competition: " + selectedCompetition);
 		if (selectedCompetition == null) {
 			selectedCompetition = new CompetitionEntity();
-			selectedSeason = null;
+			// selectedSeason = null;
+			seasons = null;
+			selectedSeasonItem = null;
 			matches = null;
 		} else {
 			// selectedSeason = selectedCompetition.getCurrentSeason();
 			if (selectedCompetition.getSeasons() != null && !selectedCompetition.getSeasons().isEmpty()) {
-				selectedSeason = selectedCompetition.getSeasons().get(0);
-				matches = loadSeasonMatches(selectedSeason);
+				// selectedSeason = selectedCompetition.getSeasons().get(0);
+				seasons = SelectItemUtils.getSelectItemList(selectedCompetition.getSeasons());
+				selectedSeasonItem = seasons.get(0).getValue().toString();
+				matches = loadSeasonMatches(Long.valueOf(selectedSeasonItem));
 			} else {
-				selectedSeason = null;
+				// selectedSeason = null;
+				seasons = null;
+				selectedSeasonItem = null;
 				matches = null;
 			}
 		}
@@ -73,13 +84,17 @@ public class CompetitionController implements Serializable {
 
 	}
 
-	private List<MatchEntity> loadSeasonMatches(SeasonEntity season) {
-		logger.info("Load matches for season: " + season);
+	private List<MatchEntity> loadSeasonMatches(Long seasonId) {
+		logger.info("Load matches for seasonId: " + seasonId);
 		List<MatchEntity> matches = null;
-		if (season != null) {
+		if (seasonId != null) {
 			SeasonEntity loadedSeason;
-			if ((loadedSeason = seasonService.findById(season.getId())) != null) {
-				matches = loadedSeason.getMatches();
+			try {
+				if ((loadedSeason = seasonService.findById(seasonId)) != null) {
+					matches = loadedSeason.getMatches();
+				}
+			} catch (Exception e) {
+				matches = null;
 			}
 		}
 		logger.info("Loaded matches: " + matches);
@@ -131,8 +146,11 @@ public class CompetitionController implements Serializable {
 
 	public void onChangeSeason() {
 		logger.info("onChangeSeason ");
-		logger.info("Selected Season: " + selectedSeason);
-		matches = loadSeasonMatches(selectedSeason);
+		logger.info("Selected Season: " + selectedSeasonItem);
+		matches = loadSeasonMatches(Long.valueOf(selectedSeasonItem));
+
+		PrimeFacesMessageUtils.addGlobalInfoMessage("Selected Season: " + selectedSeasonItem);
+
 		logger.info("Matches: " + matches);
 	}
 
@@ -160,12 +178,27 @@ public class CompetitionController implements Serializable {
 		this.selectedCompetition = selectedCompetition;
 	}
 
-	public SeasonEntity getSelectedSeason() {
-		return selectedSeason;
+	/*
+	 * public SeasonEntity getSelectedSeason() { return selectedSeason; }
+	 * 
+	 * public void setSelectedSeason(SeasonEntity selectedSeason) {
+	 * this.selectedSeason = selectedSeason; }
+	 */
+
+	public List<SelectItem> getSeasons() {
+		return seasons;
 	}
 
-	public void setSelectedSeason(SeasonEntity selectedSeason) {
-		this.selectedSeason = selectedSeason;
+	public void setSeasons(List<SelectItem> seasons) {
+		this.seasons = seasons;
+	}
+
+	public String getSelectedSeasonItem() {
+		return selectedSeasonItem;
+	}
+
+	public void setSelectedSeasonItem(String selectedSeasonItem) {
+		this.selectedSeasonItem = selectedSeasonItem;
 	}
 
 	public List<MatchEntity> getMatches() {

@@ -1,5 +1,8 @@
 package ua.com.footballgamble.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +16,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import ua.com.footballgamble.contloller.RestTemplateResponseErrorHandler;
 import ua.com.footballgamble.model.user.User;
 import ua.com.footballgamble.model.user.UserRole;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 //@PropertySource(ignoreResourceNotFound = true, value = "classpath:footballgamble.properties")
