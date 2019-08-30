@@ -1,7 +1,9 @@
 package ua.com.footballgamble.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,7 @@ import ua.com.footballgamble.exception.NotFoundException;
 import ua.com.footballgamble.exception.RestAPIServerException;
 import ua.com.footballgamble.model.entity.TeamEntity;
 
-@Service("competitionsService")
+@Service("teamsService")
 //@PropertySource(ignoreResourceNotFound = true, value = "classpath:footballgamble.properties")
 public class TeamServiceImpl implements CommonService<TeamEntity> {
 
@@ -46,6 +48,9 @@ public class TeamServiceImpl implements CommonService<TeamEntity> {
 				httpHeaders.getHttpAuthEntity(), new ParameterizedTypeReference<List<TeamEntity>>() {
 				});
 		teamsList = response.getBody();
+
+		teamsList = teamsList.stream().sorted(Comparator.comparing(TeamEntity::getName)).collect(Collectors.toList());
+
 		return teamsList;
 	}
 
@@ -57,9 +62,9 @@ public class TeamServiceImpl implements CommonService<TeamEntity> {
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
 		ResponseEntity<TeamEntity> response = restTemplate.exchange(apiPath + ENTITY_PATH + "/" + id, HttpMethod.GET,
 				httpHeaders.getHttpAuthEntity(), TeamEntity.class);
-		TeamEntity competition = response.getBody();
-		logger.info("Getted TeamEntity from API: " + competition);
-		return competition;
+		TeamEntity entity = response.getBody();
+		logger.info("Getted TeamEntity from API: " + entity);
+		return entity;
 	}
 
 	@Override
@@ -123,7 +128,7 @@ public class TeamServiceImpl implements CommonService<TeamEntity> {
 				apiPath + ENTITY_PATH + "/updatefromapi/" + object.getId(), HttpMethod.GET,
 				httpHeaders.getHttpAuthEntity(), TeamEntity.class);
 		TeamEntity competition = response.getBody();
-		logger.info("Updated CompetitionEntity from API: " + competition);
+		logger.info("Updated TeamEntity from API: " + competition);
 	}
 
 	@Override
@@ -145,10 +150,10 @@ public class TeamServiceImpl implements CommonService<TeamEntity> {
 	}
 
 	@Override
-	public boolean isExist(TeamEntity competition)
+	public boolean isExist(TeamEntity entity)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
-		logger.info("is competition Exist: " + competition);
-		return (findByName(competition.getName()) != null) || (findById(competition.getId()) != null);
+		logger.info("is Team Exist: " + entity);
+		return (findByName(entity.getName()) != null) || (findById(entity.getId()) != null);
 	}
 
 	/*

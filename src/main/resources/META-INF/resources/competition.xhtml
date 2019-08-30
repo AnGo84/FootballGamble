@@ -43,7 +43,7 @@
 					<p:outputLabel style="font-weight: bold;" value="Area:" />
 					<p:outputLabel
 						value="#{competitionController.selectedCompetition.area.name}" />
-					<p:outputLabel style="font-weight: bold;" value="Last update:" />
+					<p:outputLabel style="font-weight: bold;" value="Last updated:" />
 					<p:outputLabel
 						value="#{competitionController.selectedCompetition.lastUpdated}" />
 
@@ -51,7 +51,7 @@
 						icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
 						action="#{competitionController.onUpdateCompetitionFromAPI}"
 						title="Update data from API" process="@this"
-						update="@this outp_competitionDetail p_selected_season dt_matches_list">
+						update="@this outp_competitionDetail p_selected_season dt_matches_list :form_competition:growl_message">
 					</p:commandButton>
 
 				</p:panelGrid>
@@ -82,7 +82,7 @@
 
 								<p:ajax event="change"
 									listener="#{competitionController.onChangeSeason}"
-									process="@this" update="@this dt_matches_list" />
+									process="@this" update="@this dt_matches_list :form_competition:growl_message" />
 								<!-- event="change" -->
 							</p:selectOneMenu>
 
@@ -108,8 +108,10 @@
 				var="match" value="#{competitionController.matches}" reflow="true"
 				emptyMessage="No matches found" selectionMode="single"
 				selection="#{competitionController.selectedMatch}"
-				rowKey="#{match.id}" rowIndexVar="rowIndex" sortBy="#{match.stage}"
-				expandableRowGroups="true" scrollable="true" scrollHeight="400">
+				rowKey="#{match.id}" rowIndexVar="rowIndex"
+				filteredValue="#{competitionController.filteredMatches}"
+				sortBy="#{match.stageId}" expandableRowGroups="true"
+				scrollable="true" scrollHeight="400">
 				<!-- style="box-sizing: content-box " sortMode="multiple" -->
 				<!-- scrollable="true" scrollHeight="400px;" scrollWidth="100%" -->
 
@@ -135,7 +137,8 @@
 					<!-- <p:column colspan="1">
 					</p:column> -->
 					<p:column colspan="10">
-						<p:outputLabel value="#{match.stage}" />
+						<p:outputLabel value="#{match.stage} ( #{match.group} )" />
+
 					</p:column>
 				</p:headerRow>
 
@@ -206,7 +209,7 @@
 						<f:facet name="header">Total</f:facet>
 						<h:outputText value="#{match.scoreTotalAwayTeam}" />
 					</p:column>
- -->
+ 				-->
 				<p:column width="50" headerText=" "
 					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 					<!-- <f:facet name="header">#</f:facet> -->

@@ -135,6 +135,13 @@ public class TeamEntity {
 	}
 
 	//
+	public String getAreaName() {
+		if (area != null) {
+			return area.getName();
+		}
+		return "";
+	}
+
 	public StreamedContent getCrestStreamedContent() {
 		StreamedContent emblem = SteamUtils.getStreamedContent(crestUrl);
 		return emblem;

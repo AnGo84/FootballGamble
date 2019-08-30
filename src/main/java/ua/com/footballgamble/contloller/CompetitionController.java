@@ -39,6 +39,7 @@ public class CompetitionController implements Serializable {
 	private String selectedSeasonItem;
 
 	private List<MatchEntity> matches;
+	private List<MatchEntity> filteredMatches;
 
 	private CompetitionEntity selectedCompetition;
 	// private SeasonEntity selectedSeason;
@@ -67,9 +68,7 @@ public class CompetitionController implements Serializable {
 			// selectedSeason = selectedCompetition.getCurrentSeason();
 			if (selectedCompetition.getSeasons() != null && !selectedCompetition.getSeasons().isEmpty()) {
 				// selectedSeason = selectedCompetition.getSeasons().get(0);
-				seasons = SelectItemUtils.getSelectItemList(selectedCompetition.getSeasons());
-				selectedSeasonItem = seasons.get(0).getValue().toString();
-				matches = loadSeasonMatches(Long.valueOf(selectedSeasonItem));
+				updateViewElements();
 			} else {
 				// selectedSeason = null;
 				seasons = null;
@@ -82,6 +81,12 @@ public class CompetitionController implements Serializable {
 		String[] array = list.stream().toArray(String[]::new);
 		FacesContextUtils.clearMaps(array);
 
+	}
+
+	private void updateViewElements() {
+		seasons = SelectItemUtils.getSelectItemList(selectedCompetition.getSeasons());
+		selectedSeasonItem = seasons.get(0).getValue().toString();
+		matches = loadSeasonMatches(Long.valueOf(selectedSeasonItem));
 	}
 
 	private List<MatchEntity> loadSeasonMatches(Long seasonId) {
@@ -110,6 +115,7 @@ public class CompetitionController implements Serializable {
 			try {
 				competitionService.updateFromAPI(selectedCompetition);
 				selectedCompetition = competitionService.findById(selectedCompetition.getId());
+				updateViewElements();
 				PrimeFacesMessageUtils
 						.addGlobalInfoMessage("Competition '" + selectedCompetition.getName() + "' was updated");
 			} catch (Exception ex) {
@@ -146,12 +152,12 @@ public class CompetitionController implements Serializable {
 
 	public void onChangeSeason() {
 		logger.info("onChangeSeason ");
-		logger.info("Selected Season: " + selectedSeasonItem);
+		// logger.info("Selected Season: " + selectedSeasonItem);
 		matches = loadSeasonMatches(Long.valueOf(selectedSeasonItem));
 
 		PrimeFacesMessageUtils.addGlobalInfoMessage("Selected Season: " + selectedSeasonItem);
 
-		logger.info("Matches: " + matches);
+		// logger.info("Matches: " + matches);
 	}
 
 	public String onBackToCompetitions() {
@@ -191,6 +197,14 @@ public class CompetitionController implements Serializable {
 
 	public void setSeasons(List<SelectItem> seasons) {
 		this.seasons = seasons;
+	}
+
+	public List<MatchEntity> getFilteredMatches() {
+		return filteredMatches;
+	}
+
+	public void setFilteredMatches(List<MatchEntity> filteredMatches) {
+		this.filteredMatches = filteredMatches;
 	}
 
 	public String getSelectedSeasonItem() {

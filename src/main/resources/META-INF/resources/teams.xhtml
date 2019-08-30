@@ -32,54 +32,77 @@
 					</h:panelGroup>
 				</sec:authorize> -->
 
-				<p:dataTable id="dt_teams_list"
-					widgetVar="dt_teams_list" var="team"
+				<p:dataTable id="dt_teams_list" widgetVar="dt_teams_list" var="team"
 					value="#{teamsController.teams}" reflow="true"
 					emptyMessage="No teams found" rows="10" paginator="true"
 					paginatorPosition="bottom"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,15" selectionMode="single"
-					selection="#{teamsController.selectedTeam}"
-					rowKey="#{team.id}" rowIndexVar="rowIndex"
-					sortMode="multiple">
+					filteredValue="#{teamsController.filteredTeams}"
+					selection="#{teamsController.selectedTeam}" rowKey="#{team.id}"
+					rowIndexVar="rowIndex" sortMode="multiple">
 
 					<!-- <p:column style="width:50px">
 						<p:rowToggler />
 					</p:column> -->
 
-					<p:column width="50" style="text-align: center;">
+					<!-- <p:column width="50" style="text-align: center;">
 						<f:facet name="header">
 							<h:outputText value="№" />
 						</f:facet>
 						<h:outputText value="#{rowIndex + 1}" />
-					</p:column>
+					</p:column> -->
 
-					<p:column headerText="Id" width="100" filterBy="#{competition.id}"
-						filterMatchMode="contains" sortBy="#{competition.id}">
+					<p:column headerText="Id" width="100" style="text-align: center;"
+						filterBy="#{team.id}" filterMatchMode="contains"
+						sortBy="#{team.id}">
 						<f:facet name="header">ID</f:facet>
-						<h:outputText value="#{competition.id}" />
+						<h:outputText value="#{team.id}" />
 					</p:column>
 
-					<p:column headerText="#" width="60">
+					<p:column headerText="#" width="60" style="text-align: center;">
 						<f:facet name="header">#</f:facet>
-						<p:graphicImage url="#{team.crestUrl}" height="50"
-							width="50" title="Emblem for #{team.name}"
+						<p:graphicImage url="#{team.crestUrl}" height="50" width="50"
+							title="Emblem for #{team.name}"
 							rendered="#{not empty team.crestUrl}" />
 					</p:column>
 
+					<p:column width="100" style="text-align: center;"
+						filterBy="#{team.tla}" filterMatchMode="contains"
+						sortBy="#{team.tla}">
+						<f:facet name="header">TLA</f:facet>
+						<h:outputText value="#{team.tla}" />
+					</p:column>
 					<p:column filterBy="#{team.name}" filterMatchMode="contains"
 						sortBy="#{team.name}">
 						<f:facet name="header">Name</f:facet>
 						<h:outputText value="#{team.name}" />
 					</p:column>
-
-					<p:column width="100" filterBy="#{competition.code}"
-						filterMatchMode="contains" sortBy="#{competition.code}">
-						<f:facet name="header">Code</f:facet>
-						<h:outputText value="#{competition.code}" />
+					<p:column width="150" filterBy="#{team.shortName}"
+						filterMatchMode="contains" sortBy="#{team.shortName}">
+						<f:facet name="header">Short name</f:facet>
+						<h:outputText value="#{team.shortName}" />
 					</p:column>
 
-					<p:column>
+					<p:column width="200" filterBy="#{team.areaName}"
+						filterMatchMode="contains" sortBy="#{team.areaName}">
+
+						<f:facet name="header">Area</f:facet>
+						<h:outputText value="#{team.areaName}" />
+					</p:column>
+
+					<p:column width="60" style="text-align: center;">
+						<!-- value="View" -->
+						<p:commandButton id="cb_team_view" title="View"
+							icon="fa fa-fw fa-search" process="dt_teams_list"
+							update=":form_teams_list:teamInfoDialog"
+							oncomplete="PF('teamInfoDialog').show()">
+							<f:setPropertyActionListener value="#{team}"
+								target="#{teamsController.selectedTeam}" />
+						</p:commandButton>
+					</p:column>
+
+					<!-- <p:column>
 						<p:commandButton id="cb_competition_view" style="width:120px;"
 							value="View" title="View" icon="fa fa-fw fa-search"
 							action="#{competitionsController.onView(competition)}"
@@ -93,32 +116,7 @@
 								update="@this dt_competitions_list">
 							</p:commandButton>
 						</sec:authorize>
-					</p:column>
-
-
-					<!-- <p:rowExpansion>
-						<p:dataTable id="dt_competition_seasons_list"
-							widgetVar="dt_competition_seasons_list" var="season"
-							value="#{competition.seasons}" reflow="true"
-							emptyMessage="No seasons found" selectionMode="single"
-							selection="#{competitionsController.selectedCompetition}"
-							rowKey="#{season.id}">
-
-							<p:column>
-								<f:facet name="header">Id</f:facet>
-								<h:outputText value="#{season.id}" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">Start date</f:facet>
-								<h:outputText value="#{season.startDate}" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">End date</f:facet>
-								<h:outputText value="#{season.endDate}" />
-							</p:column>
-
-						</p:dataTable>
-					</p:rowExpansion> -->
+					</p:column> -->
 
 					<!-- <f:facet name="footer">
 						<p:commandButton process="dt_users_list"
@@ -130,50 +128,70 @@
 				</p:dataTable>
 			</p:panel>
 
-			<!-- 
-			<p:dialog id="userInfoDialog" widgetVar="userInfoDialog"
+			<p:dialog id="teamInfoDialog" widgetVar="teamInfoDialog"
 				dynamic="true" closable="true" resizable="false"
-				position="center center" fitViewport="true" header="User Info">
-				!!!!
+				position="center center" fitViewport="true" header="Team Info">
+				<!-- !!!!
 				style="z-index: 1007;" modal="true" 
 				<p:ajax event="open"
 			update="pg_contragent_viewPanel pg_contragent_dialog_buttons" />
 				position="center top"(h v) heigth="90vh" width="90vw" header="#{msg['LABEL.Contragent']}" 
-				!!!!
-				<p:outputPanel id="userDetail" style="text-align:center;">
+				!!!! -->
+				<p:outputPanel id="teamDetail" style="text-align:center;">
 					<p:panelGrid columns="2"
-						rendered="#{not empty usersController.selectedUser}"
+						rendered="#{teamsController.selectedTeam ne null}"
 						columnClasses="label,value">
 						<f:facet name="header">
-						<p:graphicImage
-							name="demo/images/car/#{dtSelectionView.selectedCar.brand}-big.gif" />
-					</f:facet>
+							<p:graphicImage url="#{teamsController.selectedTeam.crestUrl}"
+								title="Emblem for #{teamsController.selectedTeam.name}"
+								height="150"
+								rendered="#{not empty teamsController.selectedTeam.crestUrl}" />
+						</f:facet>
 
 						<p:outputLabel value="Id:" />
-						<p:outputLabel value="#{usersController.selectedUser.id}" />
+						<p:outputLabel value="#{teamsController.selectedTeam.id}" />
 
-						<p:outputLabel value="Login:" />
-						<p:outputLabel value="#{usersController.selectedUser.login}" />
+						<p:outputLabel value="Area:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.areaName}" />
 
-						<p:outputLabel value="Full Name:" />
-						<p:outputLabel value="#{usersController.selectedUser.fullName}" />
+						<p:outputLabel value="Name:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.name}" />
 
-						<p:outputLabel value="Email:" />
-						<p:outputLabel value="#{usersController.selectedUser.email}" />
+						<p:outputLabel value="Short name:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.shortName}" />
+
+						<p:outputLabel value="TLA:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.tla}" />
+
+						<p:outputLabel value="Colors:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.clubColors}" />
+
+						<p:outputLabel value="Venue:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.venue}" />
+
+						<p:outputLabel value="Address:" />
+						<!-- <p:inputTextarea rows="2"
+							value="#{teamsController.selectedTeam.address}" /> -->
+						<p:outputLabel value="#{teamsController.selectedTeam.address}" />
+
+						<p:outputLabel value="Site:" />
+						<h:outputLink value="#{teamsController.selectedTeam.website}"
+							target="_blank">#{teamsController.selectedTeam.website}</h:outputLink>
 
 						<p:outputLabel value="Phone:" />
-						<p:outputLabel value="#{usersController.selectedUser.phone}" />
+						<p:outputLabel value="#{teamsController.selectedTeam.phone}" />
 
-						<p:outputLabel value="Active" />
-						<p:selectBooleanCheckbox
-							value="#{usersController.selectedUser.active}" disabled="true" />
+						<p:outputLabel value="Email:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.email}" />
 
-						<p:outputLabel value="Roles:" />
-						<p:outputLabel
-							value="#{usersController.selectedUser.rolesForView}" />
+						<p:outputLabel value="Founded:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.founded}" />
+
+						<p:outputLabel value="Last updated:" />
+						<p:outputLabel value="#{teamsController.selectedTeam.lastUpdated}" />
 					</p:panelGrid>
 				</p:outputPanel>
-			</p:dialog> -->
+			</p:dialog>
 
 		</h:form>
 	</ui:define>

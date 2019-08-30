@@ -11,26 +11,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ua.com.footballgamble.model.entity.TeamEntity;
-import ua.com.footballgamble.primefaces.PrimeFacesMessageUtils;
-import ua.com.footballgamble.service.TeamServiceImpl;
+import ua.com.footballgamble.model.entity.GambleRuleEntity;
+import ua.com.footballgamble.service.GambleRuleServiceImpl;
 
-@Named(value = "teamsController")
+@Named(value = "gambleRulesController")
 @ViewScoped
-public class TeamsController implements Serializable {
+public class GambleRulesController implements Serializable {
 	private static final long serialVersionUID = -1;
-	public static final Logger logger = LoggerFactory.getLogger(TeamsController.class);
+	public static final Logger logger = LoggerFactory.getLogger(GambleRulesController.class);
 	@Autowired
-	private TeamServiceImpl teamService;
+	private GambleRuleServiceImpl gambleRuleService;
 
-	private List<TeamEntity> teams;
-	private List<TeamEntity> filteredTeams;
-	private TeamEntity selectedTeam;
+	private List<GambleRuleEntity> gambleRules;
+	private List<GambleRuleEntity> filteredGambleRules;
+	private GambleRuleEntity selectedRule;
 
 	@PostConstruct
 	public void loadData() {
 		logger.info("PostConstruct loadData");
-		teams = teamService.findAll();
+		gambleRules = gambleRuleService.findAll();
 	}
 
 	/*
@@ -45,35 +44,6 @@ public class TeamsController implements Serializable {
 	 * 
 	 * return "user.html?faces-redirect=true"; }
 	 */
-
-	public void onUpdateFromAPI() {
-		logger.info("On Update Selected Team From API: " + selectedTeam);
-		if (selectedTeam == null) {
-			PrimeFacesMessageUtils.addGlobalErrorMessage("Team not selected!");
-
-		} else {
-			onUpdateFromAPI(selectedTeam);
-		}
-	}
-
-	public void onUpdateFromAPI(TeamEntity team) {
-		logger.info("On Update Team From API: " + team);
-		if (team == null) {
-			PrimeFacesMessageUtils.addGlobalErrorMessage("Team not selected!");
-
-		} else {
-			try {
-				teamService.updateFromAPI(team);
-				teams = teamService.findAll();
-
-				PrimeFacesMessageUtils.addGlobalInfoMessage("Team '" + team.getName() + "' was updated");
-			} catch (Exception ex) {
-				logger.error("Error on Update for " + team.getName() + ": " + ex.getMessage());
-				PrimeFacesMessageUtils
-						.addGlobalErrorMessage("Error on Update for " + team.getName() + ": " + ex.getMessage());
-			}
-		}
-	}
 
 	/*
 	 * public String onView(CompetitionEntity competition) {
@@ -110,28 +80,28 @@ public class TeamsController implements Serializable {
 
 	// Getters-Setters
 
-	public List<TeamEntity> getTeams() {
-		return teams;
+	public List<GambleRuleEntity> getGambleRules() {
+		return gambleRules;
 	}
 
-	public void setTeams(List<TeamEntity> teams) {
-		this.teams = teams;
+	public void setGambleRules(List<GambleRuleEntity> gambleRules) {
+		this.gambleRules = gambleRules;
 	}
 
-	public List<TeamEntity> getFilteredTeams() {
-		return filteredTeams;
+	public List<GambleRuleEntity> getFilteredGambleRules() {
+		return filteredGambleRules;
 	}
 
-	public void setFilteredTeams(List<TeamEntity> filteredTeams) {
-		this.filteredTeams = filteredTeams;
+	public void setFilteredGambleRules(List<GambleRuleEntity> filteredGambleRules) {
+		this.filteredGambleRules = filteredGambleRules;
 	}
 
-	public TeamEntity getSelectedTeam() {
-		return selectedTeam;
+	public GambleRuleEntity getSelectedRule() {
+		return selectedRule;
 	}
 
-	public void setSelectedTeam(TeamEntity selectedTeam) {
-		this.selectedTeam = selectedTeam;
+	public void setSelectedRule(GambleRuleEntity selectedRule) {
+		this.selectedRule = selectedRule;
 	}
 
 }

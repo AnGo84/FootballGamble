@@ -164,7 +164,6 @@
 					</p:commandButton>
 				</p:column>
 
-
 				<f:facet name="footer">
 					<p:commandButton process="dt_users_list"
 						update=":form_users_list:userInfoDialog" icon="fa fa-fw fa-search"
@@ -184,7 +183,7 @@
 
 				<p:outputPanel id="userDetail" style="text-align:center;">
 					<p:panelGrid columns="2"
-						rendered="#{not empty usersController.selectedUser}"
+						rendered="#{usersController.selectedUser ne null}"
 						columnClasses="label,value">
 						<!-- <f:facet name="header">
 						<p:graphicImage

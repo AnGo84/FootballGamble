@@ -9,39 +9,39 @@
 	xmlns:sec="http://www.springframework.org/security/tags">
 <ui:composition template="template.xhtml">
 	<ui:define name="content">
-		<h:form id="form_gamble_rules">
+		<h:form id="form_gambles">
 			<p:growl id="growl_message" showDetail="true" sticky="true" />
 
 			<p:panel header="Gamble's Rules List">
-				<!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
+				<sec:authorize access="hasRole('ROLE_ADMIN')">
 					<h:panelGroup styleClass="row" layout="block">
 						<h:panelGroup styleClass="col-xs-9 text-left" layout="block">
 
 						</h:panelGroup>
 
 						<h:panelGroup styleClass="col-xs-3 text-right" layout="block">
-							<p:commandButton id="cb_object_update_from_API"
-								icon="fa fa-fw fa-refresh" value="Update"
-								action="#{competitionsController.onUpdateFromAPI}"
-								title="Update data from API" process="@this"
-								update="@this dt_competitions_list">
+							<p:commandButton id="cb_object_add_new" icon="fa fa-fw fa-plus"
+								value="Add new" action="#{gamblesController.onAddNewGamble}"
+								process="@this" update="@none">
+								<!-- value="#{msg['LABEL.Object.Add_new']}"
+								styleClass="ui-priority-primary" 
+								 -->
 							</p:commandButton>
+
 						</h:panelGroup>
 
 					</h:panelGroup>
-				</sec:authorize> -->
+				</sec:authorize>
 
-				<p:dataTable id="dt_gamble_rules_list"
-					widgetVar="dt_gamble_rules_list" var="gambleRule"
-					value="#{gambleRulesController.gambleRules}" reflow="true"
-					emptyMessage="No Gamble Rules found" rows="10" paginator="true"
+				<p:dataTable id="dt_gambles_list" widgetVar="dt_gambles_list"
+					var="gamble" value="#{gamblesController.gambles}" reflow="true"
+					emptyMessage="No Gambles found" rows="10" paginator="true"
 					paginatorPosition="bottom"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,15" selectionMode="single"
-					filteredValue="#{gambleRulesController.filteredGambleRules}"
-					selection="#{gambleRulesController.selectedRule}"
-					rowKey="#{gambleRule.id}" rowIndexVar="rowIndex"
-					sortMode="multiple">
+					filteredValue="#{gamblesController.filteredGambles}"
+					selection="#{gamblesController.selectedGamble}"
+					rowKey="#{gamble.id}" rowIndexVar="rowIndex" sortMode="multiple">
 
 					<p:column style="width:50px">
 						<p:rowToggler />
@@ -55,26 +55,26 @@
 					</p:column> -->
 
 					<p:column headerText="Id" width="100" style="text-align: center;"
-						filterBy="#{gambleRule.id}" filterMatchMode="contains"
-						sortBy="#{gambleRule.id}">
+						filterBy="#{gamble.id}" filterMatchMode="contains"
+						sortBy="#{gamble.id}">
 						<f:facet name="header">ID</f:facet>
-						<h:outputText value="#{gambleRule.id}" />
+						<h:outputText value="#{gamble.id}" />
 					</p:column>
 
-					<p:column width="250" filterBy="#{gambleRule.fullName}"
-						filterMatchMode="contains" sortBy="#{gambleRule.fullName}">
+					<p:column width="250" filterBy="#{gamble.name}"
+						filterMatchMode="contains" sortBy="#{gamble.name}">
 						<f:facet name="header">Name</f:facet>
-						<h:outputText value="#{gambleRule.fullName}" />
+						<h:outputText value="#{gamble.name}" />
 					</p:column>
 
-					<p:column filterBy="#{gambleRule.description}"
+					<p:column filterBy="#{gamble.description}"
 						filterMatchMode="contains" sortBy="#{gambleRule.description}">
 						<f:facet name="header">Description</f:facet>
-						<h:outputText value="#{gambleRule.description}" />
+						<h:outputText value="#{gamble.description}" />
 					</p:column>
 
-					<p:column style="text-align: center;"
-						filterBy="#{gambleRule.active}" filterMatchMode="equals">
+					<p:column style="text-align: center;" filterBy="#{gamble.active}"
+						filterMatchMode="equals">
 						<f:facet name="header">Is active</f:facet>
 
 						<f:facet name="filter">
@@ -87,9 +87,9 @@
 							</p:selectOneButton>
 						</f:facet>
 						<!-- <p:selectBooleanCheckbox value="#{gambleRule.active}"
-							disabled="true" /> -->						
+							disabled="true" /> -->
 
-						<p:selectBooleanButton value="#{gambleRule.active}" onLabel="Yes"
+						<p:selectBooleanButton value="#{gamble.active}" onLabel="Yes"
 							offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times"
 							style="width:70px" disabled="true" />
 
@@ -98,23 +98,29 @@
 					<p:rowExpansion>
 						<p:panelGrid columns="2" columnClasses="label,value">
 							<!-- style="width:300px" -->
+							<f:facet name="header">
+								<p:row>
+									<p:column colspan="2">Rules</p:column>
+								</p:row>
+
+							</f:facet>
 							<!-- <h:outputText value="Id:" />
-                <h:outputText value="#{car.id}" /> -->
+                				<h:outputText value="#{car.id}" /> -->
 
 							<h:outputText value="Exact Score: " />
-							<h:outputText value="#{gambleRule.exactScore}" />
+							<h:outputText value="#{gamble.rule.exactScore}" />
 
 							<h:outputText value="Winner And Differance: " />
-							<h:outputText value="#{gambleRule.winnerAndDifferance}" />
+							<h:outputText value="#{gamble.rule.winnerAndDifferance}" />
 
 							<h:outputText value="Only Draw: " />
-							<h:outputText value="#{gambleRule.onlyDraw}" />
+							<h:outputText value="#{gamble.rule.onlyDraw}" />
 
 							<h:outputText value="Only Winner: " />
-							<h:outputText value="#{gambleRule.onlyWinner}" />
+							<h:outputText value="#{gamble.rule.onlyWinner}" />
 
 							<h:outputText value="Other: " />
-							<h:outputText value="#{gambleRule.other}" />
+							<h:outputText value="#{gamble.rule.other}" />
 
 						</p:panelGrid>
 					</p:rowExpansion>
@@ -129,21 +135,33 @@
 						</p:commandButton>
 					</p:column> -->
 
-					<!-- <p:column>
+					<p:column>
+						<!-- 
+						<sec:authorize access="!hasRole('ROLE_ADMIN')">
 						<p:commandButton id="cb_competition_view" style="width:120px;"
 							value="View" title="View" icon="fa fa-fw fa-search"
 							action="#{competitionsController.onView(competition)}"
 							process="dt_competitions_list" update="@this">
 						</p:commandButton>
+						</sec:authorize> -->
 						<sec:authorize access="hasRole('ROLE_ADMIN')">
-							<p:commandButton id="cb_object_update_from_API"
-								icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
-								action="#{competitionsController.onUpdateFromAPI(competition)}"
-								title="Update data from API" process="@this"
-								update="@this dt_competitions_list">
+							<p:commandButton id="cb_ugamble_edit" title="Edit gamble"
+								icon="ui-icon-pencil"
+								action="#{gamblesController.onEditGamble(gamble)}"
+								process="dt_gambles_list" update="@this" />
+							<!--styleClass="ui-priority-primary"  value="Edit" -->
+							<p:commandButton id="cb_gamble_delete" title="Delete gamble"
+								icon="ui-icon-trash"
+								action="#{gamblesController.onDeleteGamble(gamble)}"
+								process="@this dt_gambles_list"
+								update="@this dt_gambles_list :form_gambles_list:growl_message">
+								<!-- value="Delete" -->
+								<p:confirm header="Confirm action"
+									message="Confirm gamble deletion: #{gamble.id} #{gamble.name}"
+									icon="ui-icon-alert" />
 							</p:commandButton>
 						</sec:authorize>
-					</p:column> -->
+					</p:column>
 
 					<!-- <f:facet name="footer">
 						<p:commandButton process="dt_users_list"

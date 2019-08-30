@@ -14,6 +14,7 @@ public class MatchEntity {
 	private String utcDate;
 	private String status;
 	private String matchday;
+	private int stageId;
 	private String stage;
 	private String group;
 	private TeamEntity homeTeam;
@@ -176,6 +177,14 @@ public class MatchEntity {
 
 	public void setLastUpdated(String lastUpdated) {
 		this.lastUpdated = lastUpdated;
+	}
+
+	public int getStageId() {
+		return stageId;
+	}
+
+	public void setStageId(int stageId) {
+		this.stageId = stageId;
 	}
 
 	/**/
@@ -352,6 +361,8 @@ public class MatchEntity {
 		builder.append(status);
 		builder.append(", matchday=");
 		builder.append(matchday);
+		builder.append(", stageId=");
+		builder.append(stageId);
 		builder.append(", stage=");
 		builder.append(stage);
 		builder.append(", group=");
