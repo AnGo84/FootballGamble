@@ -40,18 +40,29 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,15" selectionMode="single"
 					selection="#{competitionsController.selectedCompetition}"
-					rowKey="#{competition.id}" sortMode="multiple">
+					rowKey="#{competition.id}" rowIndexVar="rowIndex"
+					sortMode="multiple">
 
 					<!-- <p:column style="width:50px">
 						<p:rowToggler />
 					</p:column> -->
 
+					<p:column width="50" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="№" />
+						</f:facet>
+						<h:outputText value="#{rowIndex + 1}" />
+					</p:column>
+
 					<p:column headerText="#" width="70">
 						<f:facet name="header">#</f:facet>
 						<p:graphicImage url="#{competition.emblemUrl}" height="50"
-							width="50" alt="Emblem for #{competition.name}"
-							title="#{competition.name}"
-							rendered="#{not empty competition.emblemUrl}" />
+							width="50" title="Emblem for #{competition.name}"
+							rendered="#{not empty competition.emblemStreamedContent}" />
+						<!-- 
+							alt="Emblem for #{competition.name}"
+							rendered="#{not empty competition.emblemUrl}"
+							value="#{competition.emblemStreamedContent}" -->
 					</p:column>
 
 					<p:column headerText="Id" width="100" filterBy="#{competition.id}"
@@ -67,8 +78,8 @@
 						<h:outputText value="#{competition.name}" />
 					</p:column>
 
-					<p:column width="100" filterBy="#{competition.code}" filterMatchMode="contains"
-						sortBy="#{competition.code}">
+					<p:column width="100" filterBy="#{competition.code}"
+						filterMatchMode="contains" sortBy="#{competition.code}">
 						<f:facet name="header">Code</f:facet>
 						<h:outputText value="#{competition.code}" />
 					</p:column>

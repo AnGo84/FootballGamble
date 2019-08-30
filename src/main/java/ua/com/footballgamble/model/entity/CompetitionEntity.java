@@ -3,6 +3,10 @@ package ua.com.footballgamble.model.entity;
 
 import java.util.List;
 
+import org.primefaces.model.StreamedContent;
+
+import ua.com.footballgamble.utils.SteamUtils;
+
 public class CompetitionEntity {
 	private Long id;
 	private AreaEntity area;
@@ -84,6 +88,12 @@ public class CompetitionEntity {
 
 	public void setSeasons(List<SeasonEntity> seasons) {
 		this.seasons = seasons;
+	}
+
+	//
+	public StreamedContent getEmblemStreamedContent() {
+		StreamedContent emblem = SteamUtils.getStreamedContent(emblemUrl);
+		return emblem;
 	}
 
 	@Override

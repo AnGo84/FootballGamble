@@ -43,7 +43,7 @@
 					<p:outputLabel style="font-weight: bold;" value="Area:" />
 					<p:outputLabel
 						value="#{competitionController.selectedCompetition.area.name}" />
-					<p:outputLabel style="font-weight: bold;" value="Last update:" />
+					<p:outputLabel style="font-weight: bold;" value="Last updated:" />
 					<p:outputLabel
 						value="#{competitionController.selectedCompetition.lastUpdated}" />
 
@@ -51,7 +51,7 @@
 						icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
 						action="#{competitionController.onUpdateCompetitionFromAPI}"
 						title="Update data from API" process="@this"
-						update="@this outp_competitionDetail p_selected_season dt_matches_list">
+						update="@this outp_competitionDetail p_selected_season dt_matches_list :form_competition:growl_message">
 					</p:commandButton>
 
 				</p:panelGrid>
@@ -63,22 +63,26 @@
 				<h:panelGroup styleClass="row" layout="block">
 					<h:panelGroup styleClass="col-xs-9 text-left" layout="block">
 						<p:panelGrid class="ui-noborder" columns="3">
-							<!-- styleClass="text-center" -->						
+							<!-- styleClass="text-center" -->
 							<p:outputLabel for="s_menu_seasons" value="Season: " />
 							<p:selectOneMenu id="s_menu_seasons"
 								style="width: 200px !important" editable="false"
-								value="#{competitionController.selectedSeason}">
-								<!-- #{msg['LABEL.Not_Choosed']}  filter="true"
+								value="#{competitionController.selectedSeasonItem}">
+								<!-- 
+								converter="competitionSeasonEntityConverter"
+								#{msg['LABEL.Not_Choosed']}  filter="true"
 								filterMatchMode="contains" -->
 								<f:selectItem itemLabel="Not choosed" noSelectionOption="true" />
-								<f:selectItems
-									value="#{competitionController.selectedCompetition.seasons}"
+								<f:selectItems value="#{competitionController.seasons}" />
+								<!-- 
+								value="#{competitionController.selectedCompetition.seasons}"
 									var="season" itemLabel="#{season.seasonName}"
-									itemValue="#{season}" />
-								<!-- <p:ajax process="@this" update="@this" /> -->
+									itemValue="#{season}" 
+								<p:ajax process="@this" update="@this" /> -->
 
-								<p:ajax event="change" listener="#{competitionController.onChangeSeason}"
-									process="@this" update="@this dt_matches_list" />
+								<p:ajax event="change"
+									listener="#{competitionController.onChangeSeason}"
+									process="@this" update="@this dt_matches_list :form_competition:growl_message" />
 								<!-- event="change" -->
 							</p:selectOneMenu>
 
@@ -104,8 +108,10 @@
 				var="match" value="#{competitionController.matches}" reflow="true"
 				emptyMessage="No matches found" selectionMode="single"
 				selection="#{competitionController.selectedMatch}"
-				rowKey="#{match.id}" sortBy="#{match.stage}"
-				expandableRowGroups="true" scrollable="true" scrollHeight="400">
+				rowKey="#{match.id}" rowIndexVar="rowIndex"
+				filteredValue="#{competitionController.filteredMatches}"
+				sortBy="#{match.stageId}" expandableRowGroups="true"
+				scrollable="true" scrollHeight="400">
 				<!-- style="box-sizing: content-box " sortMode="multiple" -->
 				<!-- scrollable="true" scrollHeight="400px;" scrollWidth="100%" -->
 
@@ -119,7 +125,7 @@
 				<f:facet name="header">
 					<!-- <p:outputPanel> Season's manches </p:outputPanel> -->
 					<p:outputPanel>
-						<p:outputLabel value="Search all fields:" />
+						<p:outputLabel value="Search all fields: " />
 						<p:inputText id="globalFilter"
 							onkeyup="PF('dt_matches_list').filter()" style="width:150px"
 							placeholder="Enter keyword" />
@@ -131,11 +137,18 @@
 					<!-- <p:column colspan="1">
 					</p:column> -->
 					<p:column colspan="10">
-						<p:outputLabel value="#{match.stage}" />
+						<p:outputLabel value="#{match.stage} ( #{match.group} )" />
+
 					</p:column>
 				</p:headerRow>
 
-				<p:column width="100" style="text-align: center;"
+				<p:column width="60"
+					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+					<h:outputText value="#{rowIndex + 1}" />
+				</p:column>
+
+				<p:column width="100"
+					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
 					filterBy="#{match.utcDate}" filterMatchMode="contains">
 					<!-- sortBy="#{match.utcDate}" -->
 					<f:facet name="header">Date</f:facet>
@@ -145,16 +158,23 @@
 							pattern="dd.MM.yyyy HH:mm" readonly="true" disabled="true"/> -->
 				</p:column>
 				<!-- Home team -->
-				<p:column width="50" headerText="#" style="text-align: center;">
+				<p:column width="50" headerText="#"
+					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 					<!-- <f:facet name="header">#</f:facet> -->
 					<!-- Home team Crest -->
 					<p:graphicImage url="#{match.homeTeam.crestUrl}" height="30"
-						width="30" alt="Emblem for #{match.homeTeam.name}"
-						title="#{match.homeTeam.crestUrl}"
+						title="Emblem for  #{match.homeTeam.crestUrl}"
 						rendered="#{not empty match.homeTeam.crestUrl}" />
+					<!--
+						alt="Emblem for #{match.homeTeam.name}" 
+						value="#{match.homeTeam.crestStreamedContent}"
+						rendered="#{not empty match.homeTeam.crestStreamedContent}"  
+						url="#{match.homeTeam.crestUrl}" -->
 				</p:column>
 
-				<p:column headerText="Home team" filterBy="#{match.homeTeam.name}"
+				<p:column width="200"
+					style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+					headerText="Home team" filterBy="#{match.homeTeam.name}"
 					filterMatchMode="contains">
 					<!-- sortBy="#{match.homeTeam.name}" -->
 					<!-- <f:facet name="header">Home Team</f:facet> -->
@@ -167,18 +187,20 @@
 						<h:outputText value="#{match.scoreTotalHomeTeam}" />
 					</p:column> -->
 
-				<p:column width="50" headerText=" # " style="text-align: center;">
+				<p:column width="50" headerText=" # "
+					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 					<!-- <f:facet name="header"> # </f:facet> -->
 					<h:outputText value="#{match.scoreFullTimeHomeTeam}" />
 				</p:column>
 				<!--  -->
-				<p:column width="120" headerText="Winner"
+				<!-- <p:column width="120" headerText="Winner"
 					style="text-align: center;">
-					<!-- <f:facet name="header">Winner</f:facet> -->
+					<f:facet name="header">Winner</f:facet>
 					<h:outputText value="#{match.winner}" />
-				</p:column>
+				</p:column> -->
 				<!-- Away team -->
-				<p:column width="50" headerText=" # " style="text-align: center;">
+				<p:column width="50" headerText=" # "
+					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 					<!-- <f:facet name="header"> # </f:facet> -->
 					<h:outputText value="#{match.scoreFullTimeAwayTeam}" />
 				</p:column>
@@ -187,24 +209,34 @@
 						<f:facet name="header">Total</f:facet>
 						<h:outputText value="#{match.scoreTotalAwayTeam}" />
 					</p:column>
- -->
-				<p:column width="50" headerText="#" style="text-align: center;">
+ 				-->
+				<p:column width="50" headerText=" "
+					style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 					<!-- <f:facet name="header">#</f:facet> -->
 					<!-- Away team Crest -->
 					<p:graphicImage url="#{match.awayTeam.crestUrl}" height="30"
-						width="30" alt="Emblem for #{match.awayTeam.name}"
-						title="#{match.awayTeam.crestUrl}"
+						width="30" title="Emblem for  #{match.awayTeam.crestUrl}"
 						rendered="#{not empty match.awayTeam.crestUrl}" />
+					<!--
+					alt="Emblem for #{match.awayTeam.name}"
+					value="#{match.awayTeam.crestStreamedContent}"
+					 url="#{match.awayTeam.crestUrl}"
+					 rendered="#{not empty match.awayTeam.crestStreamedContent}" 
+					  -->
 				</p:column>
 
-				<p:column headerText="Away team" filterBy="#{match.awayTeam.name}"
+				<p:column width="200"
+					style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+					headerText="Away team" filterBy="#{match.awayTeam.name}"
 					filterMatchMode="contains">
 					<!-- sortBy="#{match.awayTeam.name}" -->
 					<!-- <f:facet name="header">Away Team</f:facet> -->
 					<h:outputText value="#{match.awayTeam.name}" />
 				</p:column>
 				<!--  -->
-				<p:column width="120" headerText="Status" filterBy="#{match.status}"
+				<p:column width="120"
+					style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
+					headerText="Status" filterBy="#{match.status}"
 					filterMatchMode="contains">
 					<!-- sortBy="#{match.status}" -->
 					<!-- <f:facet name="header">Status</f:facet> -->
@@ -310,7 +342,7 @@
 						rendered="#{not empty competitionController.selectedMatch}"
 						columnClasses="label,value"> -->
 					<p:panelGrid
-						rendered="#{not empty competitionController.selectedMatch}">
+						rendered="#{competitionController.selectedMatch ne null}">
 						<!-- <f:facet name="header">
 						<p:graphicImage
 							name="demo/images/car/#{dtSelectionView.selectedCar.brand}-big.gif" />

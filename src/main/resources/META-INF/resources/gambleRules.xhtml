@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+<ui:composition template="template.xhtml">
+	<ui:define name="content">
+		<h:form id="form_gamble_rules">
+			<p:growl id="growl_message" showDetail="true" sticky="true" />
+
+			<p:panel header="Gamble's Rules List">
+				<!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
+					<h:panelGroup styleClass="row" layout="block">
+						<h:panelGroup styleClass="col-xs-9 text-left" layout="block">
+
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="col-xs-3 text-right" layout="block">
+							<p:commandButton id="cb_object_update_from_API"
+								icon="fa fa-fw fa-refresh" value="Update"
+								action="#{competitionsController.onUpdateFromAPI}"
+								title="Update data from API" process="@this"
+								update="@this dt_competitions_list">
+							</p:commandButton>
+						</h:panelGroup>
+
+					</h:panelGroup>
+				</sec:authorize> -->
+
+				<p:dataTable id="dt_gamble_rules_list"
+					widgetVar="dt_gamble_rules_list" var="gambleRule"
+					value="#{gambleRulesController.gambleRules}" reflow="true"
+					emptyMessage="No Gamble Rules found" rows="10" paginator="true"
+					paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" selectionMode="single"
+					filteredValue="#{gambleRulesController.filteredGambleRules}"
+					selection="#{gambleRulesController.selectedRule}"
+					rowKey="#{gambleRule.id}" rowIndexVar="rowIndex"
+					sortMode="multiple">
+
+					<p:column style="width:50px">
+						<p:rowToggler />
+					</p:column>
+
+					<!-- <p:column width="50" style="text-align: center;">
+						<f:facet name="header">
+							<h:outputText value="№" />
+						</f:facet>
+						<h:outputText value="#{rowIndex + 1}" />
+					</p:column> -->
+
+					<p:column headerText="Id" width="100" style="text-align: center;"
+						filterBy="#{gambleRule.id}" filterMatchMode="contains"
+						sortBy="#{gambleRule.id}">
+						<f:facet name="header">ID</f:facet>
+						<h:outputText value="#{gambleRule.id}" />
+					</p:column>
+
+					<p:column width="250" filterBy="#{gambleRule.fullName}"
+						filterMatchMode="contains" sortBy="#{gambleRule.fullName}">
+						<f:facet name="header">Name</f:facet>
+						<h:outputText value="#{gambleRule.fullName}" />
+					</p:column>
+
+					<p:column filterBy="#{gambleRule.description}"
+						filterMatchMode="contains" sortBy="#{gambleRule.description}">
+						<f:facet name="header">Description</f:facet>
+						<h:outputText value="#{gambleRule.description}" />
+					</p:column>
+
+					<p:column style="text-align: center;"
+						filterBy="#{gambleRule.active}" filterMatchMode="equals">
+						<f:facet name="header">Is active</f:facet>
+
+						<f:facet name="filter">
+							<p:selectOneButton onchange="PF('dt_gamble_rules_list').filter()"
+								styleClass="custom-filter">
+								<f:converter converterId="javax.faces.Boolean" />
+								<f:selectItem itemLabel="All" itemValue="" />
+								<f:selectItem itemLabel="Yes" itemValue="true" />
+								<f:selectItem itemLabel="No" itemValue="false" />
+							</p:selectOneButton>
+						</f:facet>
+						<!-- <p:selectBooleanCheckbox value="#{gambleRule.active}"
+							disabled="true" /> -->						
+
+						<p:selectBooleanButton value="#{gambleRule.active}" onLabel="Yes"
+							offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times"
+							style="width:70px" disabled="true" />
+
+					</p:column>
+
+					<p:rowExpansion>
+						<p:panelGrid columns="2" columnClasses="label,value">
+							<!-- style="width:300px" -->
+							<!-- <h:outputText value="Id:" />
+                <h:outputText value="#{car.id}" /> -->
+
+							<h:outputText value="Exact Score: " />
+							<h:outputText value="#{gambleRule.exactScore}" />
+
+							<h:outputText value="Winner And Differance: " />
+							<h:outputText value="#{gambleRule.winnerAndDifferance}" />
+
+							<h:outputText value="Only Draw: " />
+							<h:outputText value="#{gambleRule.onlyDraw}" />
+
+							<h:outputText value="Only Winner: " />
+							<h:outputText value="#{gambleRule.onlyWinner}" />
+
+							<h:outputText value="Other: " />
+							<h:outputText value="#{gambleRule.other}" />
+
+						</p:panelGrid>
+					</p:rowExpansion>
+
+					<!-- <p:column width="60" style="text-align: center;">						
+						<p:commandButton id="cb_team_view" title="View"
+							icon="fa fa-fw fa-search" process="dt_teams_list"
+							update=":form_teams_list:teamInfoDialog"
+							oncomplete="PF('teamInfoDialog').show()">
+							<f:setPropertyActionListener value="#{team}"
+								target="#{teamsController.selectedTeam}" />
+						</p:commandButton>
+					</p:column> -->
+
+					<!-- <p:column>
+						<p:commandButton id="cb_competition_view" style="width:120px;"
+							value="View" title="View" icon="fa fa-fw fa-search"
+							action="#{competitionsController.onView(competition)}"
+							process="dt_competitions_list" update="@this">
+						</p:commandButton>
+						<sec:authorize access="hasRole('ROLE_ADMIN')">
+							<p:commandButton id="cb_object_update_from_API"
+								icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
+								action="#{competitionsController.onUpdateFromAPI(competition)}"
+								title="Update data from API" process="@this"
+								update="@this dt_competitions_list">
+							</p:commandButton>
+						</sec:authorize>
+					</p:column> -->
+
+					<!-- <f:facet name="footer">
+						<p:commandButton process="dt_users_list"
+							update=":form_users_list:userInfoDialog"
+							icon="fa fa-fw fa-search" value="View"
+							oncomplete="PF('userInfoDialog').show()" />
+					</f:facet> -->
+
+				</p:dataTable>
+			</p:panel>
+			<!--  -->
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

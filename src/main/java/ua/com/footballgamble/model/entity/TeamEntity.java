@@ -1,6 +1,10 @@
 
 package ua.com.footballgamble.model.entity;
 
+import org.primefaces.model.StreamedContent;
+
+import ua.com.footballgamble.utils.SteamUtils;
+
 public class TeamEntity {
 
 	private long id;
@@ -128,6 +132,19 @@ public class TeamEntity {
 
 	public void setLastUpdated(String lastUpdated) {
 		this.lastUpdated = lastUpdated;
+	}
+
+	//
+	public String getAreaName() {
+		if (area != null) {
+			return area.getName();
+		}
+		return "";
+	}
+
+	public StreamedContent getCrestStreamedContent() {
+		StreamedContent emblem = SteamUtils.getStreamedContent(crestUrl);
+		return emblem;
 	}
 
 	@Override
