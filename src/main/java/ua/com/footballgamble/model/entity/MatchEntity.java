@@ -1,10 +1,9 @@
 package ua.com.footballgamble.model.entity;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonRootName;
-
 import ua.com.footballgamble.utils.DateTimeUtils;
+
+import java.util.Date;
 
 @JsonRootName("match")
 public class MatchEntity {
@@ -222,6 +221,12 @@ public class MatchEntity {
 			total = total + " ,pen: " + String.valueOf(scorePenaltiesAwayTeam);
 		}
 		return total;
+	}
+
+	public String getSortField() {
+		String add= (stageId<10)?"_":"";
+
+		return String.valueOf(stageId)+add + "_" + matchday + "_" + group;
 	}
 
 	@Override

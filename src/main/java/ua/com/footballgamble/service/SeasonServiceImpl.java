@@ -3,6 +3,7 @@ package ua.com.footballgamble.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,9 @@ public class SeasonServiceImpl implements CommonService<SeasonEntity> {
 		logger.info("Getted SeasonEntity from API: " + season);
 
 		if (season != null && season.getMatches() != null && !season.getMatches().isEmpty()) {
-			Map<String, SeasonStage> stageMap = SeasonUtils.getSeasonStagesMap(season);
+			//Map<String, SeasonStage> stageMap = SeasonUtils.getSeasonStagesMap(season);
+			Map<String, SeasonStage> stageMap = season.getStages().stream()
+					.collect(Collectors.toMap(SeasonStage::getName, seasonStage -> seasonStage));
 			for (MatchEntity match : season.getMatches()) {
 				match.setStageId(stageMap.get(match.getStage()).getId());
 			}

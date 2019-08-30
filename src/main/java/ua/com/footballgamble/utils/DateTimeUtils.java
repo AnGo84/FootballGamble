@@ -26,7 +26,7 @@ public class DateTimeUtils {
 		try {
 			return API_FORMATER.parse(date);
 		} catch (ParseException e) {
-			logger.error("Can't convert '" + date + "' to date formate '" + API_DATETIME_FORMAT + "'", e);
+			logger.error("Can't convert '" + date + "' to date format '" + API_DATETIME_FORMAT + "'", e);
 			return null;
 		}
 	}
@@ -36,7 +36,7 @@ public class DateTimeUtils {
 			Date date = API_FORMATER.parse(stringDate);
 			return DISPLAY_FORMATER.format(date);
 		} catch (ParseException e) {
-			logger.error("Can't convert '" + stringDate + "' to formate '" + DISPLAY_DATETIME_FORMAT + "'", e);
+			logger.error("Can't convert '" + stringDate + "' to format '" + DISPLAY_DATETIME_FORMAT + "'", e);
 			return "";
 		}
 	}
