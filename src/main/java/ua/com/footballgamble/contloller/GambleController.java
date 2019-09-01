@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ua.com.footballgamble.converter.faces.AppEntitiesLists;
 import ua.com.footballgamble.model.EventType;
 import ua.com.footballgamble.model.entity.GambleCompetition;
 import ua.com.footballgamble.model.entity.GambleEntity;
@@ -36,8 +35,8 @@ public class GambleController implements Serializable {
 
 	public static final Logger logger = LoggerFactory.getLogger(GambleController.class);
 
-	@Autowired
-	private AppEntitiesLists appEntitiesLists;
+	/*@Autowired
+	private AppEntitiesLists appEntitiesLists;*/
 
 	@Autowired
 	private GambleServiceImpl gambleService;
@@ -50,11 +49,13 @@ public class GambleController implements Serializable {
 	@Autowired
 	private GambleUserServiceImpl gambleUserService;
 
+	private List<GambleUser> allGambleUsersList;
 	private List<GambleUser> newGambleUsers;
 	private GambleUser selectedGambleUser;
 
 	@Autowired
 	private GambleCompetitionServiceImpl gambleCompetitionService;
+	private List<GambleCompetition> allGambleCompetitionsList;
 	private List<GambleCompetition> newGambleCompetitions;
 	private GambleCompetition selectedGambleCompetition;
 
@@ -94,14 +95,8 @@ public class GambleController implements Serializable {
 		FacesContextUtils.clearMaps(array);
 
 		gambleRules = gambleRuleService.findAll();
-		appEntitiesLists.setGambleRules(gambleRules);
-
-		List<GambleUser> allGambleUserList = gambleUserService.findAll();
-		appEntitiesLists.setGambleUsers(allGambleUserList);
-
-		List<GambleCompetition> allGambleCompetitionList = gambleCompetitionService.findAll();
-		appEntitiesLists.setGambleCompetitions(allGambleCompetitionList);
-
+		allGambleUsersList = gambleUserService.findAll();
+		allGambleCompetitionsList = gambleCompetitionService.findAll();
 	}
 
 	public String onGambleEditSubmit() throws FacesException {
@@ -139,13 +134,13 @@ public class GambleController implements Serializable {
 			for (GambleUser newUser : newGambleUsers) {
 				selectedGamble.getParticipants().add(newUser);
 			}
-			newGambleUsers.clear();
 			PrimeFacesMessageUtils.addGlobalInfoMessage("Added '" + newGambleUsers.size() + "' users");
+			newGambleUsers.clear();
 		}
 	}
 
 	public void onAddNewCompetitions() {
-		logger.info("onAddNewCompetitions. List size: ");
+		logger.info("onAddNewCompetitions");
 		if (newGambleCompetitions == null || newGambleCompetitions.isEmpty()) {
 			PrimeFacesMessageUtils.addGlobalErrorMessage("New competition's list is empty!");
 		} else {
@@ -153,9 +148,10 @@ public class GambleController implements Serializable {
 
 			for (GambleCompetition newCompetition : newGambleCompetitions) {
 				selectedGamble.getCompetitons().add(newCompetition);
+				logger.info("Added new competition: " + newCompetition);
 			}
-			newGambleCompetitions.clear();
 			PrimeFacesMessageUtils.addGlobalInfoMessage("Added '" + newGambleCompetitions.size() + "' competitions");
+			newGambleCompetitions.clear();
 		}
 	}
 
@@ -214,12 +210,12 @@ public class GambleController implements Serializable {
 	}
 
 	public List<GambleCompetition> getGambleCompetitions() {
-		return GambleCompetitionUtils.filterByGamble(appEntitiesLists.getGambleCompetitions(), selectedGamble);
+		return GambleCompetitionUtils.filterByGamble(allGambleCompetitionsList, selectedGamble);
 		// return gambleUsers;
 	}
 
 	public List<GambleUser> getGambleUsers() {
-		return GambleUserUtils.filterByGamble(appEntitiesLists.getGambleUsers(), selectedGamble);
+		return GambleUserUtils.filterByGamble(allGambleUsersList, selectedGamble);
 		// return gambleUsers;
 	}
 

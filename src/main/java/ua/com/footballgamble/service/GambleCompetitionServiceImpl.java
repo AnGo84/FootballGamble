@@ -50,6 +50,11 @@ public class GambleCompetitionServiceImpl implements CommonService<GambleCompeti
 
 		list = list.stream().sorted(Comparator.comparing(GambleCompetition::getName)).collect(Collectors.toList());
 
+		/*for (GambleCompetition gambleCompetition:
+		list ) {
+			logger.info("		GambleCompetition: " + gambleCompetition);
+		}*/
+
 		return list;
 	}
 

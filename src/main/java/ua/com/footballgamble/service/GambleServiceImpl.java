@@ -89,7 +89,7 @@ public class GambleServiceImpl implements CommonService<GambleEntity> {
 	public void save(GambleEntity object)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
-		logger.info("Create Gamble : " + object);
+		logger.info("Create Gamble: " + object);
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
@@ -105,7 +105,7 @@ public class GambleServiceImpl implements CommonService<GambleEntity> {
 	public void update(GambleEntity object)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
-		logger.info("Update Gamble API: " + object);
+		logger.info("Update Gamble: " + object);
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
 		HttpEntity<GambleEntity> request = new HttpEntity<>(object, httpHeaders.getHeaders());
