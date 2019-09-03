@@ -15,11 +15,11 @@ public class GambleCompetitionUtils {
 		if (list == null || list.isEmpty()) {
 			return null;
 		}
-		if (gamble == null || gamble.getCompetitons() == null || gamble.getCompetitons().isEmpty()) {
+		if (gamble == null || gamble.getCompetitions() == null || gamble.getCompetitions().isEmpty()) {
 			return list;
 		}
 		List<GambleCompetition> filteredlist = new ArrayList<>();
-		Map<Long, GambleCompetition> competitionMap = gamble.getCompetitons().stream()
+		Map<Long, GambleCompetition> competitionMap = gamble.getCompetitions().stream()
 				.collect(Collectors.toMap(GambleCompetition::getId, gambleCompetition -> gambleCompetition));
 		for (GambleCompetition gambleCompetition : list) {
 			if (!competitionMap.containsKey(gambleCompetition.getId())) {

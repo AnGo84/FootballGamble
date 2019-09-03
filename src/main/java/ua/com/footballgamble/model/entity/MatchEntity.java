@@ -1,11 +1,12 @@
 package ua.com.footballgamble.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-import ua.com.footballgamble.utils.DateTimeUtils;
-
 import java.util.Date;
 
-@JsonRootName("match")
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import ua.com.footballgamble.utils.DateTimeUtils;
+
+//@JsonRootName("match")
 public class MatchEntity {
 
 	private long id;
@@ -187,14 +188,17 @@ public class MatchEntity {
 	}
 
 	/**/
+	@JsonIgnore
 	public Date getUtcDateAsDate() {
 		return DateTimeUtils.getDateFromString(utcDate);
 	}
 
+	@JsonIgnore
 	public String getDisplayUtcDate() {
 		return DateTimeUtils.getDateForDisplay(utcDate);
 	}
 
+	@JsonIgnore
 	public String getScoreTotalHomeTeam() {
 		String total = "";
 		if (scoreFullTimeHomeTeam != null) {
@@ -209,6 +213,7 @@ public class MatchEntity {
 		return total;
 	}
 
+	@JsonIgnore
 	public String getScoreTotalAwayTeam() {
 		String total = "";
 		if (scoreFullTimeAwayTeam != null) {
@@ -223,10 +228,11 @@ public class MatchEntity {
 		return total;
 	}
 
+	@JsonIgnore
 	public String getSortField() {
-		String add= (stageId<10)?"_":"";
+		String add = (stageId < 10) ? "_" : "";
 
-		return String.valueOf(stageId)+add + "_" + matchday + "_" + group;
+		return String.valueOf(stageId) + add + "_" + matchday + "_" + group;
 	}
 
 	@Override

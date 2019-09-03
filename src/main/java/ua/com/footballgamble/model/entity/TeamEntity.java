@@ -3,6 +3,8 @@ package ua.com.footballgamble.model.entity;
 
 import org.primefaces.model.StreamedContent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ua.com.footballgamble.utils.SteamUtils;
 
 public class TeamEntity {
@@ -135,6 +137,7 @@ public class TeamEntity {
 	}
 
 	//
+	@JsonIgnore
 	public String getAreaName() {
 		if (area != null) {
 			return area.getName();
@@ -142,6 +145,7 @@ public class TeamEntity {
 		return "";
 	}
 
+	@JsonIgnore
 	public StreamedContent getCrestStreamedContent() {
 		StreamedContent emblem = SteamUtils.getStreamedContent(crestUrl);
 		return emblem;

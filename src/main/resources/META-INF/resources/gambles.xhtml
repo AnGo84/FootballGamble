@@ -31,6 +31,7 @@
 						</h:panelGroup>
 
 					</h:panelGroup>
+					<hr/>
 				</sec:authorize>
 
 				<p:dataTable id="dt_gambles_list" widgetVar="dt_gambles_list"
@@ -135,7 +136,7 @@
 						</p:commandButton>
 					</p:column> -->
 
-					<p:column>
+					<p:column width="200" style="text-align: center;">
 						<!-- 
 						<sec:authorize access="!hasRole('ROLE_ADMIN')">
 						<p:commandButton id="cb_competition_view" style="width:120px;"
@@ -154,7 +155,7 @@
 								icon="ui-icon-trash"
 								action="#{gamblesController.onDeleteGamble(gamble)}"
 								process="@this dt_gambles_list"
-								update="@this dt_gambles_list :form_gambles_list:growl_message">
+								update="@this dt_gambles_list :form_gambles:growl_message">
 								<!-- value="Delete" -->
 								<p:confirm header="Confirm action"
 									message="Confirm gamble deletion: #{gamble.id} #{gamble.name}"

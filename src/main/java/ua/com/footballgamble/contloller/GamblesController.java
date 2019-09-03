@@ -54,7 +54,7 @@ public class GamblesController implements Serializable {
 		logger.info("Get user for Gamble: " + gamble);
 
 		FacesContextUtils.putSessionMapObject("selectedGamble", gamble);
-		FacesContextUtils.putSessionMapObject("eventType", EventType.VIEW);
+		FacesContextUtils.putSessionMapObject("eventType", EventType.EDIT);
 		return "gamble.html?faces-redirect=true";
 	}
 
