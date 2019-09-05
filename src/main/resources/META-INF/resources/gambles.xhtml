@@ -31,7 +31,7 @@
 						</h:panelGroup>
 
 					</h:panelGroup>
-					<hr/>
+					<hr />
 				</sec:authorize>
 
 				<p:dataTable id="dt_gambles_list" widgetVar="dt_gambles_list"
@@ -59,7 +59,13 @@
 						filterBy="#{gamble.id}" filterMatchMode="contains"
 						sortBy="#{gamble.id}">
 						<f:facet name="header">ID</f:facet>
-						<h:outputText value="#{gamble.id}" />
+						<!-- <h:outputText value="#{gamble.id}" /> -->
+
+						<p:commandLink action="#{gamblesController.onView(gamble)}"
+							style="margin-right:5px;">
+							<h:outputText value="#{gamble.id}" />
+						</p:commandLink>
+
 					</p:column>
 
 					<p:column width="250" filterBy="#{gamble.name}"

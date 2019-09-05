@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import ua.com.footballgamble.exception.RestAPIServerException;
 import ua.com.footballgamble.model.entity.GambleCompetition;
 import ua.com.footballgamble.model.entity.GambleEntity;
 import ua.com.footballgamble.model.entity.GambleMatchEntity;
+import ua.com.footballgamble.model.entity.GambleMatchScore;
 import ua.com.footballgamble.model.entity.GambleRuleEntity;
 import ua.com.footballgamble.model.entity.GambleStage;
 import ua.com.footballgamble.model.entity.GambleUser;
@@ -78,9 +80,38 @@ public class GambleMatchServiceImpl {
 				new ParameterizedTypeReference<List<GambleMatchEntity>>() {
 				});
 		list = response.getBody();
-
-		// list =
-		// list.stream().sorted(Comparator.comparing(GambleMatchEntity::getId)).collect(Collectors.toList());
+		list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
+				.thenComparingLong(GambleMatchEntity::getMatchId).reversed()).collect(Collectors.toList());
+		/*
+		 * list = list.stream().sorted((lhs, rhs) -> {
+		 * 
+		 * if (lhs.getCompetitionId().equals(rhs.getCompetitionId())) {
+		 * 
+		 * if
+		 * (lhs.getMatch().getDisplayUtcDate().equals(rhs.getMatch().getDisplayUtcDate()
+		 * )) {
+		 * 
+		 * return
+		 * rhs.getMatch().getHomeTeam().getName().compareTo(lhs.getMatch().getHomeTeam()
+		 * .getName()); } else {
+		 * 
+		 * | Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH); if
+		 * |(rhs.getMatch().getUtcDateAsDate().compareTo(today) < 0) { | } else { return
+		 * |lhs.getMatch().getUtcDateAsDate().compareTo(rhs.getMatch().getUtcDateAsDate(
+		 * ) |); }
+		 * 
+		 * return
+		 * rhs.getMatch().getUtcDateAsDate().compareTo(lhs.getMatch().getUtcDateAsDate()
+		 * ); }
+		 * 
+		 * } else { return lhs.getCompetitionName().compareTo(rhs.getCompetitionName());
+		 * } }).collect(Collectors.toList());
+		 */
+		/*
+		 * Comparator<GambleMatchEntity> nameComparator = (h1, h2) ->
+		 * h2.getCompetitionName().compareTo(h2.getCompetitionName());
+		 * Comparator.comparing(Human::getName).thenComparing(Human::getAge);
+		 */
 
 		return list;
 	}
@@ -118,22 +149,23 @@ public class GambleMatchServiceImpl {
 		logger.info("Save GambleMatches");
 		if (saveList == null || saveList.isEmpty()) {
 			logger.info("List for update is empty!");
-			throw new DataConflictException("List for update is empty!");
-		}
-		logger.info("Save GambleMatches List size: " + saveList.size());
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+			// throw new DataConflictException("List for update is empty!");
+		} else {
+			logger.info("Save GambleMatches List size: " + saveList.size());
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
 
-		HttpEntity<List<GambleMatchEntity>> request = new HttpEntity<>(saveList, httpHeaders.getHeaders());
-		// restTemplate.put(apiPath + ENTITY_PATH + "/update", object);
-		String apiUrl = apiPath + ENTITY_PATH + "/save/all/list";
+			HttpEntity<List<GambleMatchEntity>> request = new HttpEntity<>(saveList, httpHeaders.getHeaders());
+			// restTemplate.put(apiPath + ENTITY_PATH + "/update", object);
+			String apiUrl = apiPath + ENTITY_PATH + "/save/all/list";
 
-		try {
-			restTemplate.exchange(apiUrl, HttpMethod.POST, request,
-					new ParameterizedTypeReference<List<GambleMatchEntity>>() {
-					});
-		} catch (NoContentException e) {
-			logger.info("Saving return HttpStatus.NO_CONTENT");
+			try {
+				restTemplate.exchange(apiUrl, HttpMethod.POST, request,
+						new ParameterizedTypeReference<List<GambleMatchEntity>>() {
+						});
+			} catch (NoContentException e) {
+				logger.info("Saving return HttpStatus.NO_CONTENT");
+			}
 		}
 	}
 
@@ -206,7 +238,8 @@ public class GambleMatchServiceImpl {
 			String stage)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
-		logger.info("Delete GambleMatchs by gamble ID: " + gambleId);
+		logger.info("Delete GambleMatchs by gamble ID={}, competitionId={}, stage='{}'  ", gambleId, competitionId,
+				stage);
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
@@ -301,8 +334,8 @@ public class GambleMatchServiceImpl {
 					if (!gambleStage.isActive()
 							&& gambleData.isExistMatchesByStage(gambleCompetition.getId(), gambleStage.getName())) {
 						hasDeletions = true;
-						logger.info("	Delete Stage= {} for GambleId= {} and CompetitionId={}", gambleStage.getName(),
-								gambleData.getGambleEntity().getId(), gambleCompetition.getId());
+						logger.info("	Delete Stage= '{}' for GambleId= {} and CompetitionId={}",
+								gambleStage.getName(), gambleData.getGambleEntity().getId(), gambleCompetition.getId());
 						deleteAllGambleMatchesByGambleIdAndCompetitionIdAndStage(gambleData.getGambleEntity().getId(),
 								gambleCompetition.getId(), gambleStage.getName());
 					}
@@ -327,19 +360,30 @@ public class GambleMatchServiceImpl {
 			List<GambleMatchEntity> updatedGambleMatchList = new ArrayList<>();
 			for (GambleCompetition competition : competitions) {
 				SeasonEntity seasonEntity = seasonService.findById(competition.getSeasonId());
+
+				Set<String> activeStages = competition.getCompetitionActiveStagesNamesSet();
+				if (activeStages == null || activeStages.isEmpty()) {
+					continue;
+				}
+
 				List<MatchEntity> matches = seasonEntity.getMatches();
 				for (GambleUser user : participants) {
 					for (MatchEntity match : matches) {
 						GambleMatchEntity matchEntity = null;
 						if ((matchEntity = gambleData.isExist(gambleId, competition.getId(), match.getId(),
 								user.getId())) == null) {
-							matchEntity = mapGambleMatch(gambleId, competition, user, match, gambleRule);
-							updatedGambleMatchList.add(matchEntity);
+							if (activeStages.contains(match.getStage())) {
+								matchEntity = mapGambleMatch(gambleId, competition, user, match, gambleRule);
+								updatedGambleMatchList.add(matchEntity);
+							}
 
 						} else {
 							if (!matchEntity.getMatch().getLastUpdated().equals(match.getLastUpdated())) {
 								matchEntity.setMatch(match);
-								updatedGambleMatchList.add(matchEntity);
+								GambleMatchScore matchScore = new GambleMatchScore(matchEntity);
+								matchScore.calcMatchScore();
+
+								updatedGambleMatchList.add(matchScore.getGambleMatch());
 							}
 						}
 					}
@@ -357,6 +401,7 @@ public class GambleMatchServiceImpl {
 		GambleMatchEntity matchEntity = new GambleMatchEntity();
 		matchEntity.setGambleId(gambleId);
 		matchEntity.setCompetitionId(competition.getId());
+		matchEntity.setCompetitionName(competition.getName());
 		matchEntity.setSeasonId(competition.getSeasonId());
 		matchEntity.setMatchId(match.getId());
 		matchEntity.setMatch(match);

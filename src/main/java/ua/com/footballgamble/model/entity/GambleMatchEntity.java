@@ -4,6 +4,7 @@ public class GambleMatchEntity {
 	private String id;
 	private Long gambleId;
 	private Long competitionId;
+	private String competitionName;
 	private Long seasonId;
 	private Long matchId;
 	private MatchEntity match;
@@ -18,6 +19,8 @@ public class GambleMatchEntity {
 	private Integer scorePenaltiesHomeTeam;
 	private Integer scorePenaltiesAwayTeam;
 	private Integer total;
+
+	private boolean edited;
 
 	public String getId() {
 		return id;
@@ -41,6 +44,14 @@ public class GambleMatchEntity {
 
 	public void setCompetitionId(Long competitionId) {
 		this.competitionId = competitionId;
+	}
+
+	public String getCompetitionName() {
+		return competitionName;
+	}
+
+	public void setCompetitionName(String competitionName) {
+		this.competitionName = competitionName;
 	}
 
 	public Long getSeasonId() {
@@ -155,11 +166,21 @@ public class GambleMatchEntity {
 		this.total = total;
 	}
 
+	public boolean isEdited() {
+		return edited;
+	}
+
+	public void setEdited(boolean edited) {
+		this.edited = edited;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((competitionId == null) ? 0 : competitionId.hashCode());
+		result = prime * result + ((competitionName == null) ? 0 : competitionName.hashCode());
+		result = prime * result + (edited ? 1231 : 1237);
 		result = prime * result + ((gambleId == null) ? 0 : gambleId.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((match == null) ? 0 : match.hashCode());
@@ -192,6 +213,13 @@ public class GambleMatchEntity {
 			if (other.competitionId != null)
 				return false;
 		} else if (!competitionId.equals(other.competitionId))
+			return false;
+		if (competitionName == null) {
+			if (other.competitionName != null)
+				return false;
+		} else if (!competitionName.equals(other.competitionName))
+			return false;
+		if (edited != other.edited)
 			return false;
 		if (gambleId == null) {
 			if (other.gambleId != null)
@@ -279,12 +307,14 @@ public class GambleMatchEntity {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("GambleMatch [id=");
+		builder.append("GambleMatchEntity [id=");
 		builder.append(id);
 		builder.append(", gambleId=");
 		builder.append(gambleId);
 		builder.append(", competitionId=");
 		builder.append(competitionId);
+		builder.append(", competitionName=");
+		builder.append(competitionName);
 		builder.append(", seasonId=");
 		builder.append(seasonId);
 		builder.append(", matchId=");
@@ -313,6 +343,8 @@ public class GambleMatchEntity {
 		builder.append(scorePenaltiesAwayTeam);
 		builder.append(", total=");
 		builder.append(total);
+		builder.append(", edited=");
+		builder.append(edited);
 		builder.append("]");
 		return builder.toString();
 	}

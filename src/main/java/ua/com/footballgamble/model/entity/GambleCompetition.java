@@ -1,6 +1,10 @@
 package ua.com.footballgamble.model.entity;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class GambleCompetition {
 	private Long id;
@@ -47,6 +51,22 @@ public class GambleCompetition {
 
 	public void setStages(List<GambleStage> stages) {
 		this.stages = stages;
+	}
+
+	//
+	@JsonIgnore
+	public Set<String> getCompetitionActiveStagesNamesSet() {
+		if (stages == null || stages.isEmpty()) {
+			return null;
+		}
+		Set<String> activeStages = new HashSet<>();
+
+		for (GambleStage gambleStage : stages) {
+			if (gambleStage.isActive()) {
+				activeStages.add(gambleStage.getName());
+			}
+		}
+		return activeStages;
 	}
 
 	@Override

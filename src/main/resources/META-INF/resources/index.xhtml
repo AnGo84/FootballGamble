@@ -9,38 +9,47 @@
 <!-- <ui:composition template="layout.xhtml"> -->
 <ui:composition template="template.xhtml">
 	<ui:define name="content">
-		<div>
-			<p>Welcome in the TO-DO application!</p>
-			<p style="height: 50px">This is a static message rendered from
-				xhtml.</p>
-		</div>
-		<h:form id="form_to_products">
-			<p:commandLink action="test_product_list_form.xhtml">Products list</p:commandLink>
-				<!-- actionListener="#{testing.getMessage}" target="_blank" -->
+
+		<h:form id="form_user_gambles">
+
+			<p:growl id="growl_message" showDetail="true" sticky="true" />
+
+			<p:panel id="p_selected_gamble">
+
+				<p:panelGrid class="ui-noborder" columns="3">
+					<!-- styleClass="text-center" -->
+					<p:outputLabel for="s_menu_gambles" value="Gamble: " />
+					<p:selectOneMenu id="s_menu_gambles"
+						style="width: 200px !important" editable="false"
+						value="#{userGamblesController.selectedGamble}">
+						<!-- 
+								converter="competitionSeasonEntityConverter"
+								#{msg['LABEL.Not_Choosed']}  filter="true"
+								filterMatchMode="contains" -->
+						<f:selectItem itemLabel="Not choosed" noSelectionOption="true" />
+						<f:selectItems value="#{userGamblesController.userGambles}" />
+						<!-- 
+								value="#{competitionController.selectedCompetition.seasons}"
+									var="season" itemLabel="#{season.seasonName}"
+									itemValue="#{season}" 
+								<p:ajax process="@this" update="@this" /> -->
+
+						<p:ajax event="change"
+							listener="#{userGamblesController.onChangeGamble}"
+							process="@this" update="@this :form_user_gambles:growl_message" />
+
+					</p:selectOneMenu>
+
+					<p:message for="s_menu_gambles" />
+
+				</p:panelGrid>
+			</p:panel>
+
+
+			<p:panelGrid columns="2" class="ui-noborder" layout="grid">
+
+			</p:panelGrid>
 		</h:form>
 	</ui:define>
 </ui:composition>
 </html>
-<!-- <f:view xmlns="http://www.w3c.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
-	<h:head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>TO-DO application</title>
-		<h:outputStylesheet name="/css/main.css" />
-	</h:head>
-	<h:body>
-		<div>
-			<p>Welcome in the TO-DO application!</p>
-			<p style="height: 50px">This is a static message rendered from
-				xhtml.</p>
-		</div>
-		<h:form id="form_to_products">
-			<p:commandLink 
-				action="test_product_list_form.xhtml" >Products list</p:commandLink>
-				actionListener="#{testing.getMessage}" target="_blank"
-		</h:form>
-	</h:body>
-</f:view> -->

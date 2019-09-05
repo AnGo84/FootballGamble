@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.FacesException;
@@ -18,6 +19,7 @@ import ua.com.footballgamble.model.EventType;
 import ua.com.footballgamble.model.entity.GambleCompetition;
 import ua.com.footballgamble.model.entity.GambleEntity;
 import ua.com.footballgamble.model.entity.GambleMatchEntity;
+import ua.com.footballgamble.model.entity.GambleMatchScore;
 import ua.com.footballgamble.model.entity.GambleRuleEntity;
 import ua.com.footballgamble.model.entity.GambleUser;
 import ua.com.footballgamble.primefaces.FacesContextUtils;
@@ -135,11 +137,13 @@ public class GambleController implements Serializable {
 		return "";
 	}
 
-	public void updateGambleMatches() {
+	private void updateGambleMatches() {
 		logger.info("Update Gamble Matches");
 
 		try {
 			gambleMatchService.updateGambleMatches(selectedGamble, gambleMatches);
+			gambleMatches = gambleMatchService.findAllByGambleId(selectedGamble.getId());
+
 			PrimeFacesMessageUtils.addGlobalInfoMessage("Gamble '" + selectedGamble.getId() + "' matches was updated");
 		} catch (Exception ex) {
 			logger.error("Error on update Gamble '{}' matches: {}", selectedGamble, ex.getMessage());
@@ -190,7 +194,6 @@ public class GambleController implements Serializable {
 		logger.info("onDeleteParticipant: " + user);
 
 		try {
-
 			selectedGamble.getParticipants().remove(user);
 			PrimeFacesMessageUtils.addGlobalInfoMessage("User '" + user.getLogin() + "' was deleted");
 		} catch (Exception ex) {
@@ -214,8 +217,42 @@ public class GambleController implements Serializable {
 
 	}
 
-	// Getters-Setters
+	public void onCellEdit(GambleMatchEntity editedGambleMatch) {
+		logger.info("onCellEdit: " + editedGambleMatch);
 
+		GambleMatchEntity gambleMatch = gambleMatches.stream()
+				.filter(match -> editedGambleMatch.getId().equals(match.getId())).findAny().orElse(null);
+		if (gambleMatch != null) {
+			gambleMatch.setEdited(true);
+			gambleMatch.setScoreFullTimeHomeTeam(editedGambleMatch.getScoreFullTimeHomeTeam());
+			gambleMatch.setScoreFullTimeAwayTeam(editedGambleMatch.getScoreFullTimeAwayTeam());
+			GambleMatchScore matchScore = new GambleMatchScore(gambleMatch);
+			matchScore.calcMatchScore();
+			gambleMatch.setTotal(matchScore.getGambleMatch().getTotal());
+		}
+	}
+
+	public void onGambleMatchesUpdate() {
+		logger.info("onGambleMatchesUpdate");
+
+		List<GambleMatchEntity> editedMatches = gambleMatches.stream().filter(match -> match.isEdited())
+				.collect(Collectors.toList());
+		if (editedMatches != null && !editedMatches.isEmpty()) {
+			logger.info("GambleMatches for Update: " + editedMatches.size());
+			try {
+				gambleMatchService.saveAll(editedMatches);
+				PrimeFacesMessageUtils.addGlobalInfoMessage("Updated '" + editedMatches.size() + "' matches");
+
+				gambleMatches.stream().filter(match -> match.isEdited()).forEach(match -> match.setEdited(false));
+
+			} catch (Exception ex) {
+				logger.error("Error on Update matches: " + ex.getMessage());
+				PrimeFacesMessageUtils.addGlobalErrorMessage("Error on Update matches: " + ex.getMessage());
+			}
+		}
+	}
+
+	// Getters-Setters
 	public EventType getEventType() {
 		return eventType;
 	}

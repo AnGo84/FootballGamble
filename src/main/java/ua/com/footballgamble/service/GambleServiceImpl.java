@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,4 +156,26 @@ public class GambleServiceImpl implements CommonService<GambleEntity> {
 		return (findById(entity.getId()) != null);
 	}
 
+	public List<GambleEntity> findAllActiveForUser(String login)
+			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
+		logger.info("Get All Active Gambles for user {}", login);
+		if (StringUtils.isBlank(login)) {
+			throw new AuthorisationException("You must be logged!");
+		}
+		List<GambleEntity> list = new ArrayList<>();
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+		// Example: https://www.baeldung.com/spring-rest-template-list
+		ResponseEntity<List<GambleEntity>> response = restTemplate.exchange(
+				apiPath + ENTITY_PATH + "/active/user/" + login, HttpMethod.GET, httpHeaders.getHttpAuthEntity(),
+				new ParameterizedTypeReference<List<GambleEntity>>() {
+				});
+		list = response.getBody();
+
+		// list =
+		// list.stream().sorted(Comparator.comparingLong(GambleEntity::getId)).collect(Collectors.toList());
+
+		return list;
+	}
 }

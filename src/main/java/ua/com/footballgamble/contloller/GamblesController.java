@@ -37,10 +37,24 @@ public class GamblesController implements Serializable {
 
 	public String onAddNewGamble() {
 		logger.info("On Add new Gamble");
-		FacesContextUtils.putSessionMapObject("selectedGamble", new GambleEntity());
+		GambleEntity gambleEntity = new GambleEntity();
+		gambleEntity.setId(getNextId());
+
+		FacesContextUtils.putSessionMapObject("selectedGamble", gambleEntity);
 		FacesContextUtils.putSessionMapObject("eventType", EventType.ADD);
 
 		return "gamble.html?faces-redirect=true";
+	}
+
+	public Long getNextId() {
+		Long maxId = 0l;
+
+		for (GambleEntity gamble : gambles) {
+			if (gamble.getId() > maxId) {
+				maxId = gamble.getId();
+			}
+		}
+		return ++maxId;
 	}
 
 	public String onView(GambleEntity gamble) {
