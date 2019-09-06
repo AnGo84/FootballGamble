@@ -145,14 +145,38 @@
 
 		<!-- plugins -->
 		<plugins>
+			<!-- <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin> -->
+
+			<!-- https://devcenter.heroku.com/articles/java-webapp-runner#create-a-procfile -->
+			<!-- Need Procfile web: java -Dserver.port=$PORT -jar target/*.jar -->
+
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- Java 8 for Travis-->
-				<configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<!-- Java 8 for Travis -->
+				<!--<configuration>
 					<release>8</release>
-				</configuration>
-				<!--  -->
+				</configuration>-->
+				<!-- -->
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.github.jsimone</groupId>
+									<artifactId>webapp-runner</artifactId>
+									<version>9.0.11.0</version>
+									<destFileName>webapp-runner.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

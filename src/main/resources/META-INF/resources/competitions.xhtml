@@ -69,7 +69,7 @@
                               filterMatchMode="contains" sortBy="#{competition.id}">
                         <f:facet name="header">ID</f:facet>
 
-                        <p:commandLink action="#competitionsController.onView(competition)}"
+                        <p:commandLink action="#{competitionsController.onView(competition)}"
                                        style="margin-right:5px;">
                             <h:outputText value="#{competition.id}"/>
                         </p:commandLink>
