@@ -14,14 +14,15 @@ import java.io.StringWriter;
 
 @Controller
 public class AppErrorController implements ErrorController {
-	public static final Logger logger = LoggerFactory.getLogger(AppErrorController.class);
+	//public static final Logger logger = LoggerFactory.getLogger(AppErrorController.class);
 	@RequestMapping("/error")
 	@ResponseBody
 	public String handleError(HttpServletRequest request) {
 
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 		Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
-		logger.error("Exception message: " + exception.getMessage(),exception);
+		//logger.error("Exception message: " + exception.getMessage(),exception);
+		exception.printStackTrace();
 		String exceptionStackTrace = getExceptionStackTrace(exception);
 
 		return String.format("<html><body><h2>Error Page</h2><div>Status code: <b>%s</b></div>"
