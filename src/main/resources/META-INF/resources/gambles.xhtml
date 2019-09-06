@@ -141,8 +141,17 @@
 								target="#{teamsController.selectedTeam}" />
 						</p:commandButton>
 					</p:column> -->
-
-					<p:column width="200" style="text-align: center;">
+					<p:column width="60" style="text-align: center;">
+						<p:commandButton id="cb_score_table_view" title="View score table"
+							icon="fa fa-fw fa-table" process="dt_gambles_list"
+							update=":form_gambles:scoreTableInfoDialog"
+							actionListener="#{gamblesController.onViewScoreTable(gamble)}"
+							oncomplete="PF('scoreTableInfoDialog').show()">
+							<f:setPropertyActionListener value="#{gamble}"
+								target="#{gamblesController.selectedGamble}" />
+						</p:commandButton>
+					</p:column>
+					<p:column width="120" style="text-align: center;">
 						<!-- 
 						<sec:authorize access="!hasRole('ROLE_ADMIN')">
 						<p:commandButton id="cb_competition_view" style="width:120px;"
@@ -180,6 +189,63 @@
 				</p:dataTable>
 			</p:panel>
 			<!--  -->
+
+			<p:dialog id="scoreTableInfoDialog" widgetVar="scoreTableInfoDialog"
+				header="Gamble Score Table" dynamic="true" closable="true"
+				resizable="false" position="center center" fitViewport="true"
+				modal="true" width="450">
+				<!-- width="90vw"  heigth="90vh"  style="z-index: 1007;" modal="true"  -->
+				<!-- <p:ajax event="open"
+			update="pg_contragent_viewPanel pg_contragent_dialog_buttons" /> -->
+				<!--position="center top"(h v) heigth="90vh" width="90vw" header="#{msg['LABEL.Contragent']}"  -->
+
+				<!-- <p:outputPanel id="outp_scoreTable" style="text-align:center;"> -->
+				<p:dataTable id="dt_score_table" widgetVar="dt_score_table"
+					var="userScore" value="#{gamblesController.scoreTable}"
+					reflow="true" emptyMessage="Data not found" rows="10"
+					paginator="true" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15"
+					filteredValue="#{gamblesController.filteredScoreTable}"
+					rowKey="#{competition.id}" rowIndexVar="rowIndex"
+					sortMode="multiple">
+
+					<!-- selectionMode="single"
+						rowKey="#{userScore.userId}" sortMode="multiple" -->
+
+					<f:facet name="header"> Score Table </f:facet>
+
+					<p:column width="100"
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<f:facet name="header"> № </f:facet>
+						<h:outputText value="#{rowIndex + 1}" />
+					</p:column>
+
+					<p:column width="200" headerText="User"
+						sortBy="#{userScore.user.login}"
+						filterBy="#{userScore.user.login}" filterMatchMode="contains">
+						<f:facet name="header"> User </f:facet>
+						<h:outputText value="#{userScore.user.login}" />
+					</p:column>
+
+					<p:column width="100" style="text-align: center;"
+						sortBy="#{userScore.score}" filterBy="#{userScore.score}"
+						filterMatchMode="contains">
+						<f:facet name="header"> Score </f:facet>
+						<h:outputText value="#{userScore.score}" />
+					</p:column>
+
+				</p:dataTable>
+				<!-- </p:outputPanel> -->
+				<p:outputPanel styleClass="text-center">
+					<p:commandButton value="Close" type="button"
+						icon="fa fa-fw fa-close"
+						onclick="PF('scoreTableInfoDialog').hide();" />
+
+				</p:outputPanel>
+			</p:dialog>
+
+
 		</h:form>
 	</ui:define>
 </ui:composition>

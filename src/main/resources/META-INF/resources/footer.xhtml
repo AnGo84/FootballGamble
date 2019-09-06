@@ -3,11 +3,25 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 
 <body>
 	<ui:composition>
-		<h3>Football data provided by the Football-Data.org API</h3>				
+		<p:outputPanel deferred="true">
+			<h:panelGroup styleClass="text-center" layout="block">
+				<!-- <hr /> -->
+				<p:panel styleClass="text-center" 
+					header="Football data provided by the Football-Data.org API">
+				</p:panel>
+
+				<!-- <p:outputLabel value="Football data provided by the Football-Data.org API">
+				</p:outputLabel> -->
+				<!-- <hr /> -->
+			</h:panelGroup>
+		</p:outputPanel>
 	</ui:composition>
 </body>
 </html>

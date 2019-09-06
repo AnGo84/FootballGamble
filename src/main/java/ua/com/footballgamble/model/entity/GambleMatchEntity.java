@@ -1,5 +1,9 @@
 package ua.com.footballgamble.model.entity;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class GambleMatchEntity {
 	private String id;
 	private Long gambleId;
@@ -172,6 +176,16 @@ public class GambleMatchEntity {
 
 	public void setEdited(boolean edited) {
 		this.edited = edited;
+	}
+
+	//
+	@JsonIgnore
+	public boolean isScheduled() {
+		boolean result = false;
+		if (match.getUtcDateAsDate().compareTo(new Date()) > 0) {
+			result = true;
+		}
+		return result;
 	}
 
 	@Override

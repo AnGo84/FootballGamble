@@ -116,6 +116,25 @@ public class GambleMatchServiceImpl {
 		return list;
 	}
 
+	public List<GambleMatchEntity> findAllUserMatchesByGambleId(Long gambleId, String login)
+			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
+		logger.info("Get All User's {} GambleMatches List for GambleId: {}", login, gambleId);
+		List<GambleMatchEntity> list = new ArrayList<>();
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+		// Example: https://www.baeldung.com/spring-rest-template-list
+		ResponseEntity<List<GambleMatchEntity>> response = restTemplate.exchange(
+				apiPath + ENTITY_PATH + "/gamble=" + gambleId + "/user=" + login, HttpMethod.GET,
+				httpHeaders.getHttpAuthEntity(), new ParameterizedTypeReference<List<GambleMatchEntity>>() {
+				});
+		list = response.getBody();
+		list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
+				.thenComparingLong(GambleMatchEntity::getMatchId)).collect(Collectors.toList());
+		return list;
+
+	}
+
 	public GambleMatchEntity findById(String id)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 		logger.info("Get GambleMatch by id: " + id);

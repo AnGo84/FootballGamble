@@ -2,7 +2,9 @@ package ua.com.footballgamble.service;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import ua.com.footballgamble.exception.DataConflictException;
 import ua.com.footballgamble.exception.NotFoundException;
 import ua.com.footballgamble.exception.RestAPIServerException;
 import ua.com.footballgamble.model.entity.GambleEntity;
+import ua.com.footballgamble.model.entity.GambleUserScore;
 
 @Service("gamblesService")
 public class GambleServiceImpl implements CommonService<GambleEntity> {
@@ -175,6 +178,27 @@ public class GambleServiceImpl implements CommonService<GambleEntity> {
 
 		// list =
 		// list.stream().sorted(Comparator.comparingLong(GambleEntity::getId)).collect(Collectors.toList());
+
+		return list;
+	}
+
+	public List<GambleUserScore> getGambleUsersScores(Long gambleId)
+			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
+		logger.info("Get Gamble Users' Scores for id: {}", gambleId);
+
+		List<GambleUserScore> list = new ArrayList<>();
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+		// Example: https://www.baeldung.com/spring-rest-template-list
+		ResponseEntity<List<GambleUserScore>> response = restTemplate.exchange(
+				apiPath + ENTITY_PATH + "/" + gambleId + "/users/scores", HttpMethod.GET,
+				httpHeaders.getHttpAuthEntity(), new ParameterizedTypeReference<List<GambleUserScore>>() {
+				});
+		list = response.getBody();
+
+		list = list.stream().sorted(Comparator.comparingLong(GambleUserScore::getScore).reversed()
+				.thenComparing(GambleUserScore::getUserLogin)).collect(Collectors.toList());
 
 		return list;
 	}

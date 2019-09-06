@@ -426,7 +426,7 @@
 						<h:panelGroup styleClass="text-right" layout="block"
 							rendered="#{gambleController.eventType != 'VIEW'}">
 							<p:commandButton id="cb_matches_update"
-								icon="fa fa-fw fa-refresh" value="Update"
+								icon="fa fa-fw fa-refresh" value="Update edited"
 								action="#{gambleController.onGambleMatchesUpdate}"
 								process="@this"
 								update="@this dt_matches_list :form_gamble:growl_message">

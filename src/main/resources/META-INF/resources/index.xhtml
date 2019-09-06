@@ -19,24 +19,22 @@
 				<p:panelGrid class="ui-noborder" columns="3">
 					<!-- styleClass="text-center" -->
 					<p:outputLabel for="s_menu_gambles" value="Gamble: " />
+
 					<p:selectOneMenu id="s_menu_gambles"
-						style="width: 200px !important" editable="false"
-						value="#{userGamblesController.selectedGamble}">
-						<!-- 
-								converter="competitionSeasonEntityConverter"
-								#{msg['LABEL.Not_Choosed']}  filter="true"
-								filterMatchMode="contains" -->
-						<f:selectItem itemLabel="Not choosed" noSelectionOption="true" />
-						<f:selectItems value="#{userGamblesController.userGambles}" />
-						<!-- 
-								value="#{competitionController.selectedCompetition.seasons}"
-									var="season" itemLabel="#{season.seasonName}"
-									itemValue="#{season}" 
-								<p:ajax process="@this" update="@this" /> -->
+						style="width: 300px !important" editable="false"
+						value="#{userGamblesController.selectedGamble}" required="false"
+						requiredMessage="Value is required."
+						converter="gambleEntityConverter" filter="true"
+						filterMatchMode="contains" panelStyle="width:300px">
+						<!-- <f:selectItem itemLabel="Not choosed" noSelectionOption="true" /> -->
+						<!--itemValue="#{null}"-->
+						<f:selectItems value="#{userGamblesController.userGambles}"
+							var="gamble" itemLabel="#{gamble.name}" itemValue="#{gamble}" />
 
 						<p:ajax event="change"
 							listener="#{userGamblesController.onChangeGamble}"
-							process="@this" update="@this :form_user_gambles:growl_message" />
+							process="@this"
+							update="@this outp_gamble_matches pg_gamble_data :form_user_gambles:growl_message" />
 
 					</p:selectOneMenu>
 
@@ -46,9 +44,227 @@
 			</p:panel>
 
 
-			<p:panelGrid columns="2" class="ui-noborder" layout="grid">
+			<p:panelGrid id="pg_gamble_data" columns="2" class="ui-noborder"
+				layout="grid"
+				rendered="#{userGamblesController.selectedGamble!=null}">
+				<p:outputPanel>
+					<!-- <h:outputText value="#{userGamblesController.scoreTable}" /> -->
+					<p:dataTable id="dt_score_table" widgetVar="dt_score_table"
+						var="userScore" value="#{userGamblesController.scoreTable}"
+						reflow="true" emptyMessage="Data not found" rowIndexVar="rowIndex">
 
+						<!-- selectionMode="single"
+						rowKey="#{userScore.userId}" sortMode="multiple" -->
+
+						<f:facet name="header"> Score Table </f:facet>
+
+						<p:column width="100"
+							style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+							<f:facet name="header"> № </f:facet>
+							<h:outputText value="#{rowIndex + 1}" />
+						</p:column>
+
+						<p:column headerText="User" sortBy="#{userScore.user.login}">
+							<!-- filterBy="#{userScore.user.login}"
+							filterMatchMode="contains"  -->
+							<f:facet name="header"> User </f:facet>
+							<h:outputText value="#{userScore.user.login}" />
+						</p:column>
+
+						<p:column style="text-align: center;" sortBy="#{userScore.score}">
+							<!-- filterBy="#{userScore.score}" filterMatchMode="contains" -->
+							<f:facet name="header"> Score </f:facet>
+							<h:outputText value="#{userScore.score}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:outputPanel>
+				<!-- Gamble Rules -->
+				<p:panelGrid columns="2" columnClasses="label,value">
+					<f:facet name="header">
+						<p:row>
+							<p:column colspan="2">Gamble rules</p:column>
+						</p:row>
+					</f:facet>
+
+					<h:outputText value="Exact Score: " />
+					<h:outputText
+						value="#{userGamblesController.selectedGamble.rule.exactScore}" />
+
+					<h:outputText value="Winner And Differance: " />
+					<h:outputText
+						value="#{userGamblesController.selectedGamble.rule.winnerAndDifferance}" />
+
+					<h:outputText value="Only Draw: " />
+					<h:outputText
+						value="#{userGamblesController.selectedGamble.rule.onlyDraw}" />
+
+					<h:outputText value="Only Winner: " />
+					<h:outputText
+						value="#{userGamblesController.selectedGamble.rule.onlyWinner}" />
+
+					<h:outputText value="Other: " />
+					<h:outputText
+						value="#{userGamblesController.selectedGamble.rule.other}" />
+
+				</p:panelGrid>
+				<!-- / Gamble Rules -->
 			</p:panelGrid>
+
+			<!-- Gamble User Matches  -->
+			<p:outputPanel id="outp_gamble_matches"
+				rendered="#{!empty userGamblesController.gambleMatches}">
+				<h:panelGroup styleClass="text-right" layout="block">
+					<hr />
+					<p:commandButton id="cb_matches_update" icon="fa fa-fw fa-refresh"
+						value="Update edited matches"
+						action="#{userGamblesController.onGambleMatchesUpdate}"
+						process="@this"
+						update="@this dt_matches_list :form_user_gambles:growl_message">
+					</p:commandButton>
+
+				</h:panelGroup>
+
+				<p:dataTable id="dt_matches_list" widgetVar="dt_matches_list"
+					var="match" value="#{userGamblesController.gambleMatches}"
+					reflow="true" emptyMessage="No matchs found" rowKey="#{match.id}"
+					rowIndexVar="rowIndex" editable="true" editMode="cell"
+					sortBy="#{match.competitionId}" expandableRowGroups="true">
+
+					<!-- 
+							filteredValue="#{userGamblesController.filteredGambleMatches}"
+							rows="10" paginator="true"
+                            paginatorPosition="bottom"
+                            paginatorTemplate="{CurrentPageReport} {FuserirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15" selectionMode="single"
+                            selection="#{usersController.selectedUser}" -->
+
+					<f:facet name="header"> Matches List </f:facet>
+
+					<p:ajax event="cellEdit"
+						listener="#{userGamblesController.onCellEdit(match)}" />
+
+					<p:headerRow>
+						<p:column colspan="11">
+							<p:outputLabel value="#{match.competitionName}" />
+						</p:column>
+					</p:headerRow>
+
+					<p:column width="60"
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<h:outputText value="#{rowIndex + 1}" />
+					</p:column>
+
+
+					<!-- <p:column width="120"
+						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;">
+						filterBy="#{match.user.login}" filterMatchMode="contains"
+						<f:facet name="header">User</f:facet>
+						<h:outputText value="#{match.user.login}" />
+					</p:column> -->
+
+					<p:column width="100"
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<!-- filterBy="#{match.match.utcDate}" filterMatchMode="contains" sortBy="#{match.utcDate}" -->
+						<f:facet name="header">Date</f:facet>
+						<h:outputText value="#{match.match.displayUtcDate}" />
+
+					</p:column>
+					<!-- Home team -->
+					<p:column width="50" headerText="#"
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<!-- <f:facet name="header">#</f:facet> -->
+						<!-- Home team Crest -->
+						<p:graphicImage url="#{match.match.homeTeam.crestUrl}" height="30"
+							title="Emblem for  #{match.match.homeTeam.crestUrl}"
+							rendered="#{not empty match.match.homeTeam.crestUrl}" />
+					</p:column>
+
+					<p:column 
+						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+						headerText="Home team">
+						<!-- filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains" -->
+						<h:outputText value="#{match.match.homeTeam.name}" />
+					</p:column>
+					<p:column width="50" headerText=" G "
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<f:facet name="header"> G </f:facet>
+						<h:outputText value="#{match.match.scoreFullTimeHomeTeam}" />
+					</p:column>
+
+					<p:column width="50" headerText=" U "
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+
+						<p:cellEditor rendered="#{match.scheduled}">
+							<f:facet name="output">
+								<h:outputText value="#{match.scoreFullTimeHomeTeam}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{match.scoreFullTimeHomeTeam}"
+									style="width:96%" label="Year" />
+							</f:facet>
+						</p:cellEditor>
+						<h:outputText value="#{match.scoreFullTimeHomeTeam}"
+							rendered="#{!match.scheduled}" />
+					</p:column>
+
+					<!-- Away team -->
+					<p:column width="50" headerText=" U "
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+
+						<p:cellEditor rendered="#{match.scheduled}">
+							<f:facet name="output">
+								<h:outputText value="#{match.scoreFullTimeAwayTeam}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{match.scoreFullTimeAwayTeam}"
+									style="width:96%" label="Year" />
+							</f:facet>
+						</p:cellEditor>
+						<h:outputText value="#{match.scoreFullTimeAwayTeam}"
+							rendered="#{!match.scheduled}" />
+					</p:column>
+
+					<p:column width="50" headerText=" G "
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<h:outputText value="#{match.match.scoreFullTimeAwayTeam}" />
+					</p:column>
+
+					<p:column width="50" headerText=" "
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<f:facet name="header">#</f:facet>
+						<!-- Away team Crest -->
+						<p:graphicImage url="#{match.match.awayTeam.crestUrl}" height="30"
+							width="30" title="Emblem for  #{match.match.awayTeam.crestUrl}"
+							rendered="#{not empty match.match.awayTeam.crestUrl}" />
+					</p:column>
+
+					<p:column 
+						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+						headerText="Away team">
+
+						<!-- filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains" sortBy="#{match.awayTeam.name}" -->
+						<!-- <f:facet name="header">Away Team</f:facet> -->
+						<h:outputText value="#{match.match.awayTeam.name}" />
+					</p:column>
+					<!--  -->
+					<p:column width="100"
+						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
+						headerText="Score">
+						<!-- filterBy="#{match.match.status}" filterMatchMode="contains" -->
+						<h:outputText value="#{match.total}" />
+					</p:column>
+					<!-- <p:column width="120"
+						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
+						headerText="Status">
+						filterBy="#{match.match.status}" filterMatchMode="contains"
+						<h:outputText value="#{match.match.status}" />
+					</p:column> -->
+
+				</p:dataTable>
+			</p:outputPanel>
+			<!-- / Gamble User Matches  -->
+
 		</h:form>
 	</ui:define>
 </ui:composition>

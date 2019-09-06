@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import ua.com.footballgamble.model.EventType;
 import ua.com.footballgamble.model.entity.GambleEntity;
+import ua.com.footballgamble.model.entity.GambleUserScore;
 import ua.com.footballgamble.primefaces.FacesContextUtils;
 import ua.com.footballgamble.primefaces.PrimeFacesMessageUtils;
 import ua.com.footballgamble.service.GambleServiceImpl;
@@ -24,6 +25,9 @@ public class GamblesController implements Serializable {
 	public static final Logger logger = LoggerFactory.getLogger(GamblesController.class);
 	@Autowired
 	private GambleServiceImpl gambleService;
+
+	private List<GambleUserScore> scoreTable;
+	private List<GambleUserScore> filteredScoreTable;
 
 	private List<GambleEntity> gambles;
 	private List<GambleEntity> filteredGambles;
@@ -86,6 +90,11 @@ public class GamblesController implements Serializable {
 		}
 	}
 
+	public void onViewScoreTable(GambleEntity gamble) {
+		logger.info("Get Score Table for Gable: " + gamble);
+		scoreTable = gambleService.getGambleUsersScores(gamble.getId());
+	}
+
 	// Getters-Setters
 
 	public List<GambleEntity> getGambles() {
@@ -110,6 +119,22 @@ public class GamblesController implements Serializable {
 
 	public void setSelectedGamble(GambleEntity selectedGamble) {
 		this.selectedGamble = selectedGamble;
+	}
+
+	public List<GambleUserScore> getScoreTable() {
+		return scoreTable;
+	}
+
+	public void setScoreTable(List<GambleUserScore> scoreTable) {
+		this.scoreTable = scoreTable;
+	}
+
+	public List<GambleUserScore> getFilteredScoreTable() {
+		return filteredScoreTable;
+	}
+
+	public void setFilteredScoreTable(List<GambleUserScore> filteredScoreTable) {
+		this.filteredScoreTable = filteredScoreTable;
 	}
 
 }

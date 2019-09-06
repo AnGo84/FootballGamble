@@ -44,9 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 			http.authorizeRequests().antMatchers("/login*").permitAll().antMatchers("/logout*").permitAll()
 					.antMatchers("/js/**").permitAll().antMatchers("/css/**").permitAll()
-					.antMatchers("/javax.faces.resource/**").permitAll().anyRequest().authenticated().and().formLogin()
-					.loginPage("/login.xhtml").defaultSuccessUrl("/index.xhtml").failureUrl("/login.xhtml?error=1")
-					.and().csrf().disable().logout().logoutSuccessUrl("/login.xhtml?logout").and().exceptionHandling()
+					.antMatchers("/javax.faces.resource/**").permitAll().anyRequest().authenticated()
+
+					.antMatchers("/user*", "/gamble*").hasRole("ADMIN")
+
+					.and().formLogin().loginPage("/login.xhtml").defaultSuccessUrl("/index.xhtml")
+					.failureUrl("/login.xhtml?error=1").and().csrf().disable().logout()
+					.logoutSuccessUrl("/login.xhtml?logout").and().exceptionHandling()
 					.accessDeniedHandler(accessDeniedHandler);
 
 		} catch (Exception ex) {
