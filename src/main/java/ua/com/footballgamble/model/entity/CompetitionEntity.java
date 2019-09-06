@@ -92,8 +92,12 @@ public class CompetitionEntity {
 
 	//
 	public StreamedContent getEmblemStreamedContent() {
-		StreamedContent emblem = SteamUtils.getStreamedContent(emblemUrl);
-		return emblem;
+		try {
+			StreamedContent emblem = SteamUtils.getStreamedContent(emblemUrl);
+			return emblem;
+		}catch (Exception e){
+			return null;
+		}
 	}
 
 	@Override

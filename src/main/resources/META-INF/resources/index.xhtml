@@ -129,9 +129,10 @@
 					var="match" value="#{userGamblesController.gambleMatches}"
 					reflow="true" emptyMessage="No matchs found" rowKey="#{match.id}"
 					rowIndexVar="rowIndex" editable="true" editMode="cell"
-					sortBy="#{match.competitionId}" expandableRowGroups="true">
+					filteredValue="#{userGamblesController.filteredGambleMatches}"
+					sortBy="#{match.competitionId}">
 
-					<!-- 
+					<!--  	expandableRowGroups="true"
 							filteredValue="#{userGamblesController.filteredGambleMatches}"
 							rows="10" paginator="true"
                             paginatorPosition="bottom"
@@ -139,23 +140,34 @@
                             rowsPerPageTemplate="5,10,15" selectionMode="single"
                             selection="#{usersController.selectedUser}" -->
 
-					<f:facet name="header"> Matches List </f:facet>
+					<!--<f:facet name="header"> Matches List </f:facet>-->
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: right !important;">
+							<h:outputText value="Search all fields:" />
+							<p:inputText id="globalFilter" onkeyup="PF('dt_matches_list').filter()" style="width:150px" placeholder="Enter keyword"/>
+						</p:outputPanel>
+					</f:facet>
 
 					<p:ajax event="cellEdit"
 						listener="#{userGamblesController.onCellEdit(match)}" />
 
-					<p:headerRow>
+					<!--<p:headerRow>
 						<p:column colspan="11">
 							<p:outputLabel value="#{match.competitionName}" />
 						</p:column>
-					</p:headerRow>
+					</p:headerRow>-->
 
-					<p:column width="60"
+					<p:column width="50"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 						<h:outputText value="#{rowIndex + 1}" />
 					</p:column>
 
-
+					<p:column width="110" style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;" priority="2"
+							  filterBy="#{match.competitionName}" filterMatchMode="contains" sortBy="#{match.competitionName}">
+						<f:facet name="header">Competition</f:facet>
+						<p:outputLabel value="#{match.competitionName}" />
+					</p:column>
 					<!-- <p:column width="120"
 						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;">
 						filterBy="#{match.user.login}" filterMatchMode="contains"
@@ -164,14 +176,14 @@
 					</p:column> -->
 
 					<p:column width="100"
-						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-						<!-- filterBy="#{match.match.utcDate}" filterMatchMode="contains" sortBy="#{match.utcDate}" -->
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;" priority="1"
+						filterBy="#{match.match.utcDate}" filterMatchMode="contains" sortBy="#{match.match.utcDateAsDate}">
 						<f:facet name="header">Date</f:facet>
 						<h:outputText value="#{match.match.displayUtcDate}" />
 
 					</p:column>
 					<!-- Home team -->
-					<p:column width="50" headerText="#"
+					<p:column width="50" headerText="#" priority="3"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 						<!-- <f:facet name="header">#</f:facet> -->
 						<!-- Home team Crest -->
@@ -180,19 +192,20 @@
 							rendered="#{not empty match.match.homeTeam.crestUrl}" />
 					</p:column>
 
-					<p:column 
-						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
-						headerText="Home team">
-						<!-- filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains" -->
+					<p:column width="200"
+						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;" priority="1"
+						headerText="Home team"
+						filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains" sortBy="#{match.match.homeTeam.name}">
+						<!--  -->
 						<h:outputText value="#{match.match.homeTeam.name}" />
 					</p:column>
-					<p:column width="50" headerText=" G "
+					<p:column width="50" headerText=" G " priority="1"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 						<f:facet name="header"> G </f:facet>
 						<h:outputText value="#{match.match.scoreFullTimeHomeTeam}" />
 					</p:column>
 
-					<p:column width="50" headerText=" U "
+					<p:column width="50" headerText=" U " priority="1"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 
 						<p:cellEditor rendered="#{match.scheduled}">
@@ -209,7 +222,7 @@
 					</p:column>
 
 					<!-- Away team -->
-					<p:column width="50" headerText=" U "
+					<p:column width="50" headerText=" U " priority="1"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 
 						<p:cellEditor rendered="#{match.scheduled}">
@@ -225,12 +238,12 @@
 							rendered="#{!match.scheduled}" />
 					</p:column>
 
-					<p:column width="50" headerText=" G "
+					<p:column width="50" headerText=" G " priority="1"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 						<h:outputText value="#{match.match.scoreFullTimeAwayTeam}" />
 					</p:column>
 
-					<p:column width="50" headerText=" "
+					<p:column width="50" headerText=" " priority="3"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
 						<f:facet name="header">#</f:facet>
 						<!-- Away team Crest -->
@@ -239,18 +252,19 @@
 							rendered="#{not empty match.match.awayTeam.crestUrl}" />
 					</p:column>
 
-					<p:column 
-						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
-						headerText="Away team">
+					<p:column width="200"
+						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;" priority="1"
+						headerText="Away team"
+						filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains" sortBy="#{match.match.awayTeam.name}">
 
 						<!-- filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains" sortBy="#{match.awayTeam.name}" -->
 						<!-- <f:facet name="header">Away Team</f:facet> -->
 						<h:outputText value="#{match.match.awayTeam.name}" />
 					</p:column>
 					<!--  -->
-					<p:column width="100"
+					<p:column width="100" priority="1"
 						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
-						headerText="Score">
+						headerText="Score" sortBy="#{match.total}">
 						<!-- filterBy="#{match.match.status}" filterMatchMode="contains" -->
 						<h:outputText value="#{match.total}" />
 					</p:column>

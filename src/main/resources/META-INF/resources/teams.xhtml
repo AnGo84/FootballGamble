@@ -58,6 +58,10 @@
 						sortBy="#{team.id}">
 						<f:facet name="header">ID</f:facet>
 						<h:outputText value="#{team.id}" />
+						<!--<p:commandLink action="#competitionsController.onView(competition)}"
+									   style="margin-right:5px;">
+							<h:outputText value="#{competition.id}" />
+						</p:commandLink>-->
 					</p:column>
 
 					<p:column headerText="#" width="60" style="text-align: center;">

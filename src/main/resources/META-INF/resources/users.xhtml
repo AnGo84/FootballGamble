@@ -77,18 +77,16 @@
 						<f:facet name="header">Phone</f:facet>
 						<h:outputText value="#{appuser.phone}" />
 					</p:column> -->
-				<p:column filterBy="#{appuser.active}" filterMatchMode="equals">
-					<f:facet name="header">Is active</f:facet>
+				<p:column width="80" style="text-align: center;" filterBy="#{appuser.active}" filterMatchMode="equals">
+					<f:facet name="header">Active</f:facet>
 
-					<f:facet name="filter">
-						<p:selectOneButton onchange="PF('dt_users_list').filter()"
-							styleClass="custom-filter">
-							<f:converter converterId="javax.faces.Boolean" />
-							<f:selectItem itemLabel="All" itemValue="" />
-							<f:selectItem itemLabel="Yes" itemValue="true" />
-							<f:selectItem itemLabel="No" itemValue="false" />
-						</p:selectOneButton>
-					</f:facet>
+                    <f:facet name="filter">
+                        <p:triStateCheckbox converter="triStateToBooleanConverter">
+                            <p:ajax event="change" onsuccess="PF('dt_users_list').filter()"/>
+                        </p:triStateCheckbox>
+                        <!--pe="http://primefaces.org/ui/extensions"-->
+
+                    </f:facet>
 
 					<!-- <p:outputLabel value="#{appuser.active}" /> -->
 					<p:selectBooleanCheckbox value="#{appuser.active}" disabled="true" />

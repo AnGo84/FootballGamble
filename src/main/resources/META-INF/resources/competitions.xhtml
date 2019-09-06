@@ -2,185 +2,189 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:sec="http://www.springframework.org/security/tags">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags">
 <ui:composition template="template.xhtml">
-	<ui:define name="content">
-		<h:form id="form_competitions_list">
+    <ui:define name="content">
+        <h:form id="form_competitions_list">
 
-			<p:growl id="growl_message" showDetail="true" sticky="true" />
+            <p:growl id="growl_message" showDetail="true" sticky="true"/>
 
-			<p:panel header="Competitions List">
-				<!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
-					<h:panelGroup styleClass="row" layout="block">
-						<h:panelGroup styleClass="col-xs-9 text-left" layout="block">
+            <p:panel header="Competitions List">
+                <!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <h:panelGroup styleClass="row" layout="block">
+                        <h:panelGroup styleClass="col-xs-9 text-left" layout="block">
 
-						</h:panelGroup>
+                        </h:panelGroup>
 
-						<h:panelGroup styleClass="col-xs-3 text-right" layout="block">
-							<p:commandButton id="cb_object_update_from_API"
-								icon="fa fa-fw fa-refresh" value="Update"
-								action="#{competitionsController.onUpdateFromAPI}"
-								title="Update data from API" process="@this"
-								update="@this dt_competitions_list">
-							</p:commandButton>
-						</h:panelGroup>
+                        <h:panelGroup styleClass="col-xs-3 text-right" layout="block">
+                            <p:commandButton id="cb_object_update_from_API"
+                                icon="fa fa-fw fa-refresh" value="Update"
+                                action="#{competitionsController.onUpdateFromAPI}"
+                                title="Update data from API" process="@this"
+                                update="@this dt_competitions_list">
+                            </p:commandButton>
+                        </h:panelGroup>
 
-					</h:panelGroup>
-				</sec:authorize> -->
+                    </h:panelGroup>
+                </sec:authorize> -->
 
-				<p:dataTable id="dt_competitions_list"
-					widgetVar="dt_competitions_list" var="competition"
-					value="#{competitionsController.competitions}" reflow="true"
-					emptyMessage="No competitions found" rows="10" paginator="true"
-					paginatorPosition="bottom"
-					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					rowsPerPageTemplate="5,10,15" selectionMode="single"
-					selection="#{competitionsController.selectedCompetition}"
-					rowKey="#{competition.id}" rowIndexVar="rowIndex"
-					sortMode="multiple">
+                <p:dataTable id="dt_competitions_list"
+                             widgetVar="dt_competitions_list" var="competition"
+                             value="#{competitionsController.competitions}" reflow="true"
+                             emptyMessage="No competitions found" rows="10" paginator="true"
+                             paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15" selectionMode="single"
+                             selection="#{competitionsController.selectedCompetition}"
+                             rowKey="#{competition.id}" rowIndexVar="rowIndex"
+                             sortMode="multiple">
 
-					<!-- <p:column style="width:50px">
-						<p:rowToggler />
-					</p:column> -->
+                    <!-- <p:column style="width:50px">
+                        <p:rowToggler />
+                    </p:column> -->
 
-					<p:column width="50" style="text-align: center;">
-						<f:facet name="header">
-							<h:outputText value="№" />
-						</f:facet>
-						<h:outputText value="#{rowIndex + 1}" />
-					</p:column>
+                    <p:column width="50" style="text-align: center;">
+                        <f:facet name="header">
+                            <h:outputText value="№"/>
+                        </f:facet>
+                        <h:outputText value="#{rowIndex + 1}"/>
+                    </p:column>
 
-					<p:column headerText="#" width="70">
-						<f:facet name="header">#</f:facet>
-						<p:graphicImage url="#{competition.emblemUrl}" height="50"
-							width="50" title="Emblem for #{competition.name}"
-							rendered="#{not empty competition.emblemStreamedContent}" />
-						<!-- 
-							alt="Emblem for #{competition.name}"
-							rendered="#{not empty competition.emblemUrl}"
-							value="#{competition.emblemStreamedContent}" -->
-					</p:column>
+                    <p:column headerText="#" width="70">
+                        <f:facet name="header">#</f:facet>
+                        <p:graphicImage url="#{competition.emblemUrl}" height="50"
+                                        width="50" title="Emblem for #{competition.name}"
+                                        rendered="#{not empty competition.emblemUrl}"/>
+                        <!--
+                            alt="Emblem for #{competition.name}"
+                            rendered="#{not empty competition.emblemUrl}"
+                            value="#{competition.emblemStreamedContent}" -->
+                    </p:column>
 
-					<p:column headerText="Id" width="100" filterBy="#{competition.id}"
-						filterMatchMode="contains" sortBy="#{competition.id}">
-						<f:facet name="header">ID</f:facet>
-						<h:outputText value="#{competition.id}" />
-					</p:column>
+                    <p:column headerText="Id" width="100" filterBy="#{competition.id}"
+                              filterMatchMode="contains" sortBy="#{competition.id}">
+                        <f:facet name="header">ID</f:facet>
 
-
-					<p:column filterBy="#{competition.name}" filterMatchMode="contains"
-						sortBy="#{competition.name}">
-						<f:facet name="header">Name</f:facet>
-						<h:outputText value="#{competition.name}" />
-					</p:column>
-
-					<p:column width="100" filterBy="#{competition.code}"
-						filterMatchMode="contains" sortBy="#{competition.code}">
-						<f:facet name="header">Code</f:facet>
-						<h:outputText value="#{competition.code}" />
-					</p:column>
-
-					<p:column>
-						<p:commandButton id="cb_competition_view" style="width:120px;"
-							value="View" title="View" icon="fa fa-fw fa-search"
-							action="#{competitionsController.onView(competition)}"
-							process="dt_competitions_list" update="@this">
-						</p:commandButton>
-						<sec:authorize access="hasRole('ROLE_ADMIN')">
-							<p:commandButton id="cb_object_update_from_API"
-								icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
-								action="#{competitionsController.onUpdateFromAPI(competition)}"
-								title="Update data from API" process="@this"
-								update="@this dt_competitions_list">
-							</p:commandButton>
-						</sec:authorize>
-					</p:column>
+                        <p:commandLink action="#competitionsController.onView(competition)}"
+                                       style="margin-right:5px;">
+                            <h:outputText value="#{competition.id}"/>
+                        </p:commandLink>
+                    </p:column>
 
 
-					<!-- <p:rowExpansion>
-						<p:dataTable id="dt_competition_seasons_list"
-							widgetVar="dt_competition_seasons_list" var="season"
-							value="#{competition.seasons}" reflow="true"
-							emptyMessage="No seasons found" selectionMode="single"
-							selection="#{competitionsController.selectedCompetition}"
-							rowKey="#{season.id}">
+                    <p:column filterBy="#{competition.name}" filterMatchMode="contains"
+                              sortBy="#{competition.name}">
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{competition.name}"/>
+                    </p:column>
 
-							<p:column>
-								<f:facet name="header">Id</f:facet>
-								<h:outputText value="#{season.id}" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">Start date</f:facet>
-								<h:outputText value="#{season.startDate}" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">End date</f:facet>
-								<h:outputText value="#{season.endDate}" />
-							</p:column>
+                    <p:column width="100" filterBy="#{competition.code}"
+                              filterMatchMode="contains" sortBy="#{competition.code}">
+                        <f:facet name="header">Code</f:facet>
+                        <h:outputText value="#{competition.code}"/>
+                    </p:column>
 
-						</p:dataTable>
-					</p:rowExpansion> -->
+                    <p:column>
+                        <p:commandButton id="cb_competition_view" style="width:120px;"
+                                         value="View" title="View" icon="fa fa-fw fa-search"
+                                         action="#{competitionsController.onView(competition)}"
+                                         process="dt_competitions_list" update="@this">
+                        </p:commandButton>
+                        <sec:authorize access="hasRole('ROLE_ADMIN')">
+                            <p:commandButton id="cb_object_update_from_API"
+                                             icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
+                                             action="#{competitionsController.onUpdateFromAPI(competition)}"
+                                             title="Update data from API" process="@this"
+                                             update="@this dt_competitions_list">
+                            </p:commandButton>
+                        </sec:authorize>
+                    </p:column>
 
-					<!-- <f:facet name="footer">
-						<p:commandButton process="dt_users_list"
-							update=":form_users_list:userInfoDialog"
-							icon="fa fa-fw fa-search" value="View"
-							oncomplete="PF('userInfoDialog').show()" />
-					</f:facet> -->
 
-				</p:dataTable>
-			</p:panel>
+                    <!-- <p:rowExpansion>
+                        <p:dataTable id="dt_competition_seasons_list"
+                            widgetVar="dt_competition_seasons_list" var="season"
+                            value="#{competition.seasons}" reflow="true"
+                            emptyMessage="No seasons found" selectionMode="single"
+                            selection="#{competitionsController.selectedCompetition}"
+                            rowKey="#{season.id}">
 
-			<!-- 
-			<p:dialog id="userInfoDialog" widgetVar="userInfoDialog"
-				dynamic="true" closable="true" resizable="false"
-				position="center center" fitViewport="true" header="User Info">
-				!!!!
-				style="z-index: 1007;" modal="true" 
-				<p:ajax event="open"
-			update="pg_contragent_viewPanel pg_contragent_dialog_buttons" />
-				position="center top"(h v) heigth="90vh" width="90vw" header="#{msg['LABEL.Contragent']}" 
-				!!!!
-				<p:outputPanel id="userDetail" style="text-align:center;">
-					<p:panelGrid columns="2"
-						rendered="#{not empty usersController.selectedUser}"
-						columnClasses="label,value">
-						<f:facet name="header">
-						<p:graphicImage
-							name="demo/images/car/#{dtSelectionView.selectedCar.brand}-big.gif" />
-					</f:facet>
+                            <p:column>
+                                <f:facet name="header">Id</f:facet>
+                                <h:outputText value="#{season.id}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">Start date</f:facet>
+                                <h:outputText value="#{season.startDate}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">End date</f:facet>
+                                <h:outputText value="#{season.endDate}" />
+                            </p:column>
 
-						<p:outputLabel value="Id:" />
-						<p:outputLabel value="#{usersController.selectedUser.id}" />
+                        </p:dataTable>
+                    </p:rowExpansion> -->
 
-						<p:outputLabel value="Login:" />
-						<p:outputLabel value="#{usersController.selectedUser.login}" />
+                    <!-- <f:facet name="footer">
+                        <p:commandButton process="dt_users_list"
+                            update=":form_users_list:userInfoDialog"
+                            icon="fa fa-fw fa-search" value="View"
+                            oncomplete="PF('userInfoDialog').show()" />
+                    </f:facet> -->
 
-						<p:outputLabel value="Full Name:" />
-						<p:outputLabel value="#{usersController.selectedUser.fullName}" />
+                </p:dataTable>
+            </p:panel>
 
-						<p:outputLabel value="Email:" />
-						<p:outputLabel value="#{usersController.selectedUser.email}" />
+            <!--
+            <p:dialog id="userInfoDialog" widgetVar="userInfoDialog"
+                dynamic="true" closable="true" resizable="false"
+                position="center center" fitViewport="true" header="User Info">
+                !!!!
+                style="z-index: 1007;" modal="true"
+                <p:ajax event="open"
+            update="pg_contragent_viewPanel pg_contragent_dialog_buttons" />
+                position="center top"(h v) heigth="90vh" width="90vw" header="#{msg['LABEL.Contragent']}"
+                !!!!
+                <p:outputPanel id="userDetail" style="text-align:center;">
+                    <p:panelGrid columns="2"
+                        rendered="#{not empty usersController.selectedUser}"
+                        columnClasses="label,value">
+                        <f:facet name="header">
+                        <p:graphicImage
+                            name="demo/images/car/#{dtSelectionView.selectedCar.brand}-big.gif" />
+                    </f:facet>
 
-						<p:outputLabel value="Phone:" />
-						<p:outputLabel value="#{usersController.selectedUser.phone}" />
+                        <p:outputLabel value="Id:" />
+                        <p:outputLabel value="#{usersController.selectedUser.id}" />
 
-						<p:outputLabel value="Active" />
-						<p:selectBooleanCheckbox
-							value="#{usersController.selectedUser.active}" disabled="true" />
+                        <p:outputLabel value="Login:" />
+                        <p:outputLabel value="#{usersController.selectedUser.login}" />
 
-						<p:outputLabel value="Roles:" />
-						<p:outputLabel
-							value="#{usersController.selectedUser.rolesForView}" />
-					</p:panelGrid>
-				</p:outputPanel>
-			</p:dialog> -->
+                        <p:outputLabel value="Full Name:" />
+                        <p:outputLabel value="#{usersController.selectedUser.fullName}" />
 
-		</h:form>
-	</ui:define>
+                        <p:outputLabel value="Email:" />
+                        <p:outputLabel value="#{usersController.selectedUser.email}" />
+
+                        <p:outputLabel value="Phone:" />
+                        <p:outputLabel value="#{usersController.selectedUser.phone}" />
+
+                        <p:outputLabel value="Active" />
+                        <p:selectBooleanCheckbox
+                            value="#{usersController.selectedUser.active}" disabled="true" />
+
+                        <p:outputLabel value="Roles:" />
+                        <p:outputLabel
+                            value="#{usersController.selectedUser.rolesForView}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog> -->
+
+        </h:form>
+    </ui:define>
 </ui:composition>
 </html>
