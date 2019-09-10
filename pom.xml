@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<java.version>1.8</java.version>
-		<joinfaces.version>4.0.6</joinfaces.version>
+		<joinfaces.version>4.0.7</joinfaces.version>
 
 		<primefaces-theme.version>1.0.10</primefaces-theme.version>
 
@@ -39,6 +39,14 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			
+			<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<!-- <artifactId>all-themes</artifactId> -->
+			<artifactId>bootstrap</artifactId>
+			<version>${primefaces-theme.version}</version>
+			
+		</dependency>
 		</dependencies>
 		<!-- /JSF -->
 	</dependencyManagement>
@@ -98,9 +106,12 @@
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
 			<!-- <artifactId>all-themes</artifactId> -->
-			<artifactId>all-themes</artifactId>
-			<version>${primefaces-theme.version}</version>
+			<artifactId>bootstrap</artifactId>
+			<!-- <version>${primefaces-theme.version}</version> -->
 		</dependency>
+		
+		
+		
 		<!-- <dependency> <groupId>org.primefaces.extensions</groupId> <artifactId>all-themes</artifactId> 
 			<version>${primefaces-theme.version}</version> </dependency> -->
 

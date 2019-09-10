@@ -58,40 +58,40 @@
 			update="exceptionDialog" onexception="PF('exceptionDialog').show();" />
 		<p:ajaxExceptionHandler type="java.lang.Exception"
 			update="exceptionDialog" onexception="PF('exceptionDialog').show();" />
-
-		<p:dialog id="exceptionDialog"
-			header="Exception '#{pfExceptionHandler.type}' occured!"
-			widgetVar="exceptionDialog" height="500px">
+		<h:form prependId="false">
+			<p:dialog id="exceptionDialog"
+				header="Exception '#{pfExceptionHandler.type}' occured!"
+				widgetVar="exceptionDialog" height="500px">
         Message: #{pfExceptionHandler.message} <br />
         StackTrace: <h:outputText
-				value="#{pfExceptionHandler.formattedStackTrace}" escape="false" />
-			<br />
+					value="#{pfExceptionHandler.formattedStackTrace}" escape="false" />
+				<br />
 
-			<p:button onclick="document.location.href = document.location.href;"
-				value="Reload!"
-				rendered="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}" />
-		</p:dialog>
-		<!-- !Exception dialog -->
+				<p:button onclick="document.location.href = document.location.href;"
+					value="Reload!"
+					rendered="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}" />
+			</p:dialog>
+			<!-- !Exception dialog -->
 
 
-		<p:confirmDialog id="d_confirmation_dialog" global="true"
-			appendTo="@(body)" widgetVar="d_confirmation_dialog"
-			showEffect="fade" hideEffect="fade">
-			<!-- appendTo="@(body)" -->
-			<p:panelGrid columns="2" styleClass="text-center" layout="grid">
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-				<!-- <p:commandButton title="#{msg['LABEL.Yes']}"
+			<p:confirmDialog id="d_confirmation_dialog" global="true"
+				appendTo="@(body)" widgetVar="d_confirmation_dialog"
+				showEffect="fade" hideEffect="fade">
+				<!-- appendTo="@(body)" -->
+				<p:panelGrid columns="2" styleClass="text-center" layout="grid">
+					<p:commandButton value="Yes" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					<!-- <p:commandButton title="#{msg['LABEL.Yes']}"
 							value="#{msg['LABEL.Yes']}" styleClass="ui-confirmdialog-yes"
 							icon="ui-icon-check" />
 						<p:commandButton title="#{msg['LABEL.No']}"
 							value="#{msg['LABEL.No']}" styleClass="ui-confirmdialog-no"
 							icon="ui-icon-close" /> -->
-			</p:panelGrid>
-		</p:confirmDialog>
-
+				</p:panelGrid>
+			</p:confirmDialog>
+		</h:form>
 
 		<!-- <pe:layoutPane position="center"> -->
 		<h:form id="contentForm" prependId="false"
