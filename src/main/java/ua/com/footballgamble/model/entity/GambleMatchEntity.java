@@ -188,6 +188,15 @@ public class GambleMatchEntity {
 		return result;
 	}
 
+	@JsonIgnore
+	public Date getMatchDate() {
+		if (match == null) {
+			return null;
+		}
+
+		return match.getUtcDateAsDate();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

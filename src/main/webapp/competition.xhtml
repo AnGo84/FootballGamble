@@ -46,13 +46,14 @@
 					<p:outputLabel style="font-weight: bold;" value="Last updated:" />
 					<p:outputLabel
 						value="#{competitionController.selectedCompetition.lastUpdated}" />
-
-					<p:commandButton id="cb_object_update_from_API"
-						icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
-						action="#{competitionController.onUpdateCompetitionFromAPI}"
-						title="Update data from API" process="@this"
-						update="@this outp_competitionDetail p_selected_season dt_matches_list :form_competition:growl_message">
-					</p:commandButton>
+					<sec:authorize access="hasRole('ROLE_ADMIN')">
+						<p:commandButton id="cb_object_update_from_API"
+							icon="fa fa-fw fa-refresh" style="width:120px;" value="Update"
+							action="#{competitionController.onUpdateCompetitionFromAPI}"
+							title="Update data from API" process="@this"
+							update="@this outp_competitionDetail p_selected_season dt_matches_list :form_competition:growl_message">
+						</p:commandButton>
+					</sec:authorize>
 
 				</p:panelGrid>
 
@@ -82,7 +83,8 @@
 
 								<p:ajax event="change"
 									listener="#{competitionController.onChangeSeason}"
-									process="@this" update="@this dt_matches_list :form_competition:growl_message" />
+									process="@this"
+									update="@this dt_matches_list :form_competition:growl_message" />
 								<!-- event="change" -->
 							</p:selectOneMenu>
 

@@ -47,7 +47,10 @@ public class UsersController implements Serializable {
 
 	public String onAddNewUser() {
 		logger.info("On Add new User");
-		FacesContextUtils.putSessionMapObject("selectedUser", new User());
+		User newUser = new User();
+		newUser.setId(getNextId());
+
+		FacesContextUtils.putSessionMapObject("selectedUser", newUser);
 		FacesContextUtils.putSessionMapObject("eventType", EventType.ADD);
 		/*
 		 * FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put(
@@ -56,6 +59,17 @@ public class UsersController implements Serializable {
 		 * "eventType", EventType.ADD);
 		 */
 		return "user.html?faces-redirect=true";
+	}
+
+	public Long getNextId() {
+		Long maxId = 0l;
+
+		for (User user : users) {
+			if (user.getId() > maxId) {
+				maxId = user.getId();
+			}
+		}
+		return ++maxId;
 	}
 
 	public String onEditUser(User user) {
@@ -125,7 +139,7 @@ public class UsersController implements Serializable {
 		FacesContextUtils.putSessionMapObject("selectedUser", selectedUser);
 		FacesContextUtils.putSessionMapObject("eventType", EventType.EDIT);
 
-		return "user.html?faces-redirect=true";
+		return "user_info.html?faces-redirect=true";
 	}
 
 	// Getters-Setters

@@ -14,11 +14,7 @@
 
 			<p:outputPanel id="outp_userDetail" layout="block">
 				<!-- style="text-align:center;" -->
-				<p:outputLabel value="User's data for #{userController.eventType}" />
-
-				<!-- <p:messages id="messages" showDetail="true">
-					<p:autoUpdate/>
-				</p:messages> -->
+				<p:outputLabel value="User data" />
 
 				<p:panelGrid class="ui-noborder">
 					<p:row>
@@ -26,8 +22,7 @@
 							<p:outputLabel value="Id:" />
 						</p:column>
 						<p:column>
-							<p:inputText id="it_user_id" readonly="true"
-								value="#{userController.selectedUser.id}" />
+							<p:outputLabel value="#{userController.selectedUser.id}" />
 						</p:column>
 					</p:row>
 
@@ -37,20 +32,7 @@
 						</p:column>
 
 						<p:column>
-							<p:inputText id="it_user_login" required="true"
-								readonly="#{userController.eventType == 'VIEW'}"
-								value="#{userController.selectedUser.login}">
-								<!-- <f:validator validatorId="uniqueUserLoginValidator" /> -->
-								<f:validator binding="#{uniqueUserLoginValidator}" />
-								<!-- <f:attribute name="currentLogin"
-									value="#{userController.selectedUser.login}" /> -->
-								<f:attribute name="currentUser"
-									value="#{userController.selectedUser}" />
-
-							</p:inputText>
-						</p:column>
-						<p:column>
-							<p:message for="it_user_login" />
+							<p:outputLabel value="#{userController.selectedUser.login}" />
 						</p:column>
 					</p:row>
 					<p:row>
@@ -58,8 +40,7 @@
 							<p:outputLabel value="Full name:" />
 						</p:column>
 						<p:column>
-							<p:inputText id="it_user_full_name"
-								readonly="#{userController.eventType == 'VIEW'}" required="true"
+							<p:inputText id="it_user_full_name" required="true"
 								requiredMessage="Value is required."
 								value="#{userController.selectedUser.fullName}" />
 						</p:column>
@@ -75,8 +56,7 @@
 							<p:inputText id="it_user_email" required="true"
 								requiredMessage="Please enter correct email address."
 								validatorMessage="Invalid email format"
-								value="#{userController.selectedUser.email}"
-								readonly="#{userController.eventType == 'VIEW'}">
+								value="#{userController.selectedUser.email}">
 								<!-- label="email" size="40" -->
 								<f:validateRegex
 									pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
@@ -98,7 +78,6 @@
 						</p:column>
 						<p:column>
 							<p:inputText id="it_user_phone"
-								readonly="#{userController.eventType == 'VIEW'}"
 								value="#{userController.selectedUser.phone}">
 								<!-- 
 								requiredMessage="Please enter correct phone number."
@@ -111,45 +90,33 @@
 						</p:column> -->
 					</p:row>
 
-					<sec:authorize access="hasRole('ROLE_ADMIN')">
+					<!-- <sec:authorize access="hasRole('ROLE_ADMIN')">
 						<p:row>
 							<p:column>
 								<p:outputLabel value="Active:" />
 							</p:column>
-							<!-- <p:column colspan="2"> -->
+							<p:column colspan="2">
 							<p:column>
 								<p:selectBooleanCheckbox id="sbcb_user_active"
 									value="#{userController.selectedUser.active}" />
 							</p:column>
 						</p:row>
-					</sec:authorize>
+					</sec:authorize> -->
 
 					<p:row>
 						<p:column>
 							<p:outputLabel value="Roles:" />
 						</p:column>
 						<p:column>
-							<p:selectCheckboxMenu id="scbm_user_roles"
-								value="#{userController.selectedUser.roles}" label="User roles"
-								multiple="true" filter="true" filterMatchMode="contains"
-								required="true" requiredMessage="Value is required."
-								disabled="#{userController.eventType == 'VIEW'}">
-								<!-- panelStyle="width:250px" -->
-								<f:selectItems value="#{userController.userRoles}"
-									var="userRole" itemLabel="#{userRole.name}"
-									itemValue="#{userRole}" />
-							</p:selectCheckboxMenu>
-						</p:column>
-						<p:column>
-							<p:message for="scbm_user_roles" />
+							<p:outputLabel
+								value="#{userController.selectedUser.rolesForView}" />
 						</p:column>
 					</p:row>
 
 				</p:panelGrid>
 
 				<!-- <p:outputPanel id="outp_show_pass_panel"> -->
-				<h:panelGroup rendered="#{!(userController.eventType == 'VIEW')}"
-					layout="block">
+				<h:panelGroup layout="block">
 					<p:panelGrid id="pgr_user_show_change_pass" class="ui-noborder">
 						<p:row>
 							<p:column>
@@ -211,56 +178,31 @@
 						</p:panelGrid>
 					</h:panelGroup>
 				</h:panelGroup>
-				<!-- <p:panelGrid columns="2"
-					rendered="#{not empty userController.selectedUser}"
-					columnClasses="label,value">
 
-					<p:outputLabel value="Id:" />
-					<p:outputLabel value="#{userController.selectedUser.id}" />
-
-					<p:outputLabel value="Login:" />
-					<p:outputLabel value="#{userController.selectedUser.login}" />
-
-					<p:outputLabel value="Full Name:" />
-					<p:outputLabel value="#{userController.selectedUser.fullName}" />
-
-					<p:outputLabel value="Email:" />
-					<p:outputLabel value="#{userController.selectedUser.email}" />
-
-					<p:outputLabel value="Phone:" />
-					<p:outputLabel value="#{userController.selectedUser.phone}" />
-
-					<p:outputLabel value="Active" />
-					<p:selectBooleanCheckbox
-						value="#{userController.selectedUser.active}" disabled="true" />
-
-					<p:outputLabel value="Roles:" />
-					<p:outputLabel value="#{userController.selectedUser.rolesForView}" />
-				</p:panelGrid> -->
 			</p:outputPanel>
 			<hr />
 			<h:panelGroup id="pg_user_edit_buttons" layout="block">
 				<!-- <p:panelGrid columns="2" layout="grid" styleClass="text-center"> -->
-				<p:panelGrid class="ui-noborder" columns="2" >
-					<!-- <p:row> -->
-						<p:column styleClass="text-center">
-							<p:commandButton value="Cancel" style="width:100px;"
-								icon="fa fa-fw fa-close"
-								action="#{userController.onUserEditCancel}" process="@this"
-								immediate="true" />
+				<p:panelGrid class="ui-noborder" columns="2">
 
-							<!-- ajax="false" value="#{msg['LABEL.Cancel']}" -->
-						</p:column>
-						<p:column styleClass="text-center">
-							<p:commandButton id="cb_submit_user_edit"
-								widgetVar="cb_submit_user_edit" value="Ok" style="width:100px;"
-								icon="fa fa-fw fa-check"
-								action="#{userController.onUserEditSubmit}"
-								process="@this outp_userDetail"
-								update="outp_userDetail growl_message" />
-							<!-- :form_user:outp_userDetail -->
-						</p:column>
-					<!-- </p:row> -->
+					<p:column styleClass="text-center">
+						<p:commandButton value="Cancel" style="width:100px;"
+							icon="fa fa-fw fa-close"
+							action="#{userController.onUserEditCancel}" process="@this"
+							immediate="true" />
+
+						<!-- ajax="false" value="#{msg['LABEL.Cancel']}" -->
+					</p:column>
+					<p:column styleClass="text-center">
+						<p:commandButton id="cb_submit_user_edit"
+							widgetVar="cb_submit_user_edit" value="Ok" style="width:100px;"
+							icon="fa fa-fw fa-check"
+							action="#{userController.onUserEditSubmit}"
+							process="@this outp_userDetail"
+							update="outp_userDetail growl_message" />
+						<!-- :form_user:outp_userDetail -->
+					</p:column>
+
 				</p:panelGrid>
 			</h:panelGroup>
 

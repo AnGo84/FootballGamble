@@ -80,8 +80,10 @@ public class GambleMatchServiceImpl {
 				new ParameterizedTypeReference<List<GambleMatchEntity>>() {
 				});
 		list = response.getBody();
-		list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
-				.thenComparingLong(GambleMatchEntity::getMatchId).reversed()).collect(Collectors.toList());
+		if (list != null) {
+			list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
+					.thenComparingLong(GambleMatchEntity::getMatchId).reversed()).collect(Collectors.toList());
+		}
 		/*
 		 * list = list.stream().sorted((lhs, rhs) -> {
 		 * 
@@ -129,8 +131,14 @@ public class GambleMatchServiceImpl {
 				httpHeaders.getHttpAuthEntity(), new ParameterizedTypeReference<List<GambleMatchEntity>>() {
 				});
 		list = response.getBody();
-		list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
-				.thenComparingLong(GambleMatchEntity::getMatchId)).collect(Collectors.toList());
+		/*
+		 * list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::
+		 * getCompetitionId)
+		 * .thenComparingLong(GambleMatchEntity::getMatchId)).collect(Collectors.toList(
+		 * ));
+		 */
+		list = list.stream().sorted(Comparator.comparing(GambleMatchEntity::getMatchDate)
+				.thenComparingLong(GambleMatchEntity::getCompetitionId)).collect(Collectors.toList());
 		return list;
 
 	}
@@ -273,6 +281,23 @@ public class GambleMatchServiceImpl {
 		}
 	}
 
+	public void deleteAllGambleMatchesByGambleIdAndUserId(long gambleId, long userId)
+			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
+
+		logger.info("Delete GambleMatchs by gamble ID={}, user Id={}", gambleId, userId);
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+
+		HttpEntity<GambleMatchEntity> request = new HttpEntity<>(httpHeaders.getHeaders());
+		String theUrl = apiPath + ENTITY_PATH + "/delete/all/gamble=" + gambleId + "/user=" + userId;
+		try {
+			restTemplate.exchange(theUrl, HttpMethod.DELETE, request, String.class);
+		} catch (NoContentException e) {
+			logger.info("Deletion return HttpStatus.NO_CONTENT");
+		}
+	}
+
 	public void deleteAll(List<GambleMatchEntity> deleteList)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
@@ -316,9 +341,10 @@ public class GambleMatchServiceImpl {
 		logger.info("Data cleaned");
 		List<GambleMatchEntity> updatedGambleMatchList = getGambleMatchesForUpdate(gambleData);
 		// TODO remove
-		for (GambleMatchEntity gambleMatchEntity : updatedGambleMatchList) {
-			logger.info("	GambleMatchEntity: " + gambleMatchEntity);
-		}
+		/*
+		 * for (GambleMatchEntity gambleMatchEntity : updatedGambleMatchList) {
+		 * logger.info("	GambleMatchEntity: " + gambleMatchEntity); }
+		 */
 		logger.info("Start saveAll");
 		saveAll(updatedGambleMatchList);
 
@@ -353,7 +379,7 @@ public class GambleMatchServiceImpl {
 					if (!gambleStage.isActive()
 							&& gambleData.isExistMatchesByStage(gambleCompetition.getId(), gambleStage.getName())) {
 						hasDeletions = true;
-						logger.info("	Delete Stage= '{}' for GambleId= {} and CompetitionId={}",
+						logger.info("	Delete for matches Stage= '{}' for GambleId= {} and CompetitionId={}",
 								gambleStage.getName(), gambleData.getGambleEntity().getId(), gambleCompetition.getId());
 						deleteAllGambleMatchesByGambleIdAndCompetitionIdAndStage(gambleData.getGambleEntity().getId(),
 								gambleCompetition.getId(), gambleStage.getName());

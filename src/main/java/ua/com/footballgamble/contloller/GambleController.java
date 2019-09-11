@@ -56,6 +56,7 @@ public class GambleController implements Serializable {
 
 	private List<GambleUser> allGambleUsersList;
 	private List<GambleUser> newGambleUsers;
+	private List<GambleUser> deleteGambleUsers;
 	private GambleUser selectedGambleUser;
 
 	@Autowired
@@ -81,6 +82,7 @@ public class GambleController implements Serializable {
 		logger.info("PostConstruct loadData");
 
 		eventType = (EventType) FacesContextUtils.getSessionMapObject("eventType");
+		deleteGambleUsers = new ArrayList<>();
 
 		if (eventType == null) {
 			eventType = EventType.VIEW;
@@ -130,11 +132,34 @@ public class GambleController implements Serializable {
 			PrimeFacesMessageUtils.addGlobalErrorMessage("Error on " + eventType + ": " + ex.getMessage());
 			return "";
 		}
-
+		clearDataForDeletedUser();
 		updateGambleMatches();
 
 		// return "gambles.xhmtl?faces-redirect=true";
 		return "";
+	}
+
+	private void clearDataForDeletedUser() {
+		logger.info("Clear gamble Matches For Deleted User");
+		if (deleteGambleUsers != null && deleteGambleUsers.isEmpty()) {
+			for (GambleUser user : deleteGambleUsers) {
+				try {
+					gambleMatchService.deleteAllGambleMatchesByGambleIdAndUserId(selectedGamble.getId(), user.getId());
+
+					/*
+					 * PrimeFacesMessageUtils .addGlobalInfoMessage("Gamble '" +
+					 * selectedGamble.getId() + "' matches was updated");
+					 */
+				} catch (Exception ex) {
+					logger.error("Error on delete matches for Gamble '{}' for user '{}': ", selectedGamble, user,
+							ex.getMessage());
+					selectedGamble.getParticipants().add(user);
+					PrimeFacesMessageUtils.addGlobalErrorMessage(
+							"Error on delete Gamble's matches for User '" + user.getLogin() + "': " + ex.getMessage());
+				}
+			}
+			deleteGambleUsers.clear();
+		}
 	}
 
 	private void updateGambleMatches() {
@@ -194,8 +219,9 @@ public class GambleController implements Serializable {
 		logger.info("onDeleteParticipant: " + user);
 
 		try {
+			deleteGambleUsers.add(user);
 			selectedGamble.getParticipants().remove(user);
-			PrimeFacesMessageUtils.addGlobalInfoMessage("User '" + user.getLogin() + "' was deleted");
+			PrimeFacesMessageUtils.addGlobalInfoMessage("User '" + user.getLogin() + "' was deleted from gamble");
 		} catch (Exception ex) {
 			logger.error("Error on DELETE for " + user + ": " + ex.getMessage());
 			PrimeFacesMessageUtils
@@ -250,6 +276,27 @@ public class GambleController implements Serializable {
 				PrimeFacesMessageUtils.addGlobalErrorMessage("Error on Update matches: " + ex.getMessage());
 			}
 		}
+	}
+
+	public void onGambleMatchesResultsUpdate() {
+		logger.info("onGambleMatchesResultsUpdate");
+
+		/*
+		 * List<GambleMatchEntity> editedMatches = gambleMatches.stream().filter(match
+		 * -> match.isEdited()) .collect(Collectors.toList()); if (editedMatches != null
+		 * && !editedMatches.isEmpty()) { logger.info("GambleMatches for Update: " +
+		 * editedMatches.size()); try { gambleMatchService.saveAll(editedMatches);
+		 * PrimeFacesMessageUtils.addGlobalInfoMessage("Updated '" +
+		 * editedMatches.size() + "' matches");
+		 * 
+		 * gambleMatches.stream().filter(match -> match.isEdited()).forEach(match ->
+		 * match.setEdited(false));
+		 * 
+		 * } catch (Exception ex) { logger.error("Error on Update matches: " +
+		 * ex.getMessage());
+		 * PrimeFacesMessageUtils.addGlobalErrorMessage("Error on Update matches: " +
+		 * ex.getMessage()); } }
+		 */
 	}
 
 	// Getters-Setters

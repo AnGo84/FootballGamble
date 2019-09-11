@@ -2,10 +2,9 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 14px;
 } */
-
 .ui-widget {
- /*  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; */
- font-size: 1em !important;
+	/*  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; */
+	font-size: 1em !important;
 }
 
 #starterDiv {
@@ -24,13 +23,18 @@
 .text_color_red {
 	color: #F44336;
 }
+
 .ui-layout-unit {
 	border: 0 !important;
 }
 
-.ui-tabs .ui-tabs-panel{
+.ui-tabs .ui-tabs-panel {
 	padding-top: 0 !important;
 	padding-right: 0 !important;
 	padding-bottom: 0 !important;
 	padding-left: 0 !important;
+}
+
+.can-edit-cell {
+	background-color: #b3e0ff !important;
 }

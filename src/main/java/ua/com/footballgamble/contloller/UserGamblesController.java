@@ -1,6 +1,7 @@
 package ua.com.footballgamble.contloller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import ua.com.footballgamble.model.entity.GambleCompetition;
 import ua.com.footballgamble.model.entity.GambleEntity;
 import ua.com.footballgamble.model.entity.GambleMatchEntity;
 import ua.com.footballgamble.model.entity.GambleUserScore;
@@ -129,10 +131,23 @@ public class UserGamblesController implements Serializable {
 			}
 		}
 	}
-	// Getters-Setters
 
+	// Getters-Setters
 	public List<GambleEntity> getUserGambles() {
 		return userGambles;
+	}
+
+	//
+	public List<String> getUserGamblesCompetitionsList() {
+		if (selectedGamble == null || selectedGamble.getCompetitions() == null
+				|| selectedGamble.getCompetitions().isEmpty()) {
+			return null;
+		}
+		List<String> list = new ArrayList<>();
+		for (GambleCompetition competition : selectedGamble.getCompetitions()) {
+			list.add(competition.getName());
+		}
+		return list;
 	}
 
 	public void setUserGambles(List<GambleEntity> userGambles) {

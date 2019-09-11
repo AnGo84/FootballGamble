@@ -6,10 +6,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-<!-- <ui:composition template="layout.xhtml"> -->
+
 <ui:composition template="template.xhtml">
 	<ui:define name="content">
-
 		<h:form id="form_user_gambles">
 
 			<p:growl id="growl_message" showDetail="true" sticky="true" />
@@ -124,7 +123,7 @@
 					</p:commandButton>
 
 				</h:panelGroup>
-
+				<br />
 				<p:dataTable id="dt_matches_list" widgetVar="dt_matches_list"
 					var="match" value="#{userGamblesController.gambleMatches}"
 					reflow="true" emptyMessage="No matchs found" rowKey="#{match.id}"
@@ -145,7 +144,9 @@
 					<f:facet name="header">
 						<p:outputPanel style="text-align: right !important;">
 							<h:outputText value="Search all fields:" />
-							<p:inputText id="globalFilter" onkeyup="PF('dt_matches_list').filter()" style="width:150px" placeholder="Enter keyword"/>
+							<p:inputText id="globalFilter"
+								onkeyup="PF('dt_matches_list').filter()" style="width:150px"
+								placeholder="Enter keyword" />
 						</p:outputPanel>
 					</f:facet>
 
@@ -160,13 +161,27 @@
 
 					<p:column width="50"
 						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						<f:facet name="header">№</f:facet>
 						<h:outputText value="#{rowIndex + 1}" />
 					</p:column>
 
-					<p:column width="110" style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;" priority="2"
-							  filterBy="#{match.competitionName}" filterMatchMode="contains" sortBy="#{match.competitionName}">
+					<p:column width="130"
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+						priority="2" filterBy="#{match.competitionName}"
+						filterMatchMode="in">
+
+						<!--footerText="in"  filterMatchMode="contains" sortBy="#{match.competitionName}" -->
+						<f:facet name="filter">
+							<p:selectCheckboxMenu label="Competitons"
+								onchange="PF('dt_matches_list').filter()" scrollHeight="150"
+								styleClass="custom-filter">
+								<f:selectItems
+									value="#{userGamblesController.userGamblesCompetitionsList}" />
+							</p:selectCheckboxMenu>
+						</f:facet>
+
 						<f:facet name="header">Competition</f:facet>
-						<p:outputLabel value="#{match.competitionName}" />
+						<h:outputText value="#{match.competitionName}" />
 					</p:column>
 					<!-- <p:column width="120"
 						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;">
@@ -176,8 +191,9 @@
 					</p:column> -->
 
 					<p:column width="100"
-						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;" priority="1"
-						filterBy="#{match.match.utcDate}" filterMatchMode="contains" sortBy="#{match.match.utcDateAsDate}">
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+						priority="1" filterBy="#{match.match.utcDate}"
+						filterMatchMode="contains" sortBy="#{match.match.utcDateAsDate}">
 						<f:facet name="header">Date</f:facet>
 						<h:outputText value="#{match.match.displayUtcDate}" />
 
@@ -193,9 +209,10 @@
 					</p:column>
 
 					<p:column width="200"
-						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;" priority="1"
-						headerText="Home team"
-						filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains" sortBy="#{match.match.homeTeam.name}">
+						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+						priority="1" headerText="Home team"
+						filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains"
+						sortBy="#{match.match.homeTeam.name}">
 						<!--  -->
 						<h:outputText value="#{match.match.homeTeam.name}" />
 					</p:column>
@@ -206,7 +223,8 @@
 					</p:column>
 
 					<p:column width="50" headerText=" U " priority="1"
-						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+						styleClass="#{match.scheduled ? 'can-edit-cell' : null}">
 
 						<p:cellEditor rendered="#{match.scheduled}">
 							<f:facet name="output">
@@ -214,7 +232,7 @@
 							</f:facet>
 							<f:facet name="input">
 								<p:inputText value="#{match.scoreFullTimeHomeTeam}"
-									style="width:96%" label="Year" />
+									style="width:96%" label="Scored FullTime Home team" />
 							</f:facet>
 						</p:cellEditor>
 						<h:outputText value="#{match.scoreFullTimeHomeTeam}"
@@ -223,7 +241,8 @@
 
 					<!-- Away team -->
 					<p:column width="50" headerText=" U " priority="1"
-						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+						style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+						styleClass="#{match.scheduled ? 'can-edit-cell' : null}">
 
 						<p:cellEditor rendered="#{match.scheduled}">
 							<f:facet name="output">
@@ -231,7 +250,7 @@
 							</f:facet>
 							<f:facet name="input">
 								<p:inputText value="#{match.scoreFullTimeAwayTeam}"
-									style="width:96%" label="Year" />
+									style="width:96%" label="Scored FullTime Away team" />
 							</f:facet>
 						</p:cellEditor>
 						<h:outputText value="#{match.scoreFullTimeAwayTeam}"
@@ -253,16 +272,17 @@
 					</p:column>
 
 					<p:column width="200"
-						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;" priority="1"
-						headerText="Away team"
-						filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains" sortBy="#{match.match.awayTeam.name}">
+						style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+						priority="1" headerText="Away team"
+						filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains"
+						sortBy="#{match.match.awayTeam.name}">
 
 						<!-- filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains" sortBy="#{match.awayTeam.name}" -->
 						<!-- <f:facet name="header">Away Team</f:facet> -->
 						<h:outputText value="#{match.match.awayTeam.name}" />
 					</p:column>
-					<!--  -->
-					<p:column width="100" priority="1"
+					<!-- Score -->
+					<p:column width="80" priority="1"
 						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
 						headerText="Score" sortBy="#{match.total}">
 						<!-- filterBy="#{match.match.status}" filterMatchMode="contains" -->

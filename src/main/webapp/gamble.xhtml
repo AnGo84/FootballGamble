@@ -422,17 +422,27 @@
                                 </div>
                             </div>
                         </h:panelGroup> -->
-
-						<h:panelGroup styleClass="text-right" layout="block"
+						<p:panelGrid class="ui-noborder" columns="2" layout="grid"
 							rendered="#{gambleController.eventType != 'VIEW'}">
-							<p:commandButton id="cb_matches_update"
-								icon="fa fa-fw fa-refresh" value="Update edited"
-								action="#{gambleController.onGambleMatchesUpdate}"
-								process="@this"
-								update="@this dt_matches_list :form_gamble:growl_message">
-							</p:commandButton>
-							<hr />
-						</h:panelGroup>
+							<h:panelGroup styleClass="text-left" layout="block">
+								<p:commandButton id="cb_matches_results_update"
+									icon="fa fa-fw fa-refresh" value="Update results"
+									action="#{gambleController.onGambleMatchesResultsUpdate}"
+									process="@this"
+									update="@this dt_matches_list :form_gamble:growl_message">
+								</p:commandButton>
+								<hr />
+							</h:panelGroup>
+							<h:panelGroup styleClass="text-right" layout="block">
+								<p:commandButton id="cb_matches_update"
+									icon="fa fa-fw fa-refresh" value="Update edited"
+									action="#{gambleController.onGambleMatchesUpdate}"
+									process="@this"
+									update="@this dt_matches_list :form_gamble:growl_message">
+								</p:commandButton>
+								<hr />
+							</h:panelGroup>
+						</p:panelGrid>
 
 
 						<p:dataTable id="dt_matches_list" widgetVar="dt_matches_list"
@@ -521,6 +531,7 @@
 
 							<p:column width="50" headerText=" U "
 								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+								styleClass="can-edit-cell"
 								rendered="#{gambleController.eventType != 'VIEW'}">
 
 								<p:cellEditor>
@@ -538,6 +549,7 @@
 							<!-- Away team -->
 							<p:column width="50" headerText=" U "
 								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+								styleClass="can-edit-cell"
 								rendered="#{gambleController.eventType != 'VIEW'}">
 
 								<p:cellEditor>
@@ -596,7 +608,7 @@
 				</p:tabView>
 
 			</p:outputPanel>
-			<hr />
+			<!-- <hr /> -->
 			<!-- Bottom -->
 			<h:panelGroup id="pg_gamble_edit_buttons" layout="block">
 				<!-- <p:panelGrid columns="2" layout="grid" styleClass="text-center"> -->
