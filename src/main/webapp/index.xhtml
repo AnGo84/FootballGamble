@@ -128,10 +128,11 @@
 					var="match" value="#{userGamblesController.gambleMatches}"
 					reflow="true" emptyMessage="No matchs found" rowKey="#{match.id}"
 					rowIndexVar="rowIndex" editable="true" editMode="cell"
-					filteredValue="#{userGamblesController.filteredGambleMatches}"
-					sortBy="#{match.competitionId}">
+					filteredValue="#{userGamblesController.filteredGambleMatches}">
 
-					<!--  	expandableRowGroups="true"
+
+					<!--  	sortBy="#{match.competitionId}"
+							expandableRowGroups="true"
 							filteredValue="#{userGamblesController.filteredGambleMatches}"
 							rows="10" paginator="true"
                             paginatorPosition="bottom"
@@ -181,7 +182,7 @@
 						</f:facet>
 
 						<f:facet name="header">Competition</f:facet>
-						<h:outputText value="#{match.competitionName}" />
+						<h:outputText value="#{match.shortCompetitionName}"  />
 					</p:column>
 					<!-- <p:column width="120"
 						style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;">

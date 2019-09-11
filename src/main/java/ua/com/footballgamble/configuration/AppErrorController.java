@@ -22,7 +22,9 @@ public class AppErrorController implements ErrorController {
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 		Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
 		//logger.error("Exception message: " + exception.getMessage(),exception);
-		exception.printStackTrace();
+		if( exception!=null){
+			exception.printStackTrace();
+		}
 		String exceptionStackTrace = getExceptionStackTrace(exception);
 
 		return String.format("<html><body><h2>Error Page</h2><div>Status code: <b>%s</b></div>"

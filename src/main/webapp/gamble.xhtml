@@ -2,200 +2,200 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:sec="http://www.springframework.org/security/tags">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags">
 <ui:composition template="template.xhtml">
-	<ui:define name="content">
-		<h:form id="form_gamble">
-			<p:growl id="growl_message" showDetail="true" sticky="true" />
+    <ui:define name="content">
+        <h:form id="form_gamble">
+            <p:growl id="growl_message" showDetail="true" sticky="true"/>
 
-			<p:outputPanel id="outp_gambleDetail" layout="block">
-				<!-- style="text-align:center;" -->
-				<p:outputLabel
-					value="Gamble's data for #{gambleController.eventType}" />
+            <p:outputPanel id="outp_gambleDetail" layout="block">
+                <!-- style="text-align:center;" -->
+                <p:outputLabel
+                        value="Gamble's data for #{gambleController.eventType}"/>
 
-				<!-- <p:messages id="messages" showDetail="true">
+                <!-- <p:messages id="messages" showDetail="true">
                     <p:autoUpdate/>
                 </p:messages> -->
 
-				<p:panelGrid class="ui-noborder">
-					<p:row>
-						<p:column>
-							<p:outputLabel value="Id:" />
-						</p:column>
-						<p:column>
-							<p:inputText id="it_gamble_id"
-								readonly="#{gambleController.eventType == 'VIEW'}"
-								value="#{gambleController.selectedGamble.id}" />
-						</p:column>
-					</p:row>
+                <p:panelGrid class="ui-noborder">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Id:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="it_gamble_id"
+                                         readonly="#{gambleController.eventType == 'VIEW'}"
+                                         value="#{gambleController.selectedGamble.id}"/>
+                        </p:column>
+                    </p:row>
 
-					<p:row>
-						<p:column>
-							<p:outputLabel value="Name:" />
-						</p:column>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Name:"/>
+                        </p:column>
 
-						<p:column>
-							<p:inputText id="it_gamble_name" required="true"
-								requiredMessage="Value is required."
-								readonly="#{gambleController.eventType == 'VIEW'}"
-								value="#{gambleController.selectedGamble.name}">
-								<!-- <f:validator binding="#{uniqueGambleLoginValidator}" />
+                        <p:column>
+                            <p:inputText id="it_gamble_name" required="true"
+                                         requiredMessage="Value is required."
+                                         readonly="#{gambleController.eventType == 'VIEW'}"
+                                         value="#{gambleController.selectedGamble.name}">
+                                <!-- <f:validator binding="#{uniqueGambleLoginValidator}" />
                                 <f:attribute name="currentGamble"
                                     value="#{gambleController.selectedGamble}" /> -->
-							</p:inputText>
-						</p:column>
-						<p:column>
-							<p:message for="it_gamble_name" />
-						</p:column>
-					</p:row>
-					<p:row>
-						<p:column>
-							<p:outputLabel value="Description:" />
-						</p:column>
-						<p:column>
-							<!--<p:inputText id="it_gamble_description"
+                            </p:inputText>
+                        </p:column>
+                        <p:column>
+                            <p:message for="it_gamble_name"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Description:"/>
+                        </p:column>
+                        <p:column>
+                            <!--<p:inputText id="it_gamble_description"
                                          readonly="#{gambleController.eventType == 'VIEW'}"
                                          required="true" requiredMessage="Value is required."
                                          value="#{gambleController.selectedGamble.description}"/>-->
-							<p:inputTextarea id="ita_gamble_description" rows="2"
-								readonly="#{gambleController.eventType == 'VIEW'}"
-								required="true" requiredMessage="Value is required."
-								value="#{gambleController.selectedGamble.description}" />
-						</p:column>
-						<p:column>
-							<p:message for="ita_gamble_description" />
-						</p:column>
-					</p:row>
+                            <p:inputTextarea id="ita_gamble_description" rows="2"
+                                             readonly="#{gambleController.eventType == 'VIEW'}"
+                                             required="true" requiredMessage="Value is required."
+                                             value="#{gambleController.selectedGamble.description}"/>
+                        </p:column>
+                        <p:column>
+                            <p:message for="ita_gamble_description"/>
+                        </p:column>
+                    </p:row>
 
 
-					<p:row>
-						<p:column>
-							<p:outputLabel value="Active:" />
-						</p:column>
-						<p:column>
-							<p:selectBooleanCheckbox id="sbcb_gamble_active"
-								value="#{gambleController.selectedGamble.active}"
-								disabled="#{gambleController.eventType == 'VIEW'}" />
-						</p:column>
-					</p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Active:"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectBooleanCheckbox id="sbcb_gamble_active"
+                                                     value="#{gambleController.selectedGamble.active}"
+                                                     disabled="#{gambleController.eventType == 'VIEW'}"/>
+                        </p:column>
+                    </p:row>
 
-					<p:row>
-						<p:column>
-							<p:outputLabel value="Rules:" />
-						</p:column>
-						<p:column>
-							<p:selectOneMenu id="s_menu_gamble_rules"
-								style="width: 200px !important" editable="false"
-								value="#{gambleController.selectedGamble.rule}" required="true"
-								requiredMessage="Value is required."
-								converter="gambleRuleEntityConverter" filter="true"
-								filterMatchMode="contains" panelStyle="width:250px"
-								disabled="#{gambleController.eventType == 'VIEW'}">
-								<f:selectItem itemLabel="Not choosed" noSelectionOption="true" />
-								<!--itemValue="#{null}"-->
-								<f:selectItems value="#{gambleController.gambleRules}"
-									var="rule" itemLabel="#{rule.fullName}" itemValue="#{season}" />
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Rules:"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="s_menu_gamble_rules"
+                                             style="width: 200px !important" editable="false"
+                                             value="#{gambleController.selectedGamble.rule}" required="true"
+                                             requiredMessage="Value is required."
+                                             converter="gambleRuleEntityConverter" filter="true"
+                                             filterMatchMode="contains" panelStyle="width:250px"
+                                             disabled="#{gambleController.eventType == 'VIEW'}">
+                                <f:selectItem itemLabel="Not choosed" noSelectionOption="true"/>
+                                <!--itemValue="#{null}"-->
+                                <f:selectItems value="#{gambleController.gambleRules}"
+                                               var="rule" itemLabel="#{rule.fullName}" itemValue="#{season}"/>
 
-								<!-- <p:ajax event="change"
+                                <!-- <p:ajax event="change"
                                     listener="#{competitionController.onChangeSeason}"
                                     process="@this" update="@this dt_matches_list :form_competition:growl_message" /> -->
 
-							</p:selectOneMenu>
-						</p:column>
-						<p:column>
-							<p:message for="s_menu_gamble_rules" />
-						</p:column>
-					</p:row>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <p:message for="s_menu_gamble_rules"/>
+                        </p:column>
+                    </p:row>
 
-				</p:panelGrid>
+                </p:panelGrid>
 
-				<p:tabView prependId="false"
-					style="padding:0.2em 0 0.2em 0!important; margin:0 0 0 0!important;">
-					<!-- Competitions -->
-					<p:tab title="Competitions">
+                <p:tabView prependId="false"
+                           style="padding:0.2em 0 0.2em 0!important; margin:0 0 0 0!important;">
+                    <!-- Competitions -->
+                    <p:tab title="Competitions">
 
-						<h:panelGroup styleClass="row" layout="block"
-							style="margin:0 0 0 0!important;"
-							rendered="#{gambleController.eventType != 'VIEW'}">
-							<div class="ui-g">
-								<div class="ui-g-12 ui-md-9 ui-lg-10">
-									<p:selectCheckboxMenu id="scbm_new_gamble_competitions"
-										style="min-width: 200px"
-										value="#{gambleController.newGambleCompetitions}"
-										label="New Competitions" multiple="true" filter="true"
-										filterMatchMode="contains"
-										disabled="#{gambleController.eventType == 'VIEW'}">
+                        <h:panelGroup styleClass="row" layout="block"
+                                      style="margin:0 0 0 0!important;"
+                                      rendered="#{gambleController.eventType != 'VIEW'}">
+                            <!--<div class="ui-g">-->
+                            <div class="ui-g-12 ui-md-6 ui-lg-9">
+                                <p:selectCheckboxMenu id="scbm_new_gamble_competitions"
+                                                      style="min-width: 200px"
+                                                      value="#{gambleController.newGambleCompetitions}"
+                                                      label="New Competitions" multiple="true" filter="true"
+                                                      filterMatchMode="contains"
+                                                      disabled="#{gambleController.eventType == 'VIEW'}">
 
-										<f:selectItems value="#{gambleController.gambleCompetitions}"
-											var="gambleCompetition" itemLabel="#{gambleCompetition.name}"
-											itemValue="#{gambleCompetition}" />
-									</p:selectCheckboxMenu>
+                                    <f:selectItems value="#{gambleController.gambleCompetitions}"
+                                                   var="gambleCompetition" itemLabel="#{gambleCompetition.name}"
+                                                   itemValue="#{gambleCompetition}"/>
+                                </p:selectCheckboxMenu>
 
-								</div>
-								<div class="ui-g-12 ui-md-3 ui-lg-2 text-right">
-									<p:commandButton id="cb_add_new_competitions"
-										icon="fa fa-fw fa-indent" style="width:200px;"
-										value="Add to list"
-										action="#{gambleController.onAddNewCompetitions}"
-										title="Add Competitions to current Gamble"
-										process="@this scbm_new_gamble_competitions"
-										update="@this dt_competitions_list scbm_new_gamble_competitions :form_gamble:growl_message">
-									</p:commandButton>
-								</div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3 text-right">
+                                <p:commandButton id="cb_add_new_competitions"
+                                                 icon="fa fa-fw fa-indent" style="width:200px;"
+                                                 value="Add to list"
+                                                 action="#{gambleController.onAddNewCompetitions}"
+                                                 title="Add Competitions to current Gamble"
+                                                 process="@this scbm_new_gamble_competitions"
+                                                 update="@this dt_competitions_list scbm_new_gamble_competitions :form_gamble:growl_message">
+                                </p:commandButton>
+                            </div>
 
-							</div>
+                            <!--</div>-->
 
-							<!-- <h:panelGroup styleClass="col-xs-12 text-left" layout="block">
+                            <!-- <h:panelGroup styleClass="col-xs-12 text-left" layout="block">
                             </h:panelGroup>
                             <h:panelGroup styleClass="col-xs-12 text-right" layout="block">
                             </h:panelGroup> -->
 
-						</h:panelGroup>
+                        </h:panelGroup>
 
 
-						<p:dataTable id="dt_competitions_list"
-							widgetVar="dt_competitions_list" var="competition"
-							value="#{gambleController.selectedGamble.competitions}"
-							reflow="true" emptyMessage="No gamble competitions found"
-							selectionMode="single"
-							selection="#{gambleController.selectedGambleCompetition}"
-							rowKey="#{competition.id}" rowIndexVar="rowIndex"
-							sortMode="multiple">
+                        <p:dataTable id="dt_competitions_list"
+                                     widgetVar="dt_competitions_list" var="competition"
+                                     value="#{gambleController.selectedGamble.competitions}"
+                                     reflow="true" emptyMessage="No gamble competitions found"
+                                     selectionMode="single"
+                                     selection="#{gambleController.selectedGambleCompetition}"
+                                     rowKey="#{competition.id}" rowIndexVar="rowIndex"
+                                     sortMode="multiple">
 
 
-							<f:facet name="header"> Competitions List </f:facet>
+                            <f:facet name="header"> Competitions List </f:facet>
 
-							<p:column style="width:50px">
-								<p:rowToggler />
-							</p:column>
+                            <p:column style="width:50px">
+                                <p:rowToggler/>
+                            </p:column>
 
-							<p:column width="50"
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<f:facet name="header">№</f:facet>
-								<h:outputText value="#{rowIndex + 1}" />
-							</p:column>
+                            <p:column width="50"
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <f:facet name="header">№</f:facet>
+                                <h:outputText value="#{rowIndex + 1}"/>
+                            </p:column>
 
-							<p:column headerText="Id" width="100"
-								filterBy="#{competition.id}" filterMatchMode="contains"
-								sortBy="#{competition.id}">
-								<f:facet name="header">ID</f:facet>
-								<h:outputText value="#{competition.id}" />
-							</p:column>
+                            <p:column headerText="Id" width="100"
+                                      filterBy="#{competition.id}" filterMatchMode="contains"
+                                      sortBy="#{competition.id}">
+                                <f:facet name="header">ID</f:facet>
+                                <h:outputText value="#{competition.id}"/>
+                            </p:column>
 
 
-							<p:column filterBy="#{competition.name}"
-								filterMatchMode="contains" sortBy="#{competition.name}">
-								<f:facet name="header">Name</f:facet>
-								<h:outputText value="#{competition.name}" />
-							</p:column>
+                            <p:column filterBy="#{competition.name}"
+                                      filterMatchMode="contains" sortBy="#{competition.name}">
+                                <f:facet name="header">Name</f:facet>
+                                <h:outputText value="#{competition.name}"/>
+                            </p:column>
 
-							<p:column width="100" style="text-align: center;"
-								rendered="#{gambleController.eventType != 'VIEW'}">
-								<!--
+                            <p:column width="100" style="text-align: center;"
+                                      rendered="#{gambleController.eventType != 'VIEW'}">
+                                <!--
                                 !!!
                                 <p:commandButton id="cb_competition_view" style="width:120px;"
                                     value="View" title="View" icon="fa fa-fw fa-search"
@@ -204,157 +204,158 @@
                                 </p:commandButton>
                                 !!!
                                 -->
-								<sec:authorize access="hasRole('ROLE_ADMIN')">
-									<p:commandButton id="cb_competition_delete"
-										title="Delete competition" icon="ui-icon-trash"
-										action="#{gambleController.onDeleteCompetition(competition)}"
-										process="@this dt_competitions_list"
-										update="@this dt_competitions_list :form_gamble:scbm_new_gamble_competitions :form_gamble:growl_message">
-										<p:confirm header="Confirm action"
-											message="Confirm competition deletion: #{competition.name}"
-											icon="ui-icon-alert" />
-									</p:commandButton>
-								</sec:authorize>
-							</p:column>
+                                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <p:commandButton id="cb_competition_delete"
+                                                     title="Delete competition" icon="ui-icon-trash"
+                                                     action="#{gambleController.onDeleteCompetition(competition)}"
+                                                     process="@this dt_competitions_list"
+                                                     update="@this dt_competitions_list :form_gamble:scbm_new_gamble_competitions :form_gamble:growl_message">
+                                        <p:confirm header="Confirm action"
+                                                   message="Confirm competition deletion: #{competition.name}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </sec:authorize>
+                            </p:column>
 
 
-							<p:rowExpansion>
-								<p:dataTable id="dt_competition_stages_list"
-									widgetVar="dt_competition_stages_list" var="stage"
-									value="#{competition.stages}" reflow="true"
-									emptyMessage="No stages found" rowKey="#{stage.id}">
+                            <p:rowExpansion>
+                                <p:dataTable id="dt_competition_stages_list"
+                                             widgetVar="dt_competition_stages_list" var="stage"
+                                             value="#{competition.stages}" reflow="true"
+                                             emptyMessage="No stages found" rowKey="#{stage.id}">
 
-									<!--selectionMode="single"
+                                    <!--selectionMode="single"
                                     selection="#{competitionsController.selectedCompetition}"-->
-									<f:facet name="header"> Stages List </f:facet>
+                                    <f:facet name="header"> Stages List </f:facet>
 
-									<p:column width="70" style="text-align: center;">
-										<f:facet name="header">Id</f:facet>
-										<h:outputText value="#{stage.id}" />
-									</p:column>
-									<p:column>
-										<f:facet name="header">Name</f:facet>
-										<h:outputText value="#{stage.name}" />
-									</p:column>
-									<p:column width="100" style="text-align: center;">
-										<!-- rendered="#{gambleController.eventType == 'VIEW'}" -->
-										<f:facet name="header">Count</f:facet>
+                                    <p:column width="70" style="text-align: center;">
+                                        <f:facet name="header">Id</f:facet>
+                                        <h:outputText value="#{stage.id}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">Name</f:facet>
+                                        <h:outputText value="#{stage.name}"/>
+                                    </p:column>
+                                    <p:column width="100" style="text-align: center;">
+                                        <!-- rendered="#{gambleController.eventType == 'VIEW'}" -->
+                                        <f:facet name="header">Count</f:facet>
 
-										<p:selectBooleanCheckbox value="#{stage.active}"
-											disabled="#{gambleController.eventType == 'VIEW'}" />
-									</p:column>
+                                        <p:selectBooleanCheckbox value="#{stage.active}"
+                                                                 disabled="#{gambleController.eventType == 'VIEW'}"/>
+                                    </p:column>
 
 
-									<!-- <p:column width="100" style="text-align: center;"
-										rendered="#{gambleController.eventType != 'VIEW'}">
-										<f:facet name="header">Count</f:facet>
-										<p:cellEditor>
-											<f:facet name="output">
-												<p:selectBooleanCheckbox value="#{stage.active}"
-													disabled="true" />
-											</f:facet>
-											<f:facet name="input">
-												<p:selectBooleanCheckbox value="#{stage.active}"/>
-											</f:facet>
-										</p:cellEditor>
+                                    <!-- <p:column width="100" style="text-align: center;"
+                                        rendered="#{gambleController.eventType != 'VIEW'}">
+                                        <f:facet name="header">Count</f:facet>
+                                        <p:cellEditor>
+                                            <f:facet name="output">
+                                                <p:selectBooleanCheckbox value="#{stage.active}"
+                                                    disabled="true" />
+                                            </f:facet>
+                                            <f:facet name="input">
+                                                <p:selectBooleanCheckbox value="#{stage.active}"/>
+                                            </f:facet>
+                                        </p:cellEditor>
 
-									</p:column> -->
+                                    </p:column> -->
 
-								</p:dataTable>
-							</p:rowExpansion>
+                                </p:dataTable>
+                            </p:rowExpansion>
 
-							<!-- <f:facet name="footer">
+                            <!-- <f:facet name="footer">
                         <p:commandButton process="dt_users_list"
                             update=":form_users_list:userInfoDialog"
                             icon="fa fa-fw fa-search" value="View"
                             oncomplete="PF('userInfoDialog').show()" />
                     </f:facet> -->
 
-						</p:dataTable>
-					</p:tab>
+                        </p:dataTable>
+                    </p:tab>
 
-					<!-- Participants -->
+                    <!-- Participants -->
 
-					<p:tab title="Participants">
+                    <p:tab title="Participants">
 
-						<h:panelGroup styleClass="row" layout="block"
-							rendered="#{gambleController.eventType != 'VIEW'}">
-							<div class="ui-g">
-								<div class="ui-g-12 ui-md-9 ui-lg-10">
-									<p:selectCheckboxMenu id="scbm_new_gamble_users"
-										style="min-width: 200px"
-										value="#{gambleController.newGambleUsers}" label="New Users"
-										multiple="true" filter="true" filterMatchMode="contains"
-										disabled="#{gambleController.eventType == 'VIEW'}">
-										<!--  -->
-										<!-- panelStyle="width:250px" -->
-										<f:selectItems value="#{gambleController.gambleUsers}"
-											var="gambleUser" itemLabel="#{gambleUser.login}"
-											itemValue="#{gambleUser}" />
-									</p:selectCheckboxMenu>
+                        <h:panelGroup styleClass="row" layout="block"
+                                      style="margin:0 0 0 0!important;"
+                                      rendered="#{gambleController.eventType != 'VIEW'}">
+                            <!--<div class="ui-g">-->
+                            <div class="ui-g-12 ui-md-6 ui-lg-9">
+                                <p:selectCheckboxMenu id="scbm_new_gamble_users"
+                                                      style="min-width: 200px"
+                                                      value="#{gambleController.newGambleUsers}" label="New Users"
+                                                      multiple="true" filter="true" filterMatchMode="contains"
+                                                      disabled="#{gambleController.eventType == 'VIEW'}">
+                                    <!--  -->
+                                    <!-- panelStyle="width:250px" -->
+                                    <f:selectItems value="#{gambleController.gambleUsers}"
+                                                   var="gambleUser" itemLabel="#{gambleUser.login}"
+                                                   itemValue="#{gambleUser}"/>
+                                </p:selectCheckboxMenu>
 
-								</div>
-								<div class="ui-g-12 ui-md-3 ui-lg-2 text-right">
-									<p:commandButton id="cb_add_new_users"
-										icon="fa fa-fw fa-indent" style="width:200px;"
-										value="Add to list"
-										action="#{gambleController.onAddNewParticipants}"
-										title="Add Users as participants to current Gamble"
-										process="@this scbm_new_gamble_users"
-										update="@this dt_participants_list scbm_new_gamble_users :form_gamble:growl_message">
-									</p:commandButton>
-								</div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3 text-right">
+                                <p:commandButton id="cb_add_new_users"
+                                                 icon="fa fa-fw fa-indent" style="width:200px;"
+                                                 value="Add to list"
+                                                 action="#{gambleController.onAddNewParticipants}"
+                                                 title="Add Users as participants to current Gamble"
+                                                 process="@this scbm_new_gamble_users"
+                                                 update="@this dt_participants_list scbm_new_gamble_users :form_gamble:growl_message">
+                                </p:commandButton>
+                            </div>
 
-							</div>
+                            <!--</div>-->
 
-							<!-- <h:panelGroup styleClass="col-xs-12 text-left" layout="block">
+                            <!-- <h:panelGroup styleClass="col-xs-12 text-left" layout="block">
                             </h:panelGroup>
                             <h:panelGroup styleClass="col-xs-12 text-right" layout="block">
                             </h:panelGroup> -->
 
-						</h:panelGroup>
+                        </h:panelGroup>
 
-						<p:dataTable id="dt_participants_list"
-							widgetVar="dt_participants_list" var="participant"
-							value="#{gambleController.selectedGamble.participants}"
-							reflow="true" emptyMessage="No participants found"
-							rowKey="#{participant.id}" rowIndexVar="rowIndex"
-							sortMode="multiple">
+                        <p:dataTable id="dt_participants_list"
+                                     widgetVar="dt_participants_list" var="participant"
+                                     value="#{gambleController.selectedGamble.participants}"
+                                     reflow="true" emptyMessage="No participants found"
+                                     rowKey="#{participant.id}" rowIndexVar="rowIndex"
+                                     sortMode="multiple">
 
-							<!-- rows="10" paginator="true"
+                            <!-- rows="10" paginator="true"
                             paginatorPosition="bottom"
                             paginatorTemplate="{CurrentPageReport} {FuserirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="5,10,15" selectionMode="single"
                             selection="#{usersController.selectedUser}" -->
 
-							<f:facet name="header"> Participants List </f:facet>
+                            <f:facet name="header"> Participants List </f:facet>
 
-							<p:column width="50"
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<f:facet name="header">№</f:facet>
-								<h:outputText value="#{rowIndex + 1}" />
-							</p:column>
+                            <p:column width="50"
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <f:facet name="header">№</f:facet>
+                                <h:outputText value="#{rowIndex + 1}"/>
+                            </p:column>
 
-							<p:column width="60" style="text-align: center;" headerText="Id"
-								filterBy="#{participant.id}" filterMatchMode="contains"
-								sortBy="#{participant.id}">
-								<f:facet name="header">ID</f:facet>
-								<h:outputText value="#{participant.id}" />
-							</p:column>
-							<p:column filterBy="#{participant.login}"
-								filterMatchMode="contains" sortBy="#{participant.login}">
-								<f:facet name="header">LOGIN</f:facet>
-								<h:outputText value="#{participant.login}" />
-							</p:column>
-							<p:column filterBy="#{participant.fullName}"
-								filterMatchMode="contains" sortBy="#{participant.fullName}">
-								<f:facet name="header">Name</f:facet>
-								<h:outputText value="#{participant.fullName}" />
-							</p:column>
+                            <p:column width="60" style="text-align: center;" headerText="Id"
+                                      filterBy="#{participant.id}" filterMatchMode="contains"
+                                      sortBy="#{participant.id}">
+                                <f:facet name="header">ID</f:facet>
+                                <h:outputText value="#{participant.id}"/>
+                            </p:column>
+                            <p:column filterBy="#{participant.login}"
+                                      filterMatchMode="contains" sortBy="#{participant.login}">
+                                <f:facet name="header">LOGIN</f:facet>
+                                <h:outputText value="#{participant.login}"/>
+                            </p:column>
+                            <p:column filterBy="#{participant.fullName}"
+                                      filterMatchMode="contains" sortBy="#{participant.fullName}">
+                                <f:facet name="header">Name</f:facet>
+                                <h:outputText value="#{participant.fullName}"/>
+                            </p:column>
 
-							<p:column width="100" style="text-align: center;"
-								rendered="#{gambleController.eventType != 'VIEW'}">
-								<!-- <p:commandButton id="cb_user_view" title="View user"
+                            <p:column width="100" style="text-align: center;"
+                                      rendered="#{gambleController.eventType != 'VIEW'}">
+                                <!-- <p:commandButton id="cb_user_view" title="View user"
                                     icon="ui-icon-search" process="dt_users_list"
                                     update=":form_users_list:userInfoDialog"
                                     oncomplete="PF('userInfoDialog').show()">
@@ -367,289 +368,289 @@
                                     action="#{usersController.onEditUser(appuser)}"
                                     process="dt_users_list" update="@this" />
                                      -->
-								<p:commandButton id="cb_user_delete" title="Delete participant"
-									icon="ui-icon-trash"
-									action="#{gambleController.onDeleteParticipant(participant)}"
-									process="@this dt_participants_list"
-									update="@this dt_participants_list :form_gamble:scbm_new_gamble_users :form_gamble:growl_message">
-									<p:confirm header="Confirm action"
-										message="Confirm user deletion: #{participant.login}"
-										icon="ui-icon-alert" />
-								</p:commandButton>
-							</p:column>
+                                <p:commandButton id="cb_user_delete" title="Delete participant"
+                                                 icon="ui-icon-trash"
+                                                 action="#{gambleController.onDeleteParticipant(participant)}"
+                                                 process="@this dt_participants_list"
+                                                 update="@this dt_participants_list :form_gamble:scbm_new_gamble_users :form_gamble:growl_message">
+                                    <p:confirm header="Confirm action"
+                                               message="Confirm user deletion: #{participant.login}"
+                                               icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
 
-							<!-- <f:facet name="footer">
+                            <!-- <f:facet name="footer">
                                 <p:commandButton process="dt_users_list"
                                     update=":form_users_list:userInfoDialog"
                                     icon="fa fa-fw fa-search" value="View"
                                     oncomplete="PF('userInfoDialog').show()" />
                             </f:facet> -->
 
-						</p:dataTable>
+                        </p:dataTable>
 
-					</p:tab>
+                    </p:tab>
 
-					<!-- Matches -->
+                    <!-- Matches -->
 
-					<p:tab title="Matches with users' rates">
+                    <p:tab title="Matches with users' rates">
 
-						<!-- <h:panelGroup styleClass="row" layout="block"
+                        <h:panelGroup styleClass="row" layout="block"
+                                      style="margin:0 0 0 0!important;"
                                       rendered="#{gambleController.eventType != 'VIEW'}">
-                            <div class="ui-g">
-                                <div class="ui-g-12 ui-md-9 ui-lg-10">
-                                    <p:selectCheckboxMenu id="scbm_new_gamble_users"
-                                                          style="min-width: 200px"
-                                                          value="#{gambleController.newGambleUsers}" label="New Users"
-                                                          multiple="true" filter="true" filterMatchMode="contains"
-                                                          disabled="#{gambleController.eventType == 'VIEW'}">
-                                        
-                                        panelStyle="width:250px"
-                                        <f:selectItems value="#{gambleController.gambleUsers}"
-                                                       var="gambleUser" itemLabel="#{gambleUser.login}"
-                                                       itemValue="#{gambleUser}"/>
-                                    </p:selectCheckboxMenu>
+                            <!--<div class="ui-g">-->
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton id="cb_matches_results_update"
+                                                 icon="fa fa-fw fa-refresh" value="Update results"
+                                                 action="#{gambleController.onGambleMatchesResultsUpdate}"
+                                                 process="@this"
+                                                 update="@this dt_matches_list :form_gamble:growl_message">
+                                </p:commandButton>
 
-                                </div>
-                                <div class="ui-g-12 ui-md-3 ui-lg-2 text-right">
-                                    <p:commandButton id="cb_add_new_users"
-                                                     icon="fa fa-fw fa-refresh" style="width:200px;"
-                                                     value="Add to list"
-                                                     action="#{gambleController.onAddNewParticipants}"
-                                                     title="Add Users as participants to current Gamble"
-                                                     process="@this scbm_new_gamble_users"
-                                                     update="@this dt_participants_list scbm_new_gamble_users :form_gamble:growl_message">
-                                    </p:commandButton>
-                                </div>
                             </div>
-                        </h:panelGroup> -->
-						<p:panelGrid class="ui-noborder" columns="2" layout="grid"
-							rendered="#{gambleController.eventType != 'VIEW'}">
-							<h:panelGroup styleClass="text-left" layout="block">
-								<p:commandButton id="cb_matches_results_update"
-									icon="fa fa-fw fa-refresh" value="Update results"
-									action="#{gambleController.onGambleMatchesResultsUpdate}"
-									process="@this"
-									update="@this dt_matches_list :form_gamble:growl_message">
-								</p:commandButton>
-								<hr />
-							</h:panelGroup>
-							<h:panelGroup styleClass="text-right" layout="block">
-								<p:commandButton id="cb_matches_update"
-									icon="fa fa-fw fa-refresh" value="Update edited"
-									action="#{gambleController.onGambleMatchesUpdate}"
-									process="@this"
-									update="@this dt_matches_list :form_gamble:growl_message">
-								</p:commandButton>
-								<hr />
-							</h:panelGroup>
-						</p:panelGrid>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6 text-right">
+                                <p:commandButton id="cb_matches_update"
+                                                 icon="fa fa-fw fa-refresh" value="Update edited"
+                                                 action="#{gambleController.onGambleMatchesUpdate}"
+                                                 process="@this"
+                                                 update="@this dt_matches_list :form_gamble:growl_message">
+                                </p:commandButton>
+                            </div>
+                            <!--</div>-->
+                        </h:panelGroup>
 
+                        <!--<p:panelGrid class="ui-noborder" columns="2" layout="grid"
+                                     rendered="#{gambleController.eventType != 'VIEW'}">
+                            <h:panelGroup styleClass="text-left" layout="block">
+                                <p:commandButton id="cb_matches_results_update"
+                                                 icon="fa fa-fw fa-refresh" value="Update results"
+                                                 action="#{gambleController.onGambleMatchesResultsUpdate}"
+                                                 process="@this"
+                                                 update="@this dt_matches_list :form_gamble:growl_message">
+                                </p:commandButton>
+                                <hr/>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="text-right" layout="block">
+                                <p:commandButton id="cb_matches_update"
+                                                 icon="fa fa-fw fa-refresh" value="Update edited"
+                                                 action="#{gambleController.onGambleMatchesUpdate}"
+                                                 process="@this"
+                                                 update="@this dt_matches_list :form_gamble:growl_message">
+                                </p:commandButton>
+                                <hr/>
+                            </h:panelGroup>
+                        </p:panelGrid>-->
 
-						<p:dataTable id="dt_matches_list" widgetVar="dt_matches_list"
-							var="match" value="#{gambleController.gambleMatches}"
-							reflow="true" emptyMessage="No matchs found" rowKey="#{match.id}"
-							rowIndexVar="rowIndex" editable="true" editMode="cell"
-							sortBy="#{match.competitionId}" expandableRowGroups="true">
+                        <p:dataTable id="dt_matches_list" widgetVar="dt_matches_list"
+                                     var="match" value="#{gambleController.gambleMatches}"
+                                     reflow="true" emptyMessage="No matchs found" rowKey="#{match.id}"
+                                     rowIndexVar="rowIndex" editable="true" editMode="cell"
+                                     sortMode="multiple">
 
-							<!-- 
-							filteredValue="#{gambleController.filteredGambleMatches}"
-							rows="10" paginator="true"
+                            <!-- sortBy="#{match.competitionId}" expandableRowGroups="true"
+                            filteredValue="#{gambleController.filteredGambleMatches}"
+                            rows="10" paginator="true"
                             paginatorPosition="bottom"
                             paginatorTemplate="{CurrentPageReport} {FuserirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="5,10,15" selectionMode="single"
                             selection="#{usersController.selectedUser}" -->
 
-							<f:facet name="header"> Matches List </f:facet>
+                            <!--<f:facet name="header"> Matches List </f:facet>-->
 
-							<p:ajax event="cellEdit"
-								listener="#{gambleController.onCellEdit(match)}" />
+                            <p:ajax event="cellEdit"
+                                    listener="#{gambleController.onCellEdit(match)}"/>
 
-							<!-- <f:facet name="header">
-								<p:outputPanel>
-									<p:outputLabel value="Search all fields: " />
-									<p:inputText id="globalFilter"
-										onkeyup="PF('dt_matches_list').filter()" style="width:150px"
-										placeholder="Enter keyword" />
-								</p:outputPanel>
-							</f:facet> -->
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <p:outputLabel value="Search all fields: "/>
+                                    <p:inputText id="globalFilter"
+                                                 onkeyup="PF('dt_matches_list').filter()" style="width:150px"
+                                                 placeholder="Enter keyword"/>
+                                </p:outputPanel>
+                            </f:facet>
 
-							<p:headerRow>
-								<p:column colspan="12">
-									<p:outputLabel value="#{match.competitionName}" />
-								</p:column>
-							</p:headerRow>
+                            <!--<p:headerRow>
+                                <p:column colspan="12">
+                                    <p:outputLabel value="#{match.competitionName}" />
+                                </p:column>
+                            </p:headerRow>-->
 
-							<p:column width="60"
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<h:outputText value="#{rowIndex + 1}" />
-							</p:column>
+                            <p:column width="60"
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <h:outputText value="#{rowIndex + 1}"/>
+                            </p:column>
 
 
-							<p:column width="120"
-								style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;">
-								<!-- filterBy="#{match.user.login}" filterMatchMode="contains" -->
-								<f:facet name="header">User</f:facet>
-								<h:outputText value="#{match.user.login}" />
-							</p:column>
+                            <p:column width="120"
+                                      style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
+                                      filterBy="#{match.user.login}" filterMatchMode="contains"
+                                      sortBy="#{match.user.login}">
+                                <f:facet name="header">User</f:facet>
+                                <h:outputText value="#{match.user.login}"/>
+                            </p:column>
 
-							<p:column width="100"
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<!-- filterBy="#{match.match.utcDate}" filterMatchMode="contains" sortBy="#{match.utcDate}" -->
-								<f:facet name="header">Date</f:facet>
-								<h:outputText value="#{match.match.displayUtcDate}" />
+                            <p:column width="100"
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+                                      filterBy="#{match.match.displayUtcDate}" filterMatchMode="contains"
+                                      sortBy="#{match.match.displayUtcDate}">
+                                <!--  -->
+                                <f:facet name="header">Date</f:facet>
+                                <h:outputText value="#{match.match.displayUtcDate}"/>
 
-							</p:column>
-							<!-- Home team -->
-							<p:column width="50" headerText="#"
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<!-- <f:facet name="header">#</f:facet> -->
-								<!-- Home team Crest -->
-								<p:graphicImage url="#{match.match.homeTeam.crestUrl}"
-									height="30"
-									title="Emblem for  #{match.match.homeTeam.crestUrl}"
-									rendered="#{not empty match.match.homeTeam.crestUrl}" />
-							</p:column>
+                            </p:column>
+                            <!-- Home team -->
+                            <p:column width="50" headerText="#"
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <!-- <f:facet name="header">#</f:facet> -->
+                                <!-- Home team Crest -->
+                                <p:graphicImage url="#{match.match.homeTeam.crestUrl}"
+                                                height="30"
+                                                title="Emblem for  #{match.match.homeTeam.crestUrl}"
+                                                rendered="#{not empty match.match.homeTeam.crestUrl}"/>
+                            </p:column>
 
-							<p:column width="200"
-								style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
-								headerText="Home team">
-								<!-- filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains" -->
-								<h:outputText value="#{match.match.homeTeam.name}" />
-							</p:column>
-							<p:column width="50" headerText=" G "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<f:facet name="header"> G </f:facet>
-								<h:outputText value="#{match.match.scoreFullTimeHomeTeam}" />
-							</p:column>
+                            <p:column width="200"
+                                      style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+                                      headerText="Home team"
+                                      filterBy="#{match.match.homeTeam.name}" filterMatchMode="contains"
+                                      sortBy="#{match.match.homeTeam.name}">
+                                <!--  -->
+                                <h:outputText value="#{match.match.homeTeam.name}"/>
+                            </p:column>
+                            <p:column width="50" headerText=" G "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <f:facet name="header"> G </f:facet>
+                                <h:outputText value="#{match.match.scoreFullTimeHomeTeam}"/>
+                            </p:column>
 
-							<p:column width="50" headerText=" U "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
-								rendered="#{gambleController.eventType == 'VIEW'}">
-								<f:facet name="header"> U </f:facet>
-								<h:outputText value="#{match.scoreFullTimeHomeTeam}" />
-							</p:column>
+                            <p:column width="50" headerText=" U "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+                                      rendered="#{gambleController.eventType == 'VIEW'}">
+                                <f:facet name="header"> U </f:facet>
+                                <h:outputText value="#{match.scoreFullTimeHomeTeam}"/>
+                            </p:column>
 
-							<p:column width="50" headerText=" U "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
-								styleClass="can-edit-cell"
-								rendered="#{gambleController.eventType != 'VIEW'}">
+                            <p:column width="50" headerText=" U "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+                                      styleClass="can-edit-cell"
+                                      rendered="#{gambleController.eventType != 'VIEW'}">
 
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{match.scoreFullTimeHomeTeam}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{match.scoreFullTimeHomeTeam}"
-											style="width:96%" label="Year" />
-									</f:facet>
-								</p:cellEditor>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{match.scoreFullTimeHomeTeam}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{match.scoreFullTimeHomeTeam}"
+                                                     style="width:96%" label="Year"/>
+                                    </f:facet>
+                                </p:cellEditor>
 
-							</p:column>
+                            </p:column>
 
-							<!-- Away team -->
-							<p:column width="50" headerText=" U "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
-								styleClass="can-edit-cell"
-								rendered="#{gambleController.eventType != 'VIEW'}">
+                            <!-- Away team -->
+                            <p:column width="50" headerText=" U "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+                                      styleClass="can-edit-cell"
+                                      rendered="#{gambleController.eventType != 'VIEW'}">
 
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{match.scoreFullTimeAwayTeam}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{match.scoreFullTimeAwayTeam}"
-											style="width:96%" label="Year" />
-									</f:facet>
-								</p:cellEditor>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{match.scoreFullTimeAwayTeam}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{match.scoreFullTimeAwayTeam}"
+                                                     style="width:96%" label="Year"/>
+                                    </f:facet>
+                                </p:cellEditor>
 
-							</p:column>
+                            </p:column>
 
-							<p:column width="50" headerText=" U "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
-								rendered="#{gambleController.eventType == 'VIEW'}">
-								<h:outputText value="#{match.scoreFullTimeAwayTeam}" />
+                            <p:column width="50" headerText=" U "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;"
+                                      rendered="#{gambleController.eventType == 'VIEW'}">
+                                <h:outputText value="#{match.scoreFullTimeAwayTeam}"/>
 
-							</p:column>
-							<p:column width="50" headerText=" G "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<h:outputText value="#{match.match.scoreFullTimeAwayTeam}" />
-							</p:column>
+                            </p:column>
+                            <p:column width="50" headerText=" G "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <h:outputText value="#{match.match.scoreFullTimeAwayTeam}"/>
+                            </p:column>
 
-							<p:column width="50" headerText=" "
-								style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
-								<f:facet name="header">#</f:facet>
-								<!-- Away team Crest -->
-								<p:graphicImage url="#{match.match.awayTeam.crestUrl}"
-									height="30" width="30"
-									title="Emblem for  #{match.match.awayTeam.crestUrl}"
-									rendered="#{not empty match.match.awayTeam.crestUrl}" />
-							</p:column>
+                            <p:column width="50" headerText=" "
+                                      style="padding:0 0 0 0!important; margin:0 0 0 0!important; text-align: center;">
+                                <f:facet name="header">#</f:facet>
+                                <!-- Away team Crest -->
+                                <p:graphicImage url="#{match.match.awayTeam.crestUrl}"
+                                                height="30" width="30"
+                                                title="Emblem for  #{match.match.awayTeam.crestUrl}"
+                                                rendered="#{not empty match.match.awayTeam.crestUrl}"/>
+                            </p:column>
 
-							<p:column width="200"
-								style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
-								headerText="Away team">
+                            <p:column width="200"
+                                      style="padding:0 2px 0 5px!important; margin:0 0 0 0!important;"
+                                      headerText="Away team"
+                                      filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains"
+                                      sortBy="#{match.match.awayTeam.name}">
+                                <!-- <f:facet name="header">Away Team</f:facet> -->
+                                <h:outputText value="#{match.match.awayTeam.name}"/>
+                            </p:column>
+                            <!--  -->
+                            <p:column width="120"
+                                      style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
+                                      headerText="Status" filterBy="#{match.match.status}" filterMatchMode="contains"
+                                      sortBy="#{match.match.status}">
+                                <!--  -->
+                                <h:outputText value="#{match.match.status}"/>
+                            </p:column>
 
-								<!-- filterBy="#{match.match.awayTeam.name}" filterMatchMode="contains" sortBy="#{match.awayTeam.name}" -->
-								<!-- <f:facet name="header">Away Team</f:facet> -->
-								<h:outputText value="#{match.match.awayTeam.name}" />
-							</p:column>
-							<!--  -->
-							<p:column width="120"
-								style="padding:0 2px 0 2px!important; margin:0 0 0 0!important;"
-								headerText="Status">
-								<!-- filterBy="#{match.match.status}" filterMatchMode="contains" -->
-								<h:outputText value="#{match.match.status}" />
-							</p:column>
+                        </p:dataTable>
 
-						</p:dataTable>
+                    </p:tab>
 
-					</p:tab>
+                </p:tabView>
 
-				</p:tabView>
+            </p:outputPanel>
+            <!-- <hr /> -->
+            <!-- Bottom -->
+            <h:panelGroup id="pg_gamble_edit_buttons" layout="block">
+                <!-- <p:panelGrid columns="2" layout="grid" styleClass="text-center"> -->
+                <p:panelGrid class="ui-noborder" columns="2" layout="grid">
+                    <!-- <p:row styleClass="text-center"> -->
+                    <!-- <p:column width="200" style="text-align: left;"> -->
+                    <p:column styleClass="text-center">
+                        <!--
+                            <p:commandButton value="Cancel" style="width:100px;"
+                                icon="fa fa-fw fa-close"
+                                action="#{gambleController.onGambleEditCancel}" process="@this"
+                                immediate="true" />
+                                -->
+                        <p:commandButton value="Back" width="200"
+                                         icon="fa fa-fw fa-arrow-left"
+                                         action="#{gambleController.onGambleEditCancel}" process="@this"
+                                         immediate="true"/>
+                    </p:column>
 
-			</p:outputPanel>
-			<!-- <hr /> -->
-			<!-- Bottom -->
-			<h:panelGroup id="pg_gamble_edit_buttons" layout="block">
-				<!-- <p:panelGrid columns="2" layout="grid" styleClass="text-center"> -->
-				<p:panelGrid class="ui-noborder" columns="2" layout="grid">
-					<!-- <p:row styleClass="text-center"> -->
-					<!-- <p:column width="200" style="text-align: left;"> -->
-					<p:column styleClass="text-center">
-						<!-- 
-							<p:commandButton value="Cancel" style="width:100px;"
-								icon="fa fa-fw fa-close"
-								action="#{gambleController.onGambleEditCancel}" process="@this"
-								immediate="true" />
-								-->
-						<p:commandButton value="Back" width="200"
-							icon="fa fa-fw fa-arrow-left"
-							action="#{gambleController.onGambleEditCancel}" process="@this"
-							immediate="true" />
-					</p:column>
+                    <!-- <p:column width="200" style="text-align: right;"> -->
+                    <p:column styleClass="text-center">
+                        <!-- <p:commandButton id="cb_submit_gamble_edit"
+                                widgetVar="cb_submit_gamble_edit" value="Ok"
+                                style="width:100px;" icon="fa fa-fw fa-check"
+                                rendered="#{gambleController.eventType != 'VIEW'}"
+                                action="#{gambleController.onGambleEditSubmit}"
+                                process="@this outp_gambleDetail"
+                                update="outp_gambleDetail growl_message" /> -->
+                        <p:commandButton id="cb_submit_gamble_edit"
+                                         widgetVar="cb_submit_gamble_edit" value="Save"
+                                         style="width:150px;" icon="fa fa-fw fa-save"
+                                         rendered="#{gambleController.eventType != 'VIEW'}"
+                                         action="#{gambleController.onGambleEditSubmit}"
+                                         process="@this outp_gambleDetail"
+                                         update="outp_gambleDetail growl_message"/>
+                    </p:column>
+                    <!-- </p:row> -->
+                </p:panelGrid>
+            </h:panelGroup>
 
-					<!-- <p:column width="200" style="text-align: right;"> -->
-					<p:column styleClass="text-center">
-						<!-- <p:commandButton id="cb_submit_gamble_edit"
-								widgetVar="cb_submit_gamble_edit" value="Ok"
-								style="width:100px;" icon="fa fa-fw fa-check"
-								rendered="#{gambleController.eventType != 'VIEW'}"
-								action="#{gambleController.onGambleEditSubmit}"
-								process="@this outp_gambleDetail"
-								update="outp_gambleDetail growl_message" /> -->
-						<p:commandButton id="cb_submit_gamble_edit"
-							widgetVar="cb_submit_gamble_edit" value="Save"
-							style="width:150px;" icon="fa fa-fw fa-save"
-							rendered="#{gambleController.eventType != 'VIEW'}"
-							action="#{gambleController.onGambleEditSubmit}"
-							process="@this outp_gambleDetail"
-							update="outp_gambleDetail growl_message" />
-					</p:column>
-					<!-- </p:row> -->
-				</p:panelGrid>
-			</h:panelGroup>
-
-		</h:form>
-	</ui:define>
+        </h:form>
+    </ui:define>
 </ui:composition>
 </html>

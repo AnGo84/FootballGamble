@@ -135,13 +135,13 @@ public class GambleController implements Serializable {
 		clearDataForDeletedUser();
 		updateGambleMatches();
 
-		// return "gambles.xhmtl?faces-redirect=true";
+		// return "gambles.xhtml?faces-redirect=true";
 		return "";
 	}
 
 	private void clearDataForDeletedUser() {
 		logger.info("Clear gamble Matches For Deleted User");
-		if (deleteGambleUsers != null && deleteGambleUsers.isEmpty()) {
+		if (deleteGambleUsers != null && !deleteGambleUsers.isEmpty()) {
 			for (GambleUser user : deleteGambleUsers) {
 				try {
 					gambleMatchService.deleteAllGambleMatchesByGambleIdAndUserId(selectedGamble.getId(), user.getId());
@@ -181,7 +181,7 @@ public class GambleController implements Serializable {
 
 	public String onGambleEditCancel() {
 		logger.info("Cancel for action '" + eventType + "' for: " + selectedGamble);
-		return "gambles.xhmtl?faces-redirect=true";
+		return "gambles.xhtml?faces-redirect=true";
 	}
 
 	public void onAddNewParticipants() {
@@ -281,22 +281,7 @@ public class GambleController implements Serializable {
 	public void onGambleMatchesResultsUpdate() {
 		logger.info("onGambleMatchesResultsUpdate");
 
-		/*
-		 * List<GambleMatchEntity> editedMatches = gambleMatches.stream().filter(match
-		 * -> match.isEdited()) .collect(Collectors.toList()); if (editedMatches != null
-		 * && !editedMatches.isEmpty()) { logger.info("GambleMatches for Update: " +
-		 * editedMatches.size()); try { gambleMatchService.saveAll(editedMatches);
-		 * PrimeFacesMessageUtils.addGlobalInfoMessage("Updated '" +
-		 * editedMatches.size() + "' matches");
-		 * 
-		 * gambleMatches.stream().filter(match -> match.isEdited()).forEach(match ->
-		 * match.setEdited(false));
-		 * 
-		 * } catch (Exception ex) { logger.error("Error on Update matches: " +
-		 * ex.getMessage());
-		 * PrimeFacesMessageUtils.addGlobalErrorMessage("Error on Update matches: " +
-		 * ex.getMessage()); } }
-		 */
+		updateGambleMatches();
 	}
 
 	// Getters-Setters

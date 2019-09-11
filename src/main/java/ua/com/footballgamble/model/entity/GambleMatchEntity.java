@@ -1,8 +1,9 @@
 package ua.com.footballgamble.model.entity;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
 
 public class GambleMatchEntity {
 	private String id;
@@ -195,6 +196,24 @@ public class GambleMatchEntity {
 		}
 
 		return match.getUtcDateAsDate();
+	}
+
+	@JsonIgnore
+	public String getShortCompetitionName() {
+		if (StringUtils.isBlank(competitionName)) {
+			return "";
+		}
+
+		return (competitionName.length() < 20 ? competitionName : competitionName.substring(0, 21));
+	}
+
+	@JsonIgnore
+	public String getUserLogin() {
+		if (user == null || StringUtils.isBlank(user.getLogin())) {
+			return "";
+		}
+
+		return (user.getLogin());
 	}
 
 	@Override

@@ -1,12 +1,5 @@
 package ua.com.footballgamble.service;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,29 +10,22 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import ua.com.footballgamble.contloller.RestTemplateResponseErrorHandler;
-import ua.com.footballgamble.exception.AuthorisationException;
-import ua.com.footballgamble.exception.DataConflictException;
-import ua.com.footballgamble.exception.NoContentException;
-import ua.com.footballgamble.exception.NotFoundException;
-import ua.com.footballgamble.exception.RestAPIServerException;
-import ua.com.footballgamble.model.entity.GambleCompetition;
-import ua.com.footballgamble.model.entity.GambleEntity;
-import ua.com.footballgamble.model.entity.GambleMatchEntity;
-import ua.com.footballgamble.model.entity.GambleMatchScore;
-import ua.com.footballgamble.model.entity.GambleRuleEntity;
-import ua.com.footballgamble.model.entity.GambleStage;
-import ua.com.footballgamble.model.entity.GambleUser;
-import ua.com.footballgamble.model.entity.MatchEntity;
-import ua.com.footballgamble.model.entity.SeasonEntity;
+import ua.com.footballgamble.exception.*;
+import ua.com.footballgamble.model.entity.*;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("gambleMatchesService")
 public class GambleMatchServiceImpl {
 
-	private static final String ENTITY_PATH = "/gamblematches";
-
 	public static final Logger logger = LoggerFactory.getLogger(GambleMatchServiceImpl.class);
+	private static final String ENTITY_PATH = "/gamblematches";
 	@Value("${football.api.path}")
 	private String apiPath;
 
@@ -80,32 +66,36 @@ public class GambleMatchServiceImpl {
 				new ParameterizedTypeReference<List<GambleMatchEntity>>() {
 				});
 		list = response.getBody();
+
 		if (list != null) {
 			list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
-					.thenComparingLong(GambleMatchEntity::getMatchId).reversed()).collect(Collectors.toList());
+					.thenComparing(GambleMatchEntity::getMatchDate)
+					.thenComparing(GambleMatchEntity::getUserLogin)
+					.thenComparingLong(GambleMatchEntity::getMatchId)
+			).collect(Collectors.toList());
 		}
 		/*
 		 * list = list.stream().sorted((lhs, rhs) -> {
-		 * 
+		 *
 		 * if (lhs.getCompetitionId().equals(rhs.getCompetitionId())) {
-		 * 
+		 *
 		 * if
 		 * (lhs.getMatch().getDisplayUtcDate().equals(rhs.getMatch().getDisplayUtcDate()
 		 * )) {
-		 * 
+		 *
 		 * return
 		 * rhs.getMatch().getHomeTeam().getName().compareTo(lhs.getMatch().getHomeTeam()
 		 * .getName()); } else {
-		 * 
+		 *
 		 * | Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH); if
 		 * |(rhs.getMatch().getUtcDateAsDate().compareTo(today) < 0) { | } else { return
 		 * |lhs.getMatch().getUtcDateAsDate().compareTo(rhs.getMatch().getUtcDateAsDate(
 		 * ) |); }
-		 * 
+		 *
 		 * return
 		 * rhs.getMatch().getUtcDateAsDate().compareTo(lhs.getMatch().getUtcDateAsDate()
 		 * ); }
-		 * 
+		 *
 		 * } else { return lhs.getCompetitionName().compareTo(rhs.getCompetitionName());
 		 * } }).collect(Collectors.toList());
 		 */
@@ -246,7 +236,7 @@ public class GambleMatchServiceImpl {
 	public void deleteByGambleId(Long gambleId)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
-		logger.info("Delete GambleMatchs by gamble ID: " + gambleId);
+		logger.info("Delete GambleMatches by gamble ID: " + gambleId);
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
@@ -262,17 +252,17 @@ public class GambleMatchServiceImpl {
 	}
 
 	public void deleteAllGambleMatchesByGambleIdAndCompetitionIdAndStage(long gambleId, long competitionId,
-			String stage)
+																		 String stage)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
-		logger.info("Delete GambleMatchs by gamble ID={}, competitionId={}, stage='{}'  ", gambleId, competitionId,
+		logger.info("Delete GambleMatches by gamble ID={}, competitionId={}, stage='{}'  ", gambleId, competitionId,
 				stage);
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
 
 		HttpEntity<GambleMatchEntity> request = new HttpEntity<>(httpHeaders.getHeaders());
-		String theUrl = apiPath + ENTITY_PATH + "/delete/all/gamble=" + gambleId + "/competiton=" + competitionId
+		String theUrl = apiPath + ENTITY_PATH + "/delete/all/gamble=" + gambleId + "/competition=" + competitionId
 				+ "/stage=" + stage;
 		try {
 			restTemplate.exchange(theUrl, HttpMethod.DELETE, request, String.class);
@@ -284,7 +274,7 @@ public class GambleMatchServiceImpl {
 	public void deleteAllGambleMatchesByGambleIdAndUserId(long gambleId, long userId)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
-		logger.info("Delete GambleMatchs by gamble ID={}, user Id={}", gambleId, userId);
+		logger.info("Delete GambleMatches by gamble ID={}, user Id={}", gambleId, userId);
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
@@ -323,8 +313,8 @@ public class GambleMatchServiceImpl {
 	 * public boolean isExist(GambleMatchEntity entity) throws
 	 * AuthorisationException, NotFoundException, DataConflictException,
 	 * RestAPIServerException { logger.info("is GambleMatch Exist: " + entity);
-	 * 
-	 * 
+	 *
+	 *
 	 * return (findByName(entity.getFullName()) != null) ||
 	 * (findById(entity.getId()) != null); }
 	 */
@@ -442,7 +432,7 @@ public class GambleMatchServiceImpl {
 	}
 
 	private GambleMatchEntity mapGambleMatch(Long gambleId, GambleCompetition competition, GambleUser user,
-			MatchEntity match, GambleRuleEntity gambleRule) {
+											 MatchEntity match, GambleRuleEntity gambleRule) {
 		GambleMatchEntity matchEntity = new GambleMatchEntity();
 		matchEntity.setGambleId(gambleId);
 		matchEntity.setCompetitionId(competition.getId());
