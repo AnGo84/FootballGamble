@@ -1,5 +1,12 @@
 package ua.com.footballgamble.service;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +17,22 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ua.com.footballgamble.contloller.RestTemplateResponseErrorHandler;
-import ua.com.footballgamble.exception.*;
-import ua.com.footballgamble.model.entity.*;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import ua.com.footballgamble.contloller.RestTemplateResponseErrorHandler;
+import ua.com.footballgamble.exception.AuthorisationException;
+import ua.com.footballgamble.exception.DataConflictException;
+import ua.com.footballgamble.exception.NoContentException;
+import ua.com.footballgamble.exception.NotFoundException;
+import ua.com.footballgamble.exception.RestAPIServerException;
+import ua.com.footballgamble.model.entity.GambleCompetition;
+import ua.com.footballgamble.model.entity.GambleEntity;
+import ua.com.footballgamble.model.entity.GambleMatchEntity;
+import ua.com.footballgamble.model.entity.GambleMatchScore;
+import ua.com.footballgamble.model.entity.GambleRuleEntity;
+import ua.com.footballgamble.model.entity.GambleStage;
+import ua.com.footballgamble.model.entity.GambleUser;
+import ua.com.footballgamble.model.entity.MatchEntity;
+import ua.com.footballgamble.model.entity.SeasonEntity;
 
 @Service("gambleMatchesService")
 public class GambleMatchServiceImpl {
@@ -47,8 +60,8 @@ public class GambleMatchServiceImpl {
 				});
 		list = response.getBody();
 
-		list = list.stream().sorted(Comparator.comparing(GambleMatchEntity::getCompetitionId))
-				.collect(Collectors.toList());
+		list = list.stream().sorted(Comparator.comparing(GambleMatchEntity::getCompetitionId)
+				.thenComparing((GambleMatchEntity::getMatchDate))).collect(Collectors.toList());
 
 		return list;
 	}
@@ -69,10 +82,8 @@ public class GambleMatchServiceImpl {
 
 		if (list != null) {
 			list = list.stream().sorted(Comparator.comparingLong(GambleMatchEntity::getCompetitionId)
-					.thenComparing(GambleMatchEntity::getMatchDate)
-					.thenComparing(GambleMatchEntity::getUserLogin)
-					.thenComparingLong(GambleMatchEntity::getMatchId)
-			).collect(Collectors.toList());
+					.thenComparing(GambleMatchEntity::getMatchDate).thenComparing(GambleMatchEntity::getUserLogin)
+					.thenComparingLong(GambleMatchEntity::getMatchId)).collect(Collectors.toList());
 		}
 		/*
 		 * list = list.stream().sorted((lhs, rhs) -> {
@@ -252,7 +263,7 @@ public class GambleMatchServiceImpl {
 	}
 
 	public void deleteAllGambleMatchesByGambleIdAndCompetitionIdAndStage(long gambleId, long competitionId,
-																		 String stage)
+			String stage)
 			throws AuthorisationException, NotFoundException, DataConflictException, RestAPIServerException {
 
 		logger.info("Delete GambleMatches by gamble ID={}, competitionId={}, stage='{}'  ", gambleId, competitionId,
@@ -432,7 +443,7 @@ public class GambleMatchServiceImpl {
 	}
 
 	private GambleMatchEntity mapGambleMatch(Long gambleId, GambleCompetition competition, GambleUser user,
-											 MatchEntity match, GambleRuleEntity gambleRule) {
+			MatchEntity match, GambleRuleEntity gambleRule) {
 		GambleMatchEntity matchEntity = new GambleMatchEntity();
 		matchEntity.setGambleId(gambleId);
 		matchEntity.setCompetitionId(competition.getId());

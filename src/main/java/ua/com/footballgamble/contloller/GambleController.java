@@ -3,6 +3,7 @@ package ua.com.footballgamble.contloller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ import ua.com.footballgamble.model.entity.GambleEntity;
 import ua.com.footballgamble.model.entity.GambleMatchEntity;
 import ua.com.footballgamble.model.entity.GambleMatchScore;
 import ua.com.footballgamble.model.entity.GambleRuleEntity;
+import ua.com.footballgamble.model.entity.GambleStage;
 import ua.com.footballgamble.model.entity.GambleUser;
 import ua.com.footballgamble.primefaces.FacesContextUtils;
 import ua.com.footballgamble.primefaces.PrimeFacesMessageUtils;
@@ -113,6 +115,41 @@ public class GambleController implements Serializable {
 		gambleRules = gambleRuleService.findAll();
 		allGambleUsersList = gambleUserService.findAll();
 		allGambleCompetitionsList = gambleCompetitionService.findAll();
+
+		updateCompetitionsSeasonsStages();
+	}
+
+	private void updateCompetitionsSeasonsStages() {
+		logger.info("Check for missing Stages for competitions");
+		if (allGambleCompetitionsList != null && !allGambleCompetitionsList.isEmpty() && selectedGamble != null
+				&& selectedGamble.getCompetitions() != null && !selectedGamble.getCompetitions().isEmpty()) {
+			boolean addedNew = false;
+			for (GambleCompetition gambleCompetition : selectedGamble.getCompetitions()) {
+				GambleCompetition competition = allGambleCompetitionsList.stream()
+						.filter(comp -> gambleCompetition.getId().equals(comp.getId())).findAny().orElse(null);
+				if (competition != null && competition.getStages() != null && !competition.getStages().isEmpty()) {
+					for (GambleStage stage : competition.getStages()) {
+						GambleStage checkStage = gambleCompetition.getStages().stream()
+								.filter(gambleStage -> stage.getId() == gambleStage.getId()).findAny().orElse(null);
+						if (checkStage == null) {
+							gambleCompetition.getStages().add(stage);
+							addedNew = true;
+						}
+					}
+				}
+			}
+			if (addedNew) {
+				for (GambleCompetition gambleCompetition : selectedGamble.getCompetitions()) {
+
+					List<GambleStage> gambleStages = gambleCompetition.getStages().stream()
+							.sorted(Comparator.comparingInt(GambleStage::getId)).collect(Collectors.toList());
+					gambleCompetition.setStages(gambleStages);
+				}
+				logger.info("Added missing Stages for competitions");
+				PrimeFacesMessageUtils.addGlobalInfoMessage("Added missing Stages for competitions. Need save!");
+			}
+		}
+
 	}
 
 	public String onGambleEditSubmit() throws FacesException {
@@ -124,16 +161,19 @@ public class GambleController implements Serializable {
 				PrimeFacesMessageUtils.addGlobalInfoMessage("Gamble '" + selectedGamble.getId() + "' was added");
 
 			} else if (eventType.equals(EventType.EDIT)) {
+
 				gambleService.update(selectedGamble);
+
 				PrimeFacesMessageUtils.addGlobalInfoMessage("Gamble '" + selectedGamble.getId() + "' was edited");
 			}
+			logger.info("Gamble '{}' was {}", selectedGamble.getId(), eventType);
 		} catch (Exception ex) {
 			logger.error("Error on " + eventType + " for " + selectedGamble + ": " + ex.getMessage());
 			PrimeFacesMessageUtils.addGlobalErrorMessage("Error on " + eventType + ": " + ex.getMessage());
 			return "";
 		}
 		clearDataForDeletedUser();
-		updateGambleMatches();
+		// updateGambleMatches();
 
 		// return "gambles.xhtml?faces-redirect=true";
 		return "";
@@ -145,7 +185,7 @@ public class GambleController implements Serializable {
 			for (GambleUser user : deleteGambleUsers) {
 				try {
 					gambleMatchService.deleteAllGambleMatchesByGambleIdAndUserId(selectedGamble.getId(), user.getId());
-
+					gambleMatches = gambleMatchService.findAllByGambleId(selectedGamble.getId());
 					/*
 					 * PrimeFacesMessageUtils .addGlobalInfoMessage("Gamble '" +
 					 * selectedGamble.getId() + "' matches was updated");
@@ -166,6 +206,7 @@ public class GambleController implements Serializable {
 		logger.info("Update Gamble Matches");
 
 		try {
+
 			gambleMatchService.updateGambleMatches(selectedGamble, gambleMatches);
 			gambleMatches = gambleMatchService.findAllByGambleId(selectedGamble.getId());
 
@@ -175,7 +216,6 @@ public class GambleController implements Serializable {
 
 			PrimeFacesMessageUtils.addGlobalErrorMessage(
 					"Error on update Gamble '" + selectedGamble.getName() + "' matches: " + ex.getMessage());
-
 		}
 	}
 
@@ -227,7 +267,6 @@ public class GambleController implements Serializable {
 			PrimeFacesMessageUtils
 					.addGlobalErrorMessage("Error on DELETE for id" + user.getId() + ": " + ex.getMessage());
 		}
-
 	}
 
 	public void onDeleteCompetition(GambleCompetition competition) {
@@ -240,7 +279,6 @@ public class GambleController implements Serializable {
 			PrimeFacesMessageUtils
 					.addGlobalErrorMessage("Error on DELETE for id" + competition.getName() + ": " + ex.getMessage());
 		}
-
 	}
 
 	public void onCellEdit(GambleMatchEntity editedGambleMatch) {

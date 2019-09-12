@@ -49,7 +49,10 @@ public class UserGamblesController implements Serializable {
 		logger.info("PostConstruct loadData");
 		try {
 			userGambles = gambleService.findAllActiveForUser(getPrincipal());
-			updateGambleData();
+			if (userGambles != null && !userGambles.isEmpty()) {
+				selectedGamble = userGambles.get(0);
+				updateGambleData(selectedGamble);
+			}
 
 		} catch (Exception e) {
 			logger.error("Error on init bean", e);
@@ -57,21 +60,19 @@ public class UserGamblesController implements Serializable {
 		}
 	}
 
-	public void updateGambleData() {
-		if (userGambles != null && !userGambles.isEmpty()) {
-			selectedGamble = userGambles.get(0);
-
-			scoreTable = gambleService.getGambleUsersScores(selectedGamble.getId());
-			gambleMatches = gambleMatchService.findAllUserMatchesByGambleId(selectedGamble.getId(), getPrincipal());
+	public void updateGambleData(GambleEntity gamble) {
+		if (gamble != null) {
+			scoreTable = gambleService.getGambleUsersScores(gamble.getId());
+			gambleMatches = gambleMatchService.findAllUserMatchesByGambleId(gamble.getId(), getPrincipal());
 		} else {
-			selectedGamble = null;
+			scoreTable = null;
 			gambleMatches = null;
 		}
 	}
 
 	public void onChangeGamble() {
-		logger.info("onChangeSeason ");
-		updateGambleData();
+		logger.info("onChangeGamble ");
+		updateGambleData(selectedGamble);
 		// logger.info("Selected Season: " + selectedSeasonItem);
 		/*
 		 * matches = loadSeasonMatches(Long.valueOf(selectedSeasonItem));
